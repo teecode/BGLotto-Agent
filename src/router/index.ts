@@ -50,9 +50,14 @@ const router = createRouter({
           component: () => import('../views/CashierDetsView.vue'),
         },
         {
-          path: 'statistics',
+          path: 'shop-statistics',
           name: 'Statistics',
-          component: () => import('../views/StatisticsView.vue'),
+          component: () => import('../views/ShopStatisticsView.vue'),
+        },
+        {
+          path: 'game-statistics',
+          name: 'GameStatistics',
+          component: () => import('../views/ShopGameStatisticsView.vue'),
         },
         {
           path: 'tickets',

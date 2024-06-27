@@ -4,8 +4,38 @@
             <div class="p-2" v-if="loading">
                 <Spinner />
             </div>
-            <div v-else-if="empty">
-
+            <div class="bg-white rounded-lg drop-shadow-md" v-else-if="empty">
+                <div class="flex items-center justify-between border-b p-2">
+                    <div class="relative w-8/12" v-if="search">
+                        <input class="w-full rounded-lg px-8 py-3 cursor-pointer" placeholder="Search" v-model="query"
+                            @keyup.enter="submitSearch" />
+                        <Search class="absolute top-3.5 pl-2" @click="submitSearch" />
+                    </div>
+                    <div v-if="dateFilter">
+                        <date-picker v-if="dateFilterRange" v-model:value="date" type="date" range
+                            placeholder="Select date range" value-type="format" format="YYYY-MM-DD"
+                            @change="updateDateFilter"></date-picker>
+                        <date-picker v-else v-model:value="date" type="date" placeholder="Select date " value-type="format"
+                            format="YYYY-MM-DD" @change="updateDateFilter"></date-picker>
+                    </div>
+                </div>
+                <div class="overflow-x-auto" >
+                    <table class="table-auto border-white bg-white w-full p-4">
+                    <thead>
+                        <tr>
+                            <th v-for="item in header" :key="item.key" class="font-bold p-4 border-b text-left capitalize dark:text-[#131330]">
+                                {{ item.label }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="w-full">
+                        <div class="w-full p-3 flex items-center">
+                            <p class="p-3 text-center hover:bg-grey-200 dark:text-[#131330]">No records found</p>
+                        </div>
+                    </tbody>
+                </table>  
+                </div>
+              
             </div>
             <div v-else>
                 <div class="flex items-center justify-between p-1">
@@ -26,10 +56,10 @@
                             @change="updateDateFilter"></date-picker>
                     </div>
                 </div>
-                <div>
-                    <table class="table-auto border-white bg-white  w-full p-1">
+                <div class="overflow-x-auto drop-shadow-md">
+                    <table class="table-auto border-white bg-white  w-full p-1 rounded-t-lg">
                         <thead>
-                            <tr class="border-b border-zinc-300">
+                            <tr class="border-b border-zinc-300 ">
                                 <th v-for="item in header" :key="item.key" class="font-bold p-2 border-b text-left dark:text-[#131330]">
                                     <slot v-if="slots[`header-${item.key}`]" :name="`header-${item.key}`" v-bind="item" />
                                     <span v-else>{{ item.label }}</span>
@@ -48,9 +78,9 @@
                         </tbody>
                     </table>
                 </div>
-                <div v-if="paginated" class="bg-[#F5F5F5] w-full py-2 px-4 flex justify-between gap-5 rounded-b-lg">
+                <div v-if="paginated" class="bg-[#F5F5F5] w-full py-2 px-4 flex justify-between gap-5 rounded-b-lg drop-shadow-md">
                     <div>
-                        <p>Viewing {{ pageRangeStart }} - {{ pageRangeEnd }} of {{ totalRecords }} </p>
+                        <p class="dark:text-[#131330]">Viewing {{ pageRangeStart }} - {{ pageRangeEnd }} of {{ totalRecords }} </p>
                     </div>
                     <div class="flex gap-2 items-center">
                         <button @click="prevPage">

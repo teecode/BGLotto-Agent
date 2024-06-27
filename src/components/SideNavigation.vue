@@ -48,11 +48,19 @@
                         </div>
                     </router-link>
 
-                    <router-link to="/dashboard/statistics">
+                    <router-link to="/dashboard/shop-statistics">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
-                                Statistics</p>
+                                Shop Statistics</p>
+                        </div>
+                    </router-link>
+
+                    <router-link to="/dashboard/game-statistics">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Game Statistics</p>
                         </div>
                     </router-link>
 
@@ -136,10 +144,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
         </div>
-        <div v-if="showMobile" class="fixed z-40 top-4 w-full bg-white dark:bg-[#111C44]">
-            <div class="flex flex-col items-start mt-2 p-2 ">
+        <div v-if="showMobile" class="fixed z-40 top-4 w-full max-w-sm lg:w-[40rem] bg-white dark:bg-[#111C44] rounded-lg">
+            <div class="flex flex-col items-start mt-2 p-2">
                 <div class="flex items-center gap-2">
-                    <img class="w-1/4" src="@/assets/images/logo.png" alt="">
+                    <div @click="showMobile = !showMobile">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <img class="w-1/6" src="@/assets/images/logo.png" alt="">
                     <h3 class="text-lg font-semibold text-[#2B3674] dark:text-white">Agent Dashboard</h3>
                 </div>
                 <div>
@@ -184,11 +198,18 @@
                         </div>
                     </router-link>
 
-                    <router-link to="/dashboard/statistics">
+                    <router-link to="/dashboard/shop-statistics">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
-                                Statistics</p>
+                               Shop Statistics</p>
+                        </div>
+                    </router-link>
+                    <router-link to="/dashboard/game-statistics">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Game Statistics</p>
                         </div>
                     </router-link>
 
