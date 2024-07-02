@@ -1,5 +1,5 @@
 <template>
-    <section class="hidden lg:block bg-white dark:bg-[#111C44] rounded-3xl w-80 h-[40rem] p-10">
+    <section class="hidden lg:block bg-white dark:bg-[#111C44] rounded-3xl w-full max-w-80 h-full max-h-max p-10">
         <div class="flex flex-col items-start justify-between gap-3 h-full ">
             <div class="flex flex-col mt-2 ">
                 <div class="flex items-center justify-center gap-2">
@@ -96,6 +96,13 @@
                         Management</p>
                 </div>
                 <div v-if="show2" class="ml-8 transition delay-150 duration-300 ease-in-out">
+                    <router-link to="/dashboard/payout">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Payouts</p>
+                        </div>
+                    </router-link>
                     <router-link to="/dashboard/reimbursement">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet bg-black dark:bg-white"></span>
@@ -310,22 +317,20 @@ const openSub = (item: number) => {
         show.value = !show.value
     }
     if (item === 2) {
-        console.log(`hi + ${item}`)
         show2.value = !show2.value
     }
-
 };
 
 const logOut = async () => {
-    try {
-        const res = await axios.post(`authenticate/Logout`)
-        authStore.token = null;
-        authStore.user = {};
-        router.push({ name: 'Home' });
+    authStore.token = null;
+    authStore.user = {};
+    router.push({ name: 'Home' });
         snackbar.add({
             type: 'success',
             text: 'Successfully logged out'
-        });
+    });
+    try {
+        const res = await axios.post(`authenticate/Logout`)
     } catch (err: any) {
         snackbar.add({
             type: 'error',

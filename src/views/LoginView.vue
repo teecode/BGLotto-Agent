@@ -105,9 +105,8 @@ const handleLogin = async (): Promise< Result | void > => {
       usernameOrEmail: form.email,
       password: form.password
     })
-    console.log(res)
     if (res.status == 200) {
-      router.push({ name: 'Dashboard' })
+      router.push('/dashboard')
       processing.value = false;
       snackbar.add({
         type: 'success',

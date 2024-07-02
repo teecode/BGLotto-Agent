@@ -7,8 +7,8 @@
                     <p>To : {{ today }} </p>
                 </div>
             </div>
-            <date-picker @change="updateDate" v-model:value="setNewDate" type="date" placeholder="Select date" range value-type="format"
-                format="YYYY-MM-DD"></date-picker>
+            <date-picker @change="updateDate" v-model:value="setNewDate" type="date" placeholder="Select date" range
+                value-type="format" format="YYYY-MM-DD"></date-picker>
         </div>
         <div>
             <div class="flex gap-4 mt-4 overflow-auto p-3">
@@ -18,7 +18,7 @@
                     </div>
                     <div class="mt-2">
                         <p class="uppercase semi-bold text-[10px] my-2">total sales</p>
-                        <p class="text-base lg:text-3xl bold">₦ {{ shopStats.totalSales }}</p>
+                        <p class="text-base lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalSales) }}</p>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg ">
@@ -27,7 +27,7 @@
                     </div>
                     <div class="mt-2">
                         <p class="uppercase semi-bold text-[10px] my-2">total winnings</p>
-                        <p class="text-lg lg:text-3xl bold">₦ {{ shopStats.totalWinnings }}</p>
+                        <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalWinnings) }}</p>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-[#1B254B] min-w-36 h-32 drop-shadow-md py-1 px-3 rounded-lg ">
@@ -36,7 +36,7 @@
                     </div>
                     <div class="mt-2">
                         <p class="uppercase semi-bold text-[10px] my-2">total Commissions</p>
-                        <p class="text-lg lg:text-3xl bold">₦ {{ shopStats.commision }}</p>
+                        <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalCommission) }}</p>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg ">
@@ -45,7 +45,7 @@
                     </div>
                     <div class="mt-2">
                         <p class="uppercase semi-bold text-[10px] my-2">total net balance</p>
-                        <p class="text-lg lg:text-3xl bold">₦ {{ shopStats.totalNetBalance }}</p>
+                        <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalNetBalance) }}</p>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg ">
@@ -54,14 +54,14 @@
                     </div>
                     <div class="mt-2">
                         <p class="uppercase semi-bold text-[10px] my-2">total Canceled</p>
-                        <p class="text-lg lg:text-3xl bold">₦ {{ shopStats.totalCanceled }}</p>
+                        <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalCanceled) }}</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="mt-3">
             <AppTable :header="tableHeader" :fields="shopTableStats" :loading="loading"
-                :dataCount="shopTableStats.length">
+                :dataCount="shopTableStats.length" :empty="error">
 
             </AppTable>
         </div>
@@ -78,6 +78,7 @@ import { format } from 'date-fns';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import AppTable from '@/components/AppTable.vue';
+import { convertNumber } from '../services/convertNumber';
 
 
 const authStore = useAuthStore();
@@ -88,6 +89,7 @@ aDayAgo.setDate(aDayAgo.getDate() - 1);
 let yesterday = ref(format(new Date(aDayAgo), "yyyy-MM-dd"));
 let loading = ref(false);
 let setNewDate = ref(new Date());
+let error = ref(false);
 
 const shopStats = ref([]);
 const shopTableStats = ref([]);
@@ -132,6 +134,9 @@ const fetchShopGameStats = async () => {
         shopStats.value = res.data;
         shopTableStats.value = res.data.items;
         loading.value = false;
+        if (shopTableStats.value.length == 0) {
+            error.value = true;
+        }
     } catch (err) {
         snackbar.add({
             type: 'error',
@@ -146,13 +151,11 @@ onMounted(() => {
 });
 
 watchEffect(() => {
-    fetchShopGameStats();  
+    fetchShopGameStats();
 });
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <!-- const fetchShopGameStats = async() => {
     try{

@@ -6,7 +6,7 @@
         <div class="px-3 lg:px-10 py-2 lg:py-5 space-y-3">
             <AppTable :header="cashierTableHeader" :fields="cashierDets" :loading="loading" :paginated="true"
                 @pageChange="updatePage" :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData"
-                :dataCount="cashierDets.length">
+                :dataCount="cashierDets.length" :empty="error">
 
                 <template #item-action="item">
                     <div>
@@ -124,6 +124,7 @@ let totalPages = ref(0);
 let pageSize = ref(10);
 let showModal = ref(false);
 let editCashDets = reactive({});
+let error = ref(false);
 
 const fetchCasheirs = async () => {
     try {
@@ -134,6 +135,9 @@ const fetchCasheirs = async () => {
         totalData.value = res.data.totalCount;
         totalPages.value = res.data.totalPages;
         loading.value = false;
+        if (cashierDets.value.length == 0) {
+            error.value = true
+        }
     } catch (err) {
         console.log(err)
         if (err?.response?.status == 401) {

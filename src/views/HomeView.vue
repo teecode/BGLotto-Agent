@@ -7,11 +7,10 @@
                 <img v-if="!isDark" src="@/assets/svg/moon.svg" alt="Switch to dark mode"
                     class="absolute top-10 lg:top-8 right-8  cursor-pointer" @click="toggleDark()" />
             </div>
-            <section class="flex flex-col lg:flex-row w-full gap-8">
-                <SideNavigation  class="w-80"/>
+            <section class="flex lg:flex-row w-full gap-4">
+                <SideNavigation/>
                 <RouterView></RouterView>
             </section>
-
         </div>
     </main>
 
