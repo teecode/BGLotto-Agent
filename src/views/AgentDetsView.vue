@@ -53,10 +53,16 @@
                     <label class="text-[#565674] w-32">Account Number: </label>
                     <p class=" font-semibold">{{ user.accountNumber }}</p>
                 </div>
+                <div class="flex items-center gap-2 lg:gap-12">
+                    <label class="text-[#565674] w-32"> Virtual Account Number: </label>
+                    <p class=" font-semibold">{{ user.virtualAccountNumber }}</p>
+                </div>
+                <div class="flex items-center gap-2 lg:gap-12">
+                    <label class="text-[#565674] w-32"> Virtual Bank: </label>
+                    <p class=" font-semibold">{{ user.virtualAccountBank }}</p>
+                </div>
             </div>
         </div>
-
-
     </section>
 </template>
 
@@ -86,7 +92,6 @@ const fetchUserdets = async () => {
     try {
         loading.value = true;
         const res = await axios.get(`Retail/shop/GetShopById?ShopId=${userId.value}`);
-        console.log(res)
         user.value = res.data
         loading.value = false;
     } catch (err) {

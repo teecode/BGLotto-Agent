@@ -23,7 +23,7 @@
             </template>
 
             <template v-slot:description>
-                <div>
+                <div class="text-[#2B3674] dark:text-white">
                     <label for="">Enter Desired Amount</label>
                     <input v-model.number="amount" type="text" name="password" placeholder="Enter Amount"
                         class="bg-transparent border border-[#A3AED0] rounded-md pl-3 w-full py-3 outline-none text-sm focus:border-blue-700" />

@@ -7,6 +7,16 @@
       <button @click="showModal = !showModal"
         class="bg-blue-800 dark:bg-[#7551FF] text-white py-3 px-2 rounded-lg">Request Payout</button>
     </div>
+    <div class="flex items-center gap-2 justify-end py-2 px-10">
+      <div class="flex items-center gap-2 lg:gap-6">
+        <label class="text-xs lg:text-base text-[#565674]"> Virtual Account Number: </label>
+        <p class=" font-semibold">{{ authStore.user.virtualAccountNumber }}</p>
+      </div>
+      <div class="flex items-center gap-2 lg:gap-6">
+        <label class="text-xs lg:text-base text-[#565674]"> Virtual Bank: </label>
+        <p class=" font-semibold">{{ authStore.user.virtualAccountBank }}</p>
+      </div>
+    </div>
     <div class="px-3 lg:px-10 py-2 lg:py-5 space-y-3">
       <div>
         <div class="w-full flex justify-evenly gap-4 mt-4 overflow-auto p-3">
@@ -66,7 +76,8 @@
             </div>
             <div class="flex gap-4 items-center justify-between w-full mt-3 overflow-auto p-2">
               <div v-for="game in dailyGames" :key="game.gameId">
-                <div class="bg-white dark:bg-[#1B254B] flex flex-col items-center min-w-32 max-h-full drop-shadow-md py-1 px-3 rounded-lg">
+                <div
+                  class="bg-white dark:bg-[#1B254B] flex flex-col items-center min-w-32 max-h-full drop-shadow-md py-1 px-3 rounded-lg">
                   <div>
                     <img :src="`data:image/png;base64,${game.gameBackgroundImageUrl}`" alt="" class="w-24">
                   </div>
@@ -85,13 +96,13 @@
       </div>
       <div>
         <AppTable :header="tableHeader" :fields="userStats" :loading="loading" 
-                @pageChange="updatePage" :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData"
-                :empty="error" :dateFilter="true" @dateUpdated="updateDateChanged"  :dataCount="userStats.length">
-                <!-- <template #item-requestedDate="{ requestedDate }">
+          :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData" :empty="error" :dateFilter="true"
+          @dateUpdated="updateDateChanged" :dataCount="userStats.length">
+          <!-- <template #item-requestedDate="{ requestedDate }">
                     {{ format(new Date(requestedDate), 'dd/MM/yyyy hh:mm:ss aaaa') }}
                 </template> -->
 
-            </AppTable>
+        </AppTable>
       </div>
     </div>
 
@@ -102,7 +113,7 @@
       </template>
 
       <template v-slot:description>
-        <div>
+        <div class="text-[#2B3674] dark:text-white">
           <label for="">Enter Desired Amount</label>
           <input v-model.number="amount" type="text" name="password" placeholder="Enter Amount"
             class="bg-transparent border border-[#A3AED0] rounded-md pl-3 w-full py-3 outline-none text-sm focus:border-blue-700" />
@@ -199,14 +210,12 @@ const fetchUserStats = async () => {
   try {
     loading.value = true;
     const res = await axios.get(`/statistics/shop/ticket/dashboard?FromDate=${yesterday.value}&ToDate=${today.value}&ShopId=${userId.value}&Period=Custom`);
-    console.log(res)
     userStats.value = res.data;
     if (userStats.value.length == 0) {
-            error.value = true
-        }
+      error.value = true
+    }
     loading.value = false;
   } catch (err) {
-    console.log(err)
     loading.value = false;
     snackbar.add({
       type: 'error',

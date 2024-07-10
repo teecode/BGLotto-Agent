@@ -164,7 +164,7 @@
                     <h3 class="text-lg font-semibold text-[#2B3674] dark:text-white">Agent Dashboard</h3>
                 </div>
                 <div>
-                    <router-link to="/dashboard" class="flex items-center gap-2 mt-8 cursor-pointer">
+                    <div @click="changeMobileRoute('dashboard')" class="flex items-center gap-2 mt-8 cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-4">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -172,7 +172,7 @@
                         </svg>
                         <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                             Dashboard</p>
-                    </router-link>
+                        </div>
 
                 </div>
                 <div @click="openSub(1)" class="flex items-center gap-2 mt-4 cursor-pointer">
@@ -190,51 +190,51 @@
                         Management</p>
                 </div>
                 <div v-if="show" class="ml-8 transition delay-150 duration-300 ease-in-out">
-                    <router-link to="/dashboard/agent-details">
+                    <div @click="changeMobileRoute('dashboard/agent-details')" >
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Agency Details</p>
                         </div>
-                    </router-link>
-                    <router-link to="/dashboard/cashier-details">
+                    </div>
+                    <div @click="changeMobileRoute('dashboard/cashier-details')">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Cashier Details</p>
                         </div>
-                    </router-link>
+                    </div>
 
-                    <router-link to="/dashboard/shop-statistics">
+                    <div @click="changeMobileRoute('dashboard/shop-statistics')">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                Shop Statistics</p>
                         </div>
-                    </router-link>
-                    <router-link to="/dashboard/game-statistics">
+                    </div>
+                    <div @click="changeMobileRoute('dashboard/game-statistics')">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Game Statistics</p>
                         </div>
-                    </router-link>
+                    </div>
 
-                    <router-link to="/dashboard/tickets">
+                    <div @click="changeMobileRoute('dashboard/tickets')">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Tickets</p>
                         </div>
-                    </router-link>
+                    </div>
 
-                    <router-link to="/dashboard/transactions">
+                    <div @click="changeMobileRoute('dashboard/transactions')">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Transactions</p>
                         </div>
-                    </router-link>
+                    </div>
                 </div>
 
                 <div @click="openSub(2)" class="flex items-center gap-2 mt-4 cursor-pointer">
@@ -252,13 +252,13 @@
                         Management</p>
                 </div>
                 <div v-if="show2" class="ml-8 transition delay-150 duration-300 ease-in-out">
-                    <router-link to="/dashboard/reimbursement">
+                    <div @click="changeMobileRoute('dashboard/reimbursement')">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Request Reimbursement</p>
                         </div>
-                    </router-link>
+                    </div>
 
                     <div class="flex items-center gap-2 mt-4">
                         <span class="bullet  bg-black dark:bg-white"></span>
@@ -272,9 +272,9 @@
             <div class="pb-2 mt-2">
                 <div class="flex items-center gap-2 p-1.5 rounded-lg">
                     <div class="rounded-full bg-[#01FF00] p-3 w-12 cursor-pointer">
-                        <router-link to="">
+                        <div to="">
                             <p class="uppercase font-semibold text-center">{{ initials }}</p>
-                        </router-link>
+                        </div>
                     </div>
                     <div>
                         <p class="text-[#2B3674] dark:text-white">{{ authStore.user.firstName }} {{
@@ -319,6 +319,11 @@ const openSub = (item: number) => {
     if (item === 2) {
         show2.value = !show2.value
     }
+};
+
+const changeMobileRoute = (item:string) => {
+    router.push(`/${item}`);
+    showMobile.value = !showMobile.value 
 };
 
 const logOut = async () => {
