@@ -16,11 +16,42 @@
                 <template #item-gameDate="{ gameDate }">
                     {{ format(new Date(gameDate), 'MM/dd/yyyy hh:mm:ss aaaa') }}
                 </template>
-                <template #item-game="{game}">
-                        {{ game.name }}
+                <template #item-game="{ game }">
+                    {{ game.name }}
+                </template>
+                <template #item-view="item">
+                    <div>
+                        <button @click="openShowModal(item)"
+                            class="bg-blue-800 dark:bg-[#7551FF] text-white py-3 px-2 rounded-lg">
+                            View Ticket
+                        </button>
+                    </div>
                 </template>
             </AppTable>
         </div>
+        <Modal :show="showModal">
+            <template v-slot:title>
+                <div class="flex items-center justify-between bg-white">
+                    <h5 class="text-[#565674] text-lg">Bet Slips</h5>
+                    <div>
+                        <button @click="closeModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+            </template>
+
+            <template v-slot:description>
+                <div class="text-[#2B3674] dark:text-white">
+                    <TicketTable :betslips="ticketDetails?.betslips"></TicketTable>
+                </div>
+            </template>
+        </Modal>
     </section>
 </template>
 
@@ -33,6 +64,8 @@ import { format } from 'date-fns';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import AppTable from '@/components/AppTable.vue';
+import Modal from '@/components/Modal.vue';
+import TicketTable from '@/components/TicketTable.vue'
 
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
@@ -48,6 +81,8 @@ let totalPages = ref(0);
 let pageSize = ref(10);
 let selectedCashier = ref("");
 let error = ref(false);
+let showModal = ref(false);
+let ticketDetails = ref([]);
 
 
 let ticketsTableHeader = reactive([
@@ -74,6 +109,10 @@ let ticketsTableHeader = reactive([
     {
         label: "Won Amount",
         key: "wonAmount"
+    },
+    {
+        label: "View Ticket",
+        key: "view"
     }
 ]);
 
@@ -83,7 +122,6 @@ const fetchTickets = async () => {
         tickets.value = res.data.data
         totalData.value = res.data.totalCount;
         totalPages.value = res.data.totalPages;
-        console.log(res)
         if (tickets.value.length == 0) {
             error.value = true
         }
@@ -99,7 +137,6 @@ const fetchCasheirs = async () => {
     try {
         loading.value = true;
         const res = await axios.get(`Retail/cashiers?ShopId=${userId.value}`);
-        console.log(res.data)
         cashierDets = res.data.data;
         loading.value = false;
     } catch (err) {
@@ -113,6 +150,21 @@ const fetchCasheirs = async () => {
             text: `Please contact support ${err.message}`
         });
     }
+};
+
+const openShowModal = (item) => {
+    showModal.value = !showModal.value;
+    console.log(item)
+    ticketDetails.value = item;
+};
+
+const closeModal = () => {
+    showModal.value = !showModal.value
+    ticketDetails.value = [];
+};
+
+const updatePage = () => {
+
 };
 
 onMounted(() => {

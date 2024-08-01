@@ -23,7 +23,7 @@
                 </div>
                 <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg ">
                     <div class="border-b">
-                        <p class="uppercase semi-bold text-lg">Winnings</p>
+                        <p class="uppercase semi-bold text-lg">Claimed</p>
                     </div>
                     <div class="mt-2">
                         <p class="uppercase semi-bold text-[10px] my-2">total winnings</p>

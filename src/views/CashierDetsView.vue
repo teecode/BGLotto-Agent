@@ -29,7 +29,7 @@
             </template> -->
 
             <template v-slot:title>
-                <h5 class="text-[#565674] text-lg">Update Cashier</h5>
+                <h5 class="text-[#565674] text-lg">Update {{editCashDets.firstname}} Cashier</h5>
             </template>
 
             <template v-slot:description>
@@ -130,16 +130,14 @@ const fetchCasheirs = async () => {
     try {
         loading.value = true;
         const res = await axios.get(`Retail/cashiers?ShopId=${userId.value}`);
-        console.log(res.data)
         cashierDets = res.data.data;
         totalData.value = res.data.totalCount;
         totalPages.value = res.data.totalPages;
         loading.value = false;
-        if (cashierDets.value.length == 0) {
+        if (cashierDets.length == 0) {
             error.value = true
         }
     } catch (err) {
-        console.log(err)
         if (err?.response?.status == 401) {
             console.log(`this ran`)
             logOut()

@@ -2,7 +2,7 @@
     <section class="bg-white dark:bg-[#111C44] lg:w-[40rem] rounded-2xl">
         <div class="flex items-center justify-between border-b border-[#2B2B40] px-10 py-5">
             <h2 class="text-base lg:text-2xl font-semibold">Agency Details</h2>
-            <button class="bg-blue-800 dark:bg-[#7551FF] text-white py-3 px-2 rounded-lg">Edit Profile</button>
+            <!-- <button class="bg-blue-800 dark:bg-[#7551FF] text-white py-3 px-2 rounded-lg">Edit Profile</button> -->
         </div>
         <div>
             <div v-if="loading" class="p-2">

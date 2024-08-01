@@ -103,13 +103,13 @@
                                 Payouts</p>
                         </div>
                     </router-link>
-                    <router-link to="/dashboard/reimbursement">
+                    <!-- <router-link to="/dashboard/reimbursement">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Request Reimbursement</p>
                         </div>
-                    </router-link>
+                    </router-link> -->
 
                     <div class="flex items-center gap-2 mt-4">
                         <span class="bullet  bg-black dark:bg-white"></span>
@@ -252,13 +252,13 @@
                         Management</p>
                 </div>
                 <div v-if="show2" class="ml-8 transition delay-150 duration-300 ease-in-out">
-                    <div @click="changeMobileRoute('dashboard/reimbursement')">
+                    <!-- <div @click="changeMobileRoute('dashboard/reimbursement')">
                         <div class="flex items-center gap-2 mt-4">
                             <span class="bullet bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Request Reimbursement</p>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="flex items-center gap-2 mt-4">
                         <span class="bullet  bg-black dark:bg-white"></span>

@@ -31,7 +31,7 @@
           </div>
           <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg ">
             <div class="border-b">
-              <p class="uppercase semi-bold text-lg">Winnings</p>
+              <p class="uppercase semi-bold text-lg">Claimed</p>
             </div>
             <div class="mt-2">
               <p class="uppercase semi-bold text-[10px] my-2">total winnings</p>
@@ -77,7 +77,8 @@
             <div class="flex gap-4 items-center justify-between w-full mt-3 overflow-auto p-2">
               <div v-for="game in dailyGames" :key="game.gameId">
                 <div
-                  class="bg-white dark:bg-[#1B254B] flex flex-col items-center min-w-32 max-h-full drop-shadow-md py-1 px-3 rounded-lg">
+                  class="bg-white dark:bg-[#1B254B] flex flex-col items-center min-w-32 max-h-full drop-shadow-md py-1 px-3 rounded-lg"
+                  :class="[!game.isActive ? 'opacity-50 cursor-none' : 'opacity-100']">
                   <div>
                     <img :src="`data:image/png;base64,${game.gameBackgroundImageUrl}`" alt="" class="w-24">
                   </div>
@@ -121,7 +122,7 @@
       </template>
 
       <template v-slot:buttons>
-        <div class="w-full flex gap-2 ">
+        <div class="w-full flex gap-2">
           <button @click="submitPayout" type="submit" :disabled="!isFormValid"
             :class="[!isFormValid ? 'cursor-not-allowed opacity-50' : 'bg-blue-800 dark:bg-[#7551FF]  border-none']"
             class="flex items-center justify-center text-sm space-x-3 cursor-pointer rounded-md border border-[#A3AED0] w-full py-3">
@@ -168,7 +169,7 @@ let tableHeader = reactive([
     key: "sales"
   },
   {
-    label: "Winnings",
+    label: "Claimed",
     key: "winnings"
   },
   {

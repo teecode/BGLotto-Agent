@@ -8,7 +8,7 @@
         <div class="px-3 lg:px-10 py-2 lg:py-5 space-y-3">
             <AppTable :header="tableHeader" :fields="userPayouts" :loading="loading" :paginated="true"
                 @pageChange="updatePage" :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData"
-                :dataCount="userPayouts.length" :empty="error" :dateFilter="true" @dateUpdated="updateDateChanged">
+                :dataCount="userPayouts.length" :empty="error" :dateFilter="true" :dateFilterRange="true" @dateUpdated="updateDateChanged">
                 <template #item-requestedDate="{ requestedDate }">
                     {{ format(new Date(requestedDate), 'dd/MM/yyyy hh:mm:ss aaaa') }}
                 </template>
