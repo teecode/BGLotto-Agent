@@ -69,6 +69,12 @@
       </div>
       <div>
         <div>
+          <h4 class="font-bold">Daily Live Sales</h4>
+          <p class="text-base lg:text-2xl font-semibold">{{ dailySales.totalSales }}</p>
+        </div>
+      </div>
+      <div>
+        <div>
           <h4 class="font-bold">Games of the day</h4>
           <div>
             <div v-if="loading2">
@@ -96,8 +102,30 @@
         </div>
       </div>
       <div>
-        <AppTable :header="tableHeader" :fields="userStats" :loading="loading" 
-          :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData" :empty="error" :dateFilter="true"
+        <AppTable :fields="dailyGameResults" :header="resultTableHeader" :loading="loading3" :empty="error2">
+                    <template #item-date="{ date }">
+                        {{ format(new Date(date), 'MM/dd/yyyy') }}
+                    </template>
+                    <template #item-startDateTime="{ startDateTime }">
+                        {{ format(new Date(startDateTime), 'hh:mm:ss aaaa') }}
+                    </template>
+                    <template #item-endDateTime="{ endDateTime }">
+                        {{ format(new Date(endDateTime), 'hh:mm:ss aaaa') }}
+                    </template>
+                    <template #item-result="{ result }">
+                        <div>
+                            <p>Winnings NOs : {{ result.winningBall1 }} - {{ result.winningBall2 }} - {{ result.winningBall3
+                            }} - {{ result.winningBall4 }} - {{ result.winningBall5 }}</p>
+                            <p>Machine NOs : {{ result.machineBall1 }} - {{ result.machineBall2 }} - {{ result.machineBall3
+                            }} - {{ result.machineBall4 }} - {{ result.machineBall5 }}</p>
+                        </div>        
+                    </template>
+                </AppTable>
+      </div>
+
+      <div>
+        <AppTable :header="tableHeader" :fields="userStats" :loading="loading" :totalPages="totalPages"
+          :pageSize="pageSize" :totalRecords="totalData" :empty="error" :dateFilter="true"
           @dateUpdated="updateDateChanged" :dataCount="userStats.length">
           <!-- <template #item-requestedDate="{ requestedDate }">
                     {{ format(new Date(requestedDate), 'dd/MM/yyyy hh:mm:ss aaaa') }}
@@ -105,6 +133,7 @@
 
         </AppTable>
       </div>
+
     </div>
 
     <Modal :show="showModal">
@@ -183,14 +212,47 @@ let tableHeader = reactive([
 
 ]);
 
+const resultTableHeader = reactive([
+{
+        label: "Date",
+        key: "date"
+    },
+    {
+        label: "Game name",
+        key: "gameName"
+    },
+    {
+        label: "Game day",
+        key: "gameDay"
+    },
+    {
+        label: "Game code",
+        key: "gameCode"
+    },
+    {
+        label: "Start time",
+        key: "startDateTime"
+    },
+    {
+        label: "End time",
+        key: "endDateTime"
+    },
+    {
+        label: "Results",
+        key: "result"
+    }
+])
+
 const userStats = ref([]);
 
 
 const userId = ref(Number(authStore.user.shopId));
 let loading = ref();
 let loading2 = ref();
+let loading3 = ref(false);
 let showModal = ref(false);
 let error = ref(false);
+let error2 = ref(false);
 let amount = ref("");
 let processing = ref(false);
 let totalData = ref(null);
@@ -205,6 +267,8 @@ aDayAgo.setDate(aDayAgo.getDate() - 1);
 let yesterday = ref(format(new Date(aDayAgo), "yyyy-MM-dd"));
 const walletData = ref([]);
 let dailyGames = ref();
+let dailySales = ref([]);
+let dailyGameResults = ref([]);
 
 
 const fetchUserStats = async () => {
@@ -286,6 +350,36 @@ const fetchDailyGAmes = async () => {
       text: `Please contact support ${err.message}`
     });
   }
+};
+
+const fetchDailySales = async () => {
+  try {
+    const res = await axios.get(`report/customerterminal/dailygame?fromDate=${today.value}&shopCode=${authStore.user.shopCode}`);
+    dailySales.value = res.data
+  } catch (err) {
+    snackbar.add({
+      type: 'error',
+      text: `Please contact support ${err.message}`
+    });
+  }
+};
+
+const fetchGamesResult = async () => {
+  try {
+    loading3.value = true;
+    const res = await axios.get(`DailyGameResult/AllGamesPerPeriodPerGame?StartDate=${today.value}&EndDate=${today.value}`);
+    dailyGameResults.value = res.data.data;
+    if (dailyGameResults.value.length == 0) {
+      error2.value = true
+    }
+    loading3.value = false;
+  } catch (err) {
+    console.log(err)
+    snackbar.add({
+      type: 'error',
+      text: `Please contact support ${err.message}`
+    });
+  }
 }
 
 const isFormValid = computed(() => {
@@ -312,11 +406,14 @@ onMounted(() => {
   fetchStats();
   fetchWalletBalance();
   fetchDailyGAmes();
+  fetchDailySales();
+  fetchGamesResult();
 });
 
 watchEffect(() => {
   fetchUserStats();
-})
+  fetchDailySales();
+});
 
 
 </script>

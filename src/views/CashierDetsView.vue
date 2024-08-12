@@ -9,7 +9,7 @@
                 :dataCount="cashierDets.length" :empty="error">
 
                 <template #item-action="item">
-                    <div>
+                    <div class="flex items-center justify-center gap-3">
                         <button @click="editCashier(item)"
                             class="py-2 px-3 bg-blue-800 dark:bg-[#7551FF] text-white rounded-md">Edit
                             Cashier</button>
@@ -113,7 +113,7 @@ let cashierTableHeader = reactive([
         key: "phonenumber"
     },
     {
-        label: "Action",
+        label: "Actions",
         key: "action"
     }
 ]);
@@ -190,6 +190,7 @@ const updateCashier = async () => {
 
 onMounted(() => {
     fetchCasheirs();
+   
 });
 
 

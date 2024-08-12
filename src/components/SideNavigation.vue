@@ -47,6 +47,13 @@
                                 Cashier Details</p>
                         </div>
                     </router-link>
+                    <router-link to="/dashboard/cashier-reports">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Cashier Reports</p>
+                        </div>
+                    </router-link>
 
                     <router-link to="/dashboard/shop-statistics">
                         <div class="flex items-center gap-2 mt-4">
@@ -77,6 +84,22 @@
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Transactions</p>
+                        </div>
+                    </router-link>
+
+                    <router-link to="/dashboard/terminal-statistic">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Terminal Statistics</p>
+                        </div>
+                    </router-link>
+
+                    <router-link to="/dashboard/lodgement">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Lodgement</p>
                         </div>
                     </router-link>
                 </div>
@@ -110,12 +133,14 @@
                                 Request Reimbursement</p>
                         </div>
                     </router-link> -->
-
-                    <div class="flex items-center gap-2 mt-4">
+                    <router-link to="/dashboard/cashout">
+                        <div class="flex items-center gap-2 mt-4">
                         <span class="bullet  bg-black dark:bg-white"></span>
                         <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                             Cashout</p>
                     </div>
+                    </router-link>
+                  
                 </div>
 
             </div>
@@ -204,6 +229,13 @@
                                 Cashier Details</p>
                         </div>
                     </div>
+                    <div @click="changeMobileRoute('dashboard/cashier-reports')">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Cashier Reports</p>
+                        </div>
+                    </div>
 
                     <div @click="changeMobileRoute('dashboard/shop-statistics')">
                         <div class="flex items-center gap-2 mt-4">
@@ -233,6 +265,20 @@
                             <span class="bullet  bg-black dark:bg-white"></span>
                             <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
                                 Transactions</p>
+                        </div>
+                    </div>
+                    <div @click="changeMobileRoute('dashboard/terminal-statistic')">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Terminal Statistics</p>
+                        </div>
+                    </div>
+                    <div @click="changeMobileRoute('dashboard/lodgement')">
+                        <div class="flex items-center gap-2 mt-4">
+                            <span class="bullet  bg-black dark:bg-white"></span>
+                            <p class="dark:text-[#90909D] text-[#2B3674] hover:text-[#5063cd] dark:hover:text-white  ">
+                                Lodgement</p>
                         </div>
                     </div>
                 </div>

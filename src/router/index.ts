@@ -49,6 +49,11 @@ const router = createRouter({
           component: () => import('../views/CashierDetsView.vue'),
         },
         {
+          path: 'cashier-reports',
+          name: 'CashierReports',
+          component: () => import('../views/CashierReports.vue')
+        },
+        {
           path: 'shop-statistics',
           name: 'Statistics',
           component: () => import('../views/ShopStatisticsView.vue'),
@@ -77,6 +82,21 @@ const router = createRouter({
           path: 'payout',
           name: 'Payout',
           component: () => import('../views/PayoutView.vue')
+        },
+        {
+          path: 'cashout',
+          name: 'Cashout',
+          component: () => import('../views/CashoutView.vue')
+        },
+        {
+          path : 'terminal-statistic',
+          name : 'TerminalStatistic',
+          component: () => import('../views/TerminalStatisticView.vue')
+        },
+        {
+          path: 'lodgement',
+          name: 'Lodgement',
+          component: () => import('../views/LodgementView.vue')
         }
       ]
     }

@@ -19,6 +19,11 @@ defineProps({
 
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.backdrop {
+    background-color: rgba(12, 1, 1, 0.5);
+    height: 100vh;
+    width: 100vw;
+}
 
 </style>
