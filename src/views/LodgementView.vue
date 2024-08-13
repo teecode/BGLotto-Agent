@@ -78,7 +78,7 @@ const updateDateFilter = () => {
 const fetchLodgement = async() => {
     try{
         loading2.value = true;
-        const res = await axios.get(`RetailFinance/payment/search?page=1&pageSize=10&transactionDateFrom=2024-07-24&transactionDateTo=2024-07-31&shopCode=${authStore.user.shopCode}&transactionCategory=2008`);
+        const res = await axios.get(`RetailFinance/payment/search?page=1&pageSize=10&transactionDateFrom=${startDate.value}&transactionDateTo=${endDate.value}&shopCode=${authStore.user.shopCode}&transactionCategory=2008`);
         lodgement.value = res.data.data;
         if (lodgement.length == 0) {
             error.value = true
