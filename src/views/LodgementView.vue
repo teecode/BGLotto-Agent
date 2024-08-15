@@ -4,6 +4,8 @@
             <h2 class="text-base lg:text-2xl font-semibold">Lodgement</h2>
         </div>
         <div class="px-3 lg:px-10 py-2 lg:py-5 space-y-3">
+            <date-picker v-model:value="date" type="date" range placeholder="Select date range" value-type="format"
+            format="YYYY-MM-DD" @change="updateDateFilter"></date-picker>
             <AppTable :header="cashierTableHeader" :fields="lodgement" :loading="loading2" 
                :empty="error">
                <template #item-date="{ date }">

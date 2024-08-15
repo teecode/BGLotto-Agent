@@ -127,9 +127,9 @@
         <AppTable :header="tableHeader" :fields="userStats" :loading="loading" :totalPages="totalPages"
           :pageSize="pageSize" :totalRecords="totalData" :empty="error" :dateFilter="true"
           @dateUpdated="updateDateChanged" :dataCount="userStats.length">
-          <!-- <template #item-requestedDate="{ requestedDate }">
-                    {{ format(new Date(requestedDate), 'dd/MM/yyyy hh:mm:ss aaaa') }}
-                </template> -->
+           <template #item-dateFromLong="{ dateFromLong }">
+                    {{ format(new Date(dateFromLong), 'dd/MM/yyyy') }}
+                </template>
 
         </AppTable>
       </div>
@@ -369,8 +369,8 @@ const fetchGamesResult = async () => {
     loading3.value = true;
     const res = await axios.get(`DailyGameResult/AllGamesPerPeriodPerGame?StartDate=${today.value}&EndDate=${today.value}`);
     dailyGameResults.value = res.data.data;
-    if (dailyGameResults.value.length == 0) {
-      error2.value = true
+    if (dailyGameResults.length == 0) {
+      error2.value = true;
     }
     loading3.value = false;
   } catch (err) {

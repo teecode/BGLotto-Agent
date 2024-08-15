@@ -34,7 +34,7 @@
                 <div class="flex items-center justify-between bg-white">
                     <h5 class="text-[#565674] text-lg">Bet Slips</h5>
                     <div>
-                        <button @click="closeModal">
+                        <button class="bg-white dark:bg-[#111C44]" @click="closeModal">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"

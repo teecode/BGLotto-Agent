@@ -372,7 +372,7 @@ const changeMobileRoute = (item:string) => {
     showMobile.value = !showMobile.value 
 };
 
-const logOut = async () => {
+const logOut = () => {
     authStore.token = null;
     authStore.user = {};
     router.push({ name: 'Home' });
@@ -380,14 +380,14 @@ const logOut = async () => {
             type: 'success',
             text: 'Successfully logged out'
     });
-    try {
-        const res = await axios.post(`authenticate/Logout`)
-    } catch (err: any) {
-        snackbar.add({
-            type: 'error',
-            text: `Please contact support ${err.message}`
-        });
-    }
+    // try {
+    //     const res = await axios.post(`authenticate/Logout`)
+    // } catch (err: any) {
+    //     snackbar.add({
+    //         type: 'error',
+    //         text: `Please contact support ${err.message}`
+    //     });
+    // }
 
 };
 
