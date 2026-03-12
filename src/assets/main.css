@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background-color: #0B1437;
+@layer base {
+  body {
+    @apply bg-navy-900 text-navy-700 dark:text-white transition-colors duration-300;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    @apply bg-brand-500/20 rounded-full hover:bg-brand-500/40;
+}
+
+/* Global Transitions */
+* {
+    @apply transition-all duration-200 ease-in-out;
 }
