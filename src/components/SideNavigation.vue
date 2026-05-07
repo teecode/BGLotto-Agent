@@ -3,7 +3,7 @@
         <div class="flex flex-col items-start justify-between gap-3 h-full ">
             <div class="flex flex-col mt-2 w-full">
                 <div class="flex items-center justify-center gap-2 mb-10">
-                    <img class="w-12 h-12 object-contain" src="@/assets/images/logo.png" alt="Logo">
+                    <img class="w-12 h-12 object-contain" src="@/assets/images/maxilotto.png" alt="Logo">
                     <h3 class="text-xl font-bold text-navy-700 dark:text-white tracking-tight">Agent Portal</h3>
                 </div>
                 
@@ -93,7 +93,7 @@
     <!-- Mobile Navigation -->
     <header class="lg:hidden flex items-center justify-between px-6 py-4 bg-white dark:bg-navy-800 shadow-sm sticky top-0 z-40">
         <div class="flex items-center gap-3">
-            <img class="w-10 h-10 object-contain" src="@/assets/images/logo.png" alt="Logo">
+            <img class="w-10 h-10 object-contain" src="@/assets/images/maxilotto.png" alt="Logo">
             <h3 class="text-lg font-bold text-navy-700 dark:text-white">Agent</h3>
         </div>
         <button @click="showMobile = !showMobile" class="p-2 rounded-xl bg-brand-50 dark:bg-navy-700 text-brand-500 dark:text-white">
@@ -113,7 +113,7 @@
                class="fixed top-0 left-0 bottom-0 w-[280px] bg-white dark:bg-navy-800 z-50 transform transition-transform duration-300 ease-in-out shadow-2xl p-6 flex flex-col">
             
             <div class="flex items-center gap-3 mb-10 pb-4 border-b border-gray-100 dark:border-navy-700">
-                <img class="w-10 h-10 object-contain" src="@/assets/images/logo.png" alt="Logo">
+                <img class="w-10 h-10 object-contain" src="@/assets/images/maxilotto.png" alt="Logo">
                 <h3 class="text-xl font-bold text-navy-700 dark:text-white">Agent Menu</h3>
             </div>
 
@@ -267,95 +267,5 @@ onMounted(() => {
 aside {
     border-top-right-radius: 2rem;
     border-bottom-right-radius: 2rem;
-}
-</style>
-</template>
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useAuthStore } from '../stores/auth';
-import { useRouter } from 'vue-router';
-import { useSnackbar } from "vue3-snackbar";
-import axios from 'axios';
-
-
-const snackbar = useSnackbar();
-const authStore = useAuthStore();
-const router = useRouter();
-
-let initials = ref("");
-let show = ref(false);
-let show2 = ref(false);
-let showMobile = ref(false);
-
-const openSub = (item: number) => {
-    if (item === 1) {
-        show.value = !show.value
-    }
-    if (item === 2) {
-        show2.value = !show2.value
-    }
-};
-
-const changeMobileRoute = (item:string) => {
-    router.push(`/${item}`);
-    showMobile.value = !showMobile.value 
-};
-
-const logOut = () => {
-    authStore.token = null;
-    authStore.user = {};
-    router.push({ name: 'Home' });
-        snackbar.add({
-            type: 'success',
-            text: 'Successfully logged out'
-    });
-    // try {
-    //     const res = await axios.post(`authenticate/Logout`)
-    // } catch (err: any) {
-    //     snackbar.add({
-    //         type: 'error',
-    //         text: `Please contact support ${err.message}`
-    //     });
-    // }
-
-};
-
-const getLetters = () => {
-    initials.value = `${authStore.user.firstName.charAt(0)}${authStore.user.lastName.charAt(0)}`;
-    //   id.value = parseInt(authStore.user.adminId)
-}
-
-onMounted(() => {
-    getLetters();
-});
-
-
-</script>
-
-<style scoped>
-.bullet {
-    width: 4px;
-    height: 4px;
-    border-radius: 100% !important;
-}
-
-/* a.router-link-active {
-    color: white;
-    p{
-        color: white;  
-    }
-} */
-
-/* a.router-link-exact-active {
-    p{
-        color: white;  
-    }
-} */
-
-a.dark.router-link-exact-active {
-    p {
-        color: black;
-    }
 }
 </style>

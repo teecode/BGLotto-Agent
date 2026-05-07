@@ -5,7 +5,7 @@
       <div class="w-full max-w-md space-y-12">
         <!-- Logo for Mobile -->
         <div class="lg:hidden flex justify-center mb-8">
-          <img class="h-12 w-auto" src="@/assets/images/logo.png" alt="MaxiLotto Logo">
+          <img class="h-12 w-auto" src="@/assets/images/maxilotto.png" alt="MaxiLotto Logo">
         </div>
 
         <!-- Dark Mode Toggle Mobile -->
@@ -99,7 +99,7 @@
       <!-- Content Overlay -->
       <div class="relative z-10 w-full h-full flex flex-col items-center justify-center p-20 text-center">
         <div class="mb-12 flex flex-col items-center gap-6">
-           <img class="h-24 w-auto drop-shadow-2xl" src="@/assets/images/logo.png" alt="MaxiLotto Logo">
+           <img class="h-24 w-auto drop-shadow-2xl" src="@/assets/images/maxilotto.png" alt="MaxiLotto Logo">
            <div class="h-1.5 w-24 bg-brand-500 rounded-full"></div>
         </div>
 

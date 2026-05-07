@@ -224,11 +224,10 @@ const submitSearch = () => {
 
 <style>
 .custom-datepicker .mx-input {
-    @apply !bg-gray-50 !dark:bg-navy-900 !border-none !rounded-xl !h-10 !text-sm !text-navy-700 !dark:text-white !placeholder-navy-300 !shadow-none !px-4;
+    @apply !bg-gray-50 dark:!bg-navy-900 !border-none !rounded-xl !h-10 !text-sm !text-navy-700 dark:!text-white placeholder:!text-navy-300 !shadow-none !px-4;
 }
 .custom-datepicker .mx-icon-calendar, 
 .custom-datepicker .mx-icon-clear {
     @apply !text-navy-400;
 }
-</style>
 </style>

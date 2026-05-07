@@ -172,6 +172,39 @@
       </AppTable>
     </div>
 
+    <!-- Shop Activities Table -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h4 class="text-xl font-bold text-navy-700 dark:text-white">Recent Shop Activities</h4>
+          <p class="text-sm font-medium text-navy-400 mt-1">Audit log of actions performed by your cashiers</p>
+        </div>
+      </div>
+      <AppTable
+        :header="activityTableHeader"
+        :fields="shopActivities"
+        :loading="loadingActivities"
+        :empty="shopActivities.length === 0"
+      >
+        <template #item-dateCreated="{ dateCreated }">
+          <span class="font-bold text-navy-700 dark:text-navy-200">
+            {{ format(new Date(dateCreated), 'dd MMM, yyyy hh:mm a') }}
+          </span>
+        </template>
+        <template #item-userName="{ userName }">
+           <span class="font-medium text-navy-600 dark:text-navy-300">{{ userName }}</span>
+        </template>
+        <template #item-action="{ action }">
+          <span class="px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-500 dark:bg-navy-900 dark:text-brand-300">
+            {{ action }}
+          </span>
+        </template>
+        <template #item-details="{ details }">
+           <span class="text-sm text-navy-500 dark:text-navy-400">{{ details }}</span>
+        </template>
+      </AppTable>
+    </div>
+
     <!-- Payout Modal -->
     <Modal :show="showModal" @close="closeModal">
       <template v-slot:title>
@@ -256,6 +289,8 @@ const walletData = ref({})
 const dailyGames = ref([])
 const dailySales = ref({ totalSales: 0 })
 const dailyGameResults = ref([])
+const shopActivities = ref([])
+const loadingActivities = ref(false)
 
 const today = ref(format(new Date(), 'yyyy-MM-dd'))
 const aDayAgo = new Date()
@@ -287,6 +322,13 @@ const resultTableHeader = [
   { label: 'Game', key: 'gameName' },
   { label: 'Time', key: 'startDateTime' },
   { label: 'Results', key: 'result' }
+]
+
+const activityTableHeader = [
+  { label: 'Date', key: 'dateCreated' },
+  { label: 'User', key: 'userName' },
+  { label: 'Action', key: 'action' },
+  { label: 'Details', key: 'details' }
 ]
 
 const fetchUserStats = async () => {
@@ -382,6 +424,20 @@ const fetchGamesResult = async () => {
   }
 }
 
+const fetchActivities = async () => {
+  try {
+    loadingActivities.value = true
+    const res = await axios.get(`Retail/shop/${userId.value}/activities?Page=1&PageSize=10`)
+    if(res.data && res.data.data) {
+      shopActivities.value = res.data.data
+    }
+  } catch (err) {
+    console.error(err)
+  } finally {
+    loadingActivities.value = false
+  }
+}
+
 const isFormValid = computed(() => amount.value > 0)
 
 const walletBalance = computed(() => {
@@ -408,6 +464,7 @@ onMounted(() => {
   fetchDailyGames()
   fetchDailySales()
   fetchGamesResult()
+  fetchActivities()
 })
 
 watchEffect(() => {
@@ -426,5 +483,4 @@ watchEffect(() => {
 .custom-scrollbar::-webkit-scrollbar-thumb {
   @apply bg-brand-500/10 rounded-full hover:bg-brand-500/20 transition-colors;
 }
-</style>
 </style>

@@ -5,7 +5,7 @@
       <div class="w-full max-w-md space-y-12">
         <!-- Logo for Mobile -->
         <div class="lg:hidden flex justify-center mb-8">
-          <img class="h-12 w-auto" src="@/assets/images/logo.png" alt="MaxiLotto Logo">
+          <img class="h-12 w-auto" src="@/assets/images/maxilotto.png" alt="MaxiLotto Logo">
         </div>
 
         <!-- Dark Mode Toggle Mobile -->
@@ -131,7 +131,7 @@
       
       <div class="relative z-10 w-full h-full flex flex-col items-center justify-center p-20 text-center">
         <div class="mb-12">
-           <img class="h-24 w-auto drop-shadow-2xl" src="@/assets/images/logo.png" alt="MaxiLotto Logo">
+           <img class="h-24 w-auto drop-shadow-2xl" src="@/assets/images/maxilotto.png" alt="MaxiLotto Logo">
         </div>
 
         <div class="max-w-md space-y-6">
@@ -231,5 +231,3 @@ const submitNewPassword = async () => {
 </script>
 
 <style scoped></style>
-
-</script>
