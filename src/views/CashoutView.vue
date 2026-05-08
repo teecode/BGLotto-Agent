@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <div class="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
     <!-- Header Section -->
     <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
       <div class="flex items-center gap-6">
