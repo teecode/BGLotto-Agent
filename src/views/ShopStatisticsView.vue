@@ -1,86 +1,67 @@
 <template>
-  <section class="bg-white dark:bg-[#111C44] rounded-2xl p-3">
-    <div class="flex items-center justify-between w-full lg:gap-24 p-2">
+  <div class="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <!-- Header Card -->
+    <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full flex flex-col md:flex-row items-center justify-between gap-6">
       <div>
-        <div class="flex items-center gap-4">
-          <p>From : {{ yesterday }}</p>
-          <p>To : {{ today }}</p>
+        <h2 class="text-2xl font-bold text-navy-700 dark:text-white">Shop Statistics</h2>
+        <div class="flex items-center gap-2 mt-1 text-navy-400 font-medium text-sm">
+          <span>From: <span class="text-brand-500 font-bold">{{ yesterday }}</span></span>
+          <span class="mx-1">•</span>
+          <span>To: <span class="text-brand-500 font-bold">{{ today }}</span></span>
         </div>
       </div>
-      <date-picker
-        @change="updateDate"
-        v-model:value="setNewDate"
-        type="date"
-        placeholder="Select date"
-        range
-        value-type="format"
-        format="YYYY-MM-DD"
-      ></date-picker>
-    </div>
-    <div>
-      <div class="flex gap-4 mt-4 overflow-auto p-3">
-        <div
-          class="bg-white dark:bg-[#1B254B] min-w-32 h-32 max-h-32 drop-shadow-md py-1 px-3 rounded-lg"
-        >
-          <div class="border-b">
-            <p class="uppercase semi-bold text-lg">Sales</p>
-          </div>
-          <div class="mt-2">
-            <p class="uppercase semi-bold text-[10px] my-2">total sales</p>
-            <p class="text-base lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalSales) }}</p>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg">
-          <div class="border-b">
-            <p class="uppercase semi-bold text-lg">Canceled</p>
-          </div>
-          <div class="mt-2">
-            <p class="uppercase semi-bold text-[10px] my-2">total Canceled</p>
-            <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalCanceled) }}</p>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg">
-          <div class="border-b">
-            <p class="uppercase semi-bold text-lg">Net Sales</p>
-          </div>
-          <div class="mt-2">
-            <p class="uppercase semi-bold text-[10px] my-2">total Canceled</p>
-            <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalNetSales) }}</p>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg">
-          <div class="border-b">
-            <p class="uppercase semi-bold text-lg">Claimed</p>
-          </div>
-          <div class="mt-2">
-            <p class="uppercase semi-bold text-[10px] my-2">total cashout</p>
-            <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalWinnings) }}</p>
-          </div>
-        </div>
-        <div class="bg-white dark:bg-[#1B254B] min-w-36 h-32 drop-shadow-md py-1 px-3 rounded-lg">
-          <div class="border-b">
-            <p class="uppercase semi-bold text-lg">Commissions</p>
-          </div>
-          <div class="mt-2">
-            <p class="uppercase semi-bold text-[10px] my-2">total Commissions</p>
-            <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalCommission) }}</p>
-          </div>
-        </div>
-        <div class="bg-white dark:bg-[#1B254B] min-w-32 h-32 drop-shadow-md py-1 px-3 rounded-lg">
-          <div class="border-b">
-            <p class="uppercase semi-bold">Net Balance</p>
-          </div>
-          <div class="mt-2">
-            <p class="uppercase semi-bold text-[10px] my-2">total net balance</p>
-            <p class="text-lg lg:text-3xl bold">₦ {{ convertNumber(shopStats.totalNetBalance) }}</p>
-          </div>
-        </div>
+      
+      <div class="w-full md:w-auto">
+        <date-picker
+          @change="updateDate"
+          v-model:value="setNewDate"
+          type="date"
+          placeholder="Select date range"
+          range
+          value-type="format"
+          format="YYYY-MM-DD"
+          class="custom-datepicker w-full"
+        ></date-picker>
       </div>
+    </header>
+
+    <!-- Stats Cards Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 w-full">
+        <!-- Sales -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Sales</p>
+          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalSales) }}</p>
+        </div>
+        <!-- Canceled -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Canceled</p>
+          <p class="text-xl lg:text-2xl font-bold text-red-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalCanceled) }}</p>
+        </div>
+        <!-- Net Sales -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Net Sales</p>
+          <p class="text-xl lg:text-2xl font-bold text-navy-700 dark:text-white mt-2 truncate">₦ {{ convertNumber(shopStats.totalNetSales) }}</p>
+        </div>
+        <!-- Claimed -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Cashout</p>
+          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalWinnings) }}</p>
+        </div>
+        <!-- Commissions -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Commissions</p>
+          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalCommission) }}</p>
+        </div>
+        <!-- Net Balance -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
+          <div class="absolute inset-0 bg-brand-500/5"></div>
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest relative z-10">Net Balance</p>
+          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate relative z-10">₦ {{ convertNumber(shopStats.totalNetBalance) }}</p>
+        </div>
     </div>
-    <div class="mt-3">
+
+    <!-- Content Card (Table) -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
       <AppTable
         :header="tableHeader"
         :fields="shopTableStats"
@@ -90,7 +71,7 @@
       >
       </AppTable>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup>

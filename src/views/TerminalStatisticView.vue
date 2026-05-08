@@ -1,35 +1,24 @@
 <template>
-     <section class="bg-white dark:bg-[#111C44] rounded-2xl">
-        <div class="flex items-center justify-between border-b border-[#2B2B40] px-10 py-5">
-            <h2 class="text-base lg:text-2xl font-semibold">Terminal Statistics</h2>
-        </div>
-        <div class="px-3 lg:px-10 py-2 lg:py-5 space-y-3">
-            <div class="flex items-center justify-between gap-2 lg:gap-8">
-                <!-- <div>
-                    <div class="p-2" v-if="loading">
-                        <Spinner />
-                    </div>
-                     <select v-else v-model="cashierId" class="border rounded-md p-2">
-                        <option disabled value="">Select Cashier</option>
-                        <option v-for="cashier in cashierDets" :key="cashier.id" :value="cashier.id">{{ cashier.username }}</option>
-                    </select>
-                </div> -->
-                <date-picker v-model:value="date" type="date" range placeholder="Select date range" value-type="format"
-                    format="YYYY-MM-DD" @change="updateDateFilter"></date-picker>
-            </div>
-            <AppTable :header="cashierTableHeader" :fields="terminals" :loading="loading2" 
-               :empty="error">
+  <div class="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <!-- Header Card -->
+    <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h2 class="text-2xl font-bold text-navy-700 dark:text-white">Terminal Statistics</h2>
+        <p class="text-navy-400 font-medium mt-1">View performance metrics for all shop terminals</p>
+      </div>
+      
+      <div class="w-full md:w-auto">
+        <date-picker v-model:value="date" type="date" range placeholder="Select date range" value-type="format"
+            format="YYYY-MM-DD" @change="updateDateFilter" class="custom-datepicker w-full"></date-picker>
+      </div>
+    </header>
 
-                <!-- <template #item-action="item">
-                    <div class="flex items-center justify-center gap-3">
-                        <button @click="editCashier(item)"
-                            class="py-2 px-3 bg-blue-800 dark:bg-[#7551FF] text-white rounded-md">Edit
-                            Cashier</button>
-                    </div>
-                </template> -->
-            </AppTable>
-        </div>
-    </section>
+    <!-- Content Card -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
+        <AppTable :header="cashierTableHeader" :fields="terminals" :loading="loading2" :empty="error">
+        </AppTable>
+    </div>
+  </div>
 </template>
 
 <script setup>

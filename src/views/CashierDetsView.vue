@@ -1,77 +1,89 @@
 <template>
-    <section class="bg-white dark:bg-[#111C44] rounded-2xl">
-        <div class="flex items-center justify-between border-b border-[#2B2B40] px-10 py-5">
-            <h2 class="text-base lg:text-2xl font-semibold">Cashier Details</h2>
-        </div>
-        <div class="px-3 lg:px-10 py-2 lg:py-5 space-y-3">
-            <AppTable :header="cashierTableHeader" :fields="cashierDets" :loading="loading" :paginated="true"
-                @pageChange="updatePage" :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData"
-                :dataCount="cashierDets.length" :empty="error">
+  <div class="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <!-- Header Card -->
+    <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h2 class="text-2xl font-bold text-navy-700 dark:text-white">Cashier Management</h2>
+        <p class="text-navy-400 font-medium mt-1">View and manage your shop's cashiers</p>
+      </div>
+    </header>
 
-                <template #item-action="item">
-                    <div class="flex items-center justify-center gap-3">
-                        <button @click="editCashier(item)"
-                            class="py-2 px-3 bg-blue-800 dark:bg-[#7551FF] text-white rounded-md">Edit
-                            Cashier</button>
-                    </div>
-                </template>
-            </AppTable>
-        </div>
-        <Modal :show="showModal">
-            <!-- <template v-slot:icon>
-                <button @click="showModal = !showModal">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6 dark:bg-black">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    <!-- Content Card -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
+        <AppTable :header="cashierTableHeader" :fields="cashierDets" :loading="loading" :paginated="true"
+            @pageChange="updatePage" :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData"
+            :dataCount="cashierDets.length" :empty="error">
+
+            <template #item-action="item">
+                <button @click="editCashier(item)"
+                    class="px-4 py-2 bg-brand-50 hover:bg-brand-100 dark:bg-navy-900 dark:hover:bg-navy-700 text-brand-500 font-bold rounded-xl text-xs transition-all active:scale-[0.95]">
+                    Edit Cashier
+                </button>
+            </template>
+        </AppTable>
+    </div>
+
+    <!-- Modal -->
+    <Modal :show="showModal" @close="closeModal">
+        <template v-slot:title>
+            <div class="flex items-center justify-between">
+                <h5 class="text-xl font-bold text-navy-700 dark:text-white">Update Cashier</h5>
+                <button @click="closeModal" class="p-2 hover:bg-gray-100 dark:hover:bg-navy-700 rounded-full transition-colors text-navy-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-            </template> -->
+            </div>
+        </template>
 
-            <template v-slot:title>
-                <h5 class="text-[#565674] text-lg">Update {{editCashDets.firstname}} Cashier</h5>
-            </template>
+        <template v-slot:description>
+            <div class="mt-6 space-y-4">
+                <div class="p-4 bg-gray-50 dark:bg-navy-900 rounded-2xl mb-6 border border-gray-100 dark:border-navy-700">
+                    <p class="text-xs text-navy-400 uppercase tracking-widest font-bold">Cashier Name</p>
+                    <p class="text-lg font-bold text-navy-700 dark:text-white mt-1">{{ editCashDets.firstname }} {{ editCashDets.lastname }}</p>
+                </div>
 
-            <template v-slot:description>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <label for="" class="dark:text-[#565674]">Cashier Active Status </label>
-                        <input type="checkbox" v-model="editCashDets.isActive">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <label for="" class="dark:text-[#565674]">Deletion Status </label>
-                        <input type="checkbox" v-model="editCashDets.canDelete">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <label for="" class="dark:text-[#565674]">Cashout Status </label>
-                        <input type="checkbox" v-model="editCashDets.canCashout">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <label for="" class="dark:text-[#565674]">Bet Placing Status </label>
-                        <input type="checkbox" v-model="editCashDets.canPlaceBet">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <label for="" class="dark:text-[#565674]">Stake Limit</label>
-                        <input type="text" class="text-black border border-[#A3AED0] rounded-sm"
+                <div class="space-y-4 px-1">
+                    <label class="flex items-center justify-between cursor-pointer group">
+                        <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Active Status</span>
+                        <input type="checkbox" v-model="editCashDets.isActive" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer group">
+                        <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Can Delete Ticket</span>
+                        <input type="checkbox" v-model="editCashDets.canDelete" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer group">
+                        <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Can Cashout</span>
+                        <input type="checkbox" v-model="editCashDets.canCashout" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer group">
+                        <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Can Place Bet</span>
+                        <input type="checkbox" v-model="editCashDets.canPlaceBet" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                    </label>
+                    
+                    <div class="pt-6 mt-6 border-t border-gray-100 dark:border-navy-700">
+                        <label class="block text-sm font-medium text-navy-700 dark:text-navy-200 mb-2">Stake Limit (₦)</label>
+                        <input type="number" class="w-full px-4 py-3 bg-white dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none font-bold"
                             v-model="editCashDets.maxStakeLimit">
                     </div>
                 </div>
-            </template>
+            </div>
+        </template>
 
-            <template v-slot:buttons>
-                <div class="w-full flex gap-2 ">
-                    <button @click="updateCashier"
-                        class="text-sm border px-6 py-2.5 font-medium text-white rounded-lg w-full bg-blue-800 dark:bg-[#7551FF]">Save
-                        Changes</button>
-                    <button class="text-sm border px-6 py-2.5 font-medium text-white rounded-lg w-full bg-red-600"
-                        @click="closeModal">
-                        Cancel
-                    </button>
-                </div>
-            </template>
-
-        </Modal>
-    </section>
+        <template v-slot:buttons>
+            <div class="mt-8 flex gap-3 w-full">
+                <button class="flex-1 py-3 text-sm font-bold text-navy-700 dark:text-white bg-gray-100 hover:bg-gray-200 dark:bg-navy-900 dark:hover:bg-navy-700 rounded-xl transition-all"
+                    @click="closeModal">
+                    Cancel
+                </button>
+                <button @click="updateCashier"
+                    class="flex-1 py-3 text-sm font-bold text-white bg-brand-500 hover:bg-brand-600 rounded-xl transition-all shadow-lg shadow-brand-500/30">
+                    Save Changes
+                </button>
+            </div>
+        </template>
+    </Modal>
+  </div>
 </template>
 
 <script setup>

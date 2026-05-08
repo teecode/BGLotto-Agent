@@ -1,25 +1,40 @@
 <template>
-  <section class="bg-white dark:bg-[#111C44] rounded-2xl">
-    <div class="flex items-center justify-between border-b border-[#2B2B40] px-10 py-5">
-      <h2 class="text-base lg:text-2xl font-semibold">Lodgement</h2>
-    </div>
-    <div class="px-3 lg:px-10 py-2 lg:py-5 space-y-3">
-      <date-picker
-        v-model:value="date"
-        type="date"
-        range
-        placeholder="Select date range"
-        value-type="format"
-        format="YYYY-MM-DD"
-        @change="updateDateFilter"
-      ></date-picker>
+  <div class="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <!-- Header Card -->
+    <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h2 class="text-2xl font-bold text-navy-700 dark:text-white">Lodgements</h2>
+        <p class="text-navy-400 font-medium mt-1">Track funds deposited to the company account</p>
+      </div>
+      
+      <div class="w-full md:w-auto">
+        <date-picker
+          v-model:value="date"
+          type="date"
+          range
+          placeholder="Select date range"
+          value-type="format"
+          format="YYYY-MM-DD"
+          @change="updateDateFilter"
+          class="custom-datepicker w-full"
+        ></date-picker>
+      </div>
+    </header>
+
+    <!-- Content Card -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
       <AppTable :header="cashierTableHeader" :fields="lodgement" :loading="loading2" :empty="error">
         <template #item-date="{ date }">
-          {{ format(new Date(date), 'dd-MM-yyyy') }}
+          <span class="font-bold text-navy-700 dark:text-navy-200">
+            {{ format(new Date(date), 'dd MMM, yyyy') }}
+          </span>
+        </template>
+        <template #item-amount="{ amount }">
+          <span class="font-bold text-brand-500 text-base">₦ {{ amount }}</span>
         </template>
       </AppTable>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup>

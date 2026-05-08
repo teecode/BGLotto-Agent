@@ -2,9 +2,9 @@
     <section class="hidden lg:block bg-white dark:bg-navy-800 rounded-3xl w-full max-w-80 h-full max-h-max p-8 drop-shadow-xl border border-gray-100 dark:border-navy-700">
         <div class="flex flex-col items-start justify-between gap-3 h-full ">
             <div class="flex flex-col mt-2 w-full">
-                <div class="flex items-center justify-center gap-2 mb-10">
-                    <img class="w-12 h-12 object-contain" src="@/assets/images/maxilotto.png" alt="Logo">
-                    <h3 class="text-xl font-bold text-navy-700 dark:text-white tracking-tight">Agent Portal</h3>
+                <div class="flex flex-col items-center justify-center mb-10 mt-2">
+                    <img class="w-32 object-contain" src="@/assets/images/maxilotto.png" alt="Maxilotto Logo">
+                    <h3 class="text-xs font-bold text-navy-400 tracking-widest uppercase mt-1">Agent Portal</h3>
                 </div>
                 
                 <div class="space-y-4 w-full">
@@ -92,9 +92,9 @@
 
     <!-- Mobile Navigation -->
     <header class="lg:hidden flex items-center justify-between px-6 py-4 bg-white dark:bg-navy-800 shadow-sm sticky top-0 z-40">
-        <div class="flex items-center gap-3">
-            <img class="w-10 h-10 object-contain" src="@/assets/images/maxilotto.png" alt="Logo">
-            <h3 class="text-lg font-bold text-navy-700 dark:text-white">Agent</h3>
+        <div class="flex flex-col items-start gap-0.5">
+            <img class="w-24 object-contain" src="@/assets/images/maxilotto.png" alt="Maxilotto Logo">
+            <h3 class="text-[10px] font-bold text-navy-400 uppercase tracking-widest pl-1">Agent Portal</h3>
         </div>
         <button @click="showMobile = !showMobile" class="p-2 rounded-xl bg-brand-50 dark:bg-navy-700 text-brand-500 dark:text-white">
             <svg v-if="!showMobile" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
@@ -112,9 +112,9 @@
         <aside :class="showMobile ? 'translate-x-0' : '-translate-x-full'" 
                class="fixed top-0 left-0 bottom-0 w-[280px] bg-white dark:bg-navy-800 z-50 transform transition-transform duration-300 ease-in-out shadow-2xl p-6 flex flex-col">
             
-            <div class="flex items-center gap-3 mb-10 pb-4 border-b border-gray-100 dark:border-navy-700">
-                <img class="w-10 h-10 object-contain" src="@/assets/images/maxilotto.png" alt="Logo">
-                <h3 class="text-xl font-bold text-navy-700 dark:text-white">Agent Menu</h3>
+            <div class="flex flex-col items-center gap-2 mb-8 mt-2 pb-4 border-b border-gray-100 dark:border-navy-700">
+                <img class="w-28 object-contain" src="@/assets/images/maxilotto.png" alt="Maxilotto Logo">
+                <h3 class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Agent Portal</h3>
             </div>
 
             <div class="flex-1 overflow-y-auto overflow-x-hidden space-y-2">
