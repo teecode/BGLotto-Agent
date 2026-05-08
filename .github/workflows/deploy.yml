@@ -35,9 +35,6 @@ jobs:
     #     node-version: '20'
 
     - name: Build
-      env:
-        # Environment Specific Variables
-        VITE_APP_API_URL: ${{ env.DEPLOY_ENV == 'prod' && vars.PROD_API_URL || vars.STAGING_API_URL }}
       run: |
         npm install
         if ("${{ github.ref }}" -eq "refs/heads/main") {
