@@ -29,17 +29,20 @@ jobs:
             exit 1
         }
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+    # - name: Setup Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: '20'
 
     - name: Build
+      env:
+        # Environment Specific Variables
+        VITE_APP_API_URL: ${{ env.DEPLOY_ENV == 'prod' && vars.PROD_API_URL || vars.STAGING_API_URL }}
       run: |
         npm install
-        if ("${{ env.DEPLOY_ENV }}" -eq "prod") {
+        if ("${{ github.ref }}" -eq "refs/heads/main") {
             npm run build:production
-        } else {
+        } elseif ("${{ github.ref }}" -eq "refs/heads/staging") {
             npm run build:staging
         }
 
