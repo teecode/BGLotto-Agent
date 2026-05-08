@@ -37,7 +37,11 @@ jobs:
     - name: Build
       run: |
         yarn install
-        yarn build
+        if ("${{ env.DEPLOY_ENV }}" -eq "prod") {
+            yarn run build:production
+        } else {
+            yarn run build:staging
+        }
 
     - name: Ensure Target Directories Exist
       run: |
