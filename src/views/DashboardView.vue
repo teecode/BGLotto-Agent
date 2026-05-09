@@ -105,37 +105,62 @@
       </div>
 
       <!-- Results Section -->
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
-        <h4 class="text-xl font-bold text-navy-700 dark:text-white mb-6">Latest Results</h4>
-        <AppTable
-          :fields="dailyGameResults"
-          :header="resultTableHeader"
-          :loading="loading3"
-          :empty="error2"
-        >
-          <template #item-date="{ date }">
-            {{ format(new Date(date), 'MM/dd/yyyy') }}
-          </template>
-          <template #item-startDateTime="{ startDateTime }">
-            {{ format(new Date(startDateTime), 'hh:mm a') }}
-          </template>
-          <template #item-result="{ result }">
-            <div class="space-y-2 py-1">
-              <div class="flex flex-wrap gap-1">
-                <span v-for="i in 5" :key="`w-${i}`" class="size-6 rounded-full bg-brand-500 text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
-                  {{ result[`winningBall${i}`] }}
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700 overflow-hidden flex flex-col h-full">
+        <h4 class="text-xl font-bold text-navy-700 dark:text-white mb-6 shrink-0">Latest Results</h4>
+        
+        <div v-if="loading3" class="flex-1 flex items-center justify-center py-10">
+          <Loading />
+        </div>
+        <div v-else-if="error2 || !dailyGameResults.length" class="flex-1 flex items-center justify-center py-10 text-navy-400 font-medium">
+          No results found for today.
+        </div>
+        <div v-else class="space-y-4 overflow-y-auto custom-scrollbar flex-1 pr-2" style="max-height: 400px;">
+          <div v-for="(resultItem, idx) in dailyGameResults" :key="idx" class="p-4 sm:p-5 rounded-2xl bg-gray-50 dark:bg-navy-900/50 border border-gray-100 dark:border-navy-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 hover:bg-gray-100 dark:hover:bg-navy-900 transition-colors">
+            
+            <!-- Game Info -->
+            <div class="flex-1">
+              <p class="font-bold text-navy-700 dark:text-white text-base lg:text-lg">{{ resultItem.gameName }}</p>
+              <div class="flex items-center gap-2 mt-1.5 text-xs text-navy-400 font-medium">
+                <span v-if="resultItem.endDateTime" class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-3.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                  Ended: {{ format(new Date(resultItem.endDateTime), 'hh:mm a') }}
                 </span>
-                <span class="text-[8px] font-bold text-navy-300 ml-1 uppercase py-1">Win</span>
-              </div>
-              <div class="flex flex-wrap gap-1">
-                <span v-for="i in 5" :key="`m-${i}`" class="size-6 rounded-full bg-navy-100 dark:bg-navy-900 text-navy-700 dark:text-navy-300 text-[10px] font-bold flex items-center justify-center shadow-sm">
-                  {{ result[`machineBall${i}`] }}
+                <span v-else-if="resultItem.startDateTime" class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-3.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                  Date: {{ format(new Date(resultItem.startDateTime), 'dd MMM, yyyy') }}
                 </span>
-                <span class="text-[8px] font-bold text-navy-300 ml-1 uppercase py-1">Mac</span>
               </div>
             </div>
-          </template>
-        </AppTable>
+            
+            <!-- Balls -->
+            <div class="space-y-3 w-full sm:w-auto">
+              <!-- Winning Balls -->
+              <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+                <span class="text-[10px] sm:text-xs font-bold text-brand-500 uppercase tracking-widest bg-brand-50 dark:bg-brand-500/10 px-2 py-1 rounded-md">Win</span>
+                <div class="flex gap-2 sm:gap-2.5">
+                  <span v-for="i in 5" :key="`w-${i}`" class="size-8 sm:size-10 rounded-full bg-brand-500 text-white text-sm sm:text-base font-bold flex items-center justify-center shadow-md shadow-brand-500/20">
+                    {{ resultItem.result[`winningBall${i}`] }}
+                  </span>
+                </div>
+              </div>
+              
+              <!-- Machine Balls -->
+              <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+                <span class="text-[10px] sm:text-xs font-bold text-navy-400 uppercase tracking-widest bg-gray-100 dark:bg-navy-800 px-2 py-1 rounded-md">Mac</span>
+                <div class="flex gap-2 sm:gap-2.5">
+                  <span v-for="i in 5" :key="`m-${i}`" class="size-8 sm:size-10 rounded-full bg-white dark:bg-navy-800 text-navy-700 dark:text-navy-300 border border-gray-200 dark:border-navy-700 text-sm sm:text-base font-bold flex items-center justify-center shadow-sm">
+                    {{ resultItem.result[`machineBall${i}`] }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
       </div>
     </div>
 
@@ -318,11 +343,6 @@ const tableHeader = [
   { label: 'Balance', key: 'balance' }
 ]
 
-const resultTableHeader = [
-  { label: 'Game', key: 'gameName' },
-  { label: 'Time', key: 'startDateTime' },
-  { label: 'Results', key: 'result' }
-]
 
 const activityTableHeader = [
   { label: 'Date', key: 'dateCreated' },
