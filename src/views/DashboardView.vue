@@ -88,7 +88,7 @@
                  class="min-w-[160px] bg-gray-50 dark:bg-navy-900 p-4 rounded-2xl border border-transparent hover:border-brand-500/20 transition-all cursor-pointer group"
                  :class="[!game.isActive ? 'opacity-40 grayscale' : '']">
               <div class="relative mb-3">
-                <img :src="`data:image/png;base64,${game.gameBackgroundImageUrl}`" :alt="game.gameName" class="w-20 h-20 object-contain mx-auto group-hover:scale-110 transition-transform">
+                <img :src="game.gameImageUrl ? (game.gameImageUrl.startsWith('http') ? game.gameImageUrl : `https://maxilotto.ng/${game.gameImageUrl.replace(/^\//, '')}`) : ''" :alt="game.gameName" class="w-20 h-20 object-contain mx-auto group-hover:scale-110 transition-transform">
                 <div v-if="game.isActive" class="absolute -top-1 -right-1 size-3 bg-green-500 rounded-full border-2 border-white dark:border-navy-900 shadow-sm animate-pulse"></div>
               </div>
               <div class="text-center space-y-1">
