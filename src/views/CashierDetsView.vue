@@ -15,15 +15,22 @@
             :dataCount="cashierDets.length" :empty="error">
 
             <template #item-action="item">
-                <button @click="editCashier(item)"
-                    class="px-4 py-2 bg-brand-50 hover:bg-brand-100 dark:bg-navy-900 dark:hover:bg-navy-700 text-brand-500 font-bold rounded-xl text-xs transition-all active:scale-[0.95]">
-                    Edit Cashier
-                </button>
+                <div class="flex gap-2">
+                    <button v-if="isPrincipalAgent" @click="editCashier(item)"
+                        class="px-4 py-2 bg-brand-50 hover:bg-brand-100 dark:bg-navy-900 dark:hover:bg-navy-700 text-brand-500 font-bold rounded-xl text-xs transition-all active:scale-[0.95]">
+                        Edit Cashier
+                    </button>
+                    <button v-if="isPrincipalAgent || item.id === loggedInUserId"
+                        @click="openPasswordModal(item)"
+                        class="px-4 py-2 bg-orange-50 hover:bg-orange-100 dark:bg-navy-900 dark:hover:bg-navy-700 text-orange-500 font-bold rounded-xl text-xs transition-all active:scale-[0.95]">
+                        Change Password
+                    </button>
+                </div>
             </template>
         </AppTable>
     </div>
 
-    <!-- Modal -->
+    <!-- Edit Cashier Modal -->
     <Modal :show="showModal" @close="closeModal">
         <template v-slot:title>
             <div class="flex items-center justify-between">
@@ -60,7 +67,7 @@
                         <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Can Place Bet</span>
                         <input type="checkbox" v-model="editCashDets.canPlaceBet" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
                     </label>
-                    
+
                     <div class="pt-6 mt-6 border-t border-gray-100 dark:border-navy-700">
                         <label class="block text-sm font-medium text-navy-700 dark:text-navy-200 mb-2">Stake Limit (₦)</label>
                         <input type="number" class="w-full px-4 py-3 bg-white dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none font-bold"
@@ -83,11 +90,70 @@
             </div>
         </template>
     </Modal>
+
+    <!-- Change Password Modal -->
+    <Modal :show="showPasswordModal" @close="closePasswordModal">
+        <template v-slot:title>
+            <div class="flex items-center justify-between">
+                <h5 class="text-xl font-bold text-navy-700 dark:text-white">Change Password</h5>
+                <button @click="closePasswordModal" class="p-2 hover:bg-gray-100 dark:hover:bg-navy-700 rounded-full transition-colors text-navy-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </template>
+
+        <template v-slot:description>
+            <div class="mt-6 space-y-4">
+                <div class="p-4 bg-gray-50 dark:bg-navy-900 rounded-2xl mb-6 border border-gray-100 dark:border-navy-700">
+                    <p class="text-xs text-navy-400 uppercase tracking-widest font-bold">Cashier Name</p>
+                    <p class="text-lg font-bold text-navy-700 dark:text-white mt-1">{{ passwordCashier.firstname }} {{ passwordCashier.lastname }}</p>
+                </div>
+
+                <div class="space-y-4 px-1">
+                    <div>
+                        <label class="block text-sm font-medium text-navy-700 dark:text-navy-200 mb-2">New Password</label>
+                        <input
+                            type="password"
+                            v-model="newPassword"
+                            placeholder="Enter new password"
+                            class="w-full px-4 py-3 bg-white dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-navy-700 dark:text-navy-200 mb-2">Confirm Password</label>
+                        <input
+                            type="password"
+                            v-model="confirmPassword"
+                            placeholder="Confirm new password"
+                            class="w-full px-4 py-3 bg-white dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                        >
+                    </div>
+
+                    <p v-if="passwordError" class="text-sm font-medium text-red-500 pt-1">{{ passwordError }}</p>
+                </div>
+            </div>
+        </template>
+
+        <template v-slot:buttons>
+            <div class="mt-8 flex gap-3 w-full">
+                <button class="flex-1 py-3 text-sm font-bold text-navy-700 dark:text-white bg-gray-100 hover:bg-gray-200 dark:bg-navy-900 dark:hover:bg-navy-700 rounded-xl transition-all"
+                    @click="closePasswordModal">
+                    Cancel
+                </button>
+                <button @click="updateCashierPassword" :disabled="passwordLoading"
+                    class="flex-1 py-3 text-sm font-bold text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-60 rounded-xl transition-all shadow-lg shadow-brand-500/30">
+                    {{ passwordLoading ? 'Updating...' : 'Update Password' }}
+                </button>
+            </div>
+        </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useSnackbar } from "vue3-snackbar";
 import { useAuthStore } from '../stores/auth';
@@ -95,17 +161,18 @@ import { useRouter } from 'vue-router';
 import logOut from '../services/logout';
 import AppTable from '@/components/AppTable.vue';
 import Modal from '@/components/Modal.vue'
+
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
 const router = useRouter();
 
-// let user = reactive({}) as Record<string, any>;
-
-// const user:Ref<User | string >  = ref("");
-
 let cashierDets = reactive([]);
 
 const userId = ref(Number(authStore.user.shopId));
+
+// customerType 1002 = PrincipalAgent, 2 = SubAgent/MobileSubAgent
+const isPrincipalAgent = computed(() => authStore.user.customerType === 1002);
+const loggedInUserId = authStore.user.customerId;
 
 let cashierTableHeader = reactive([
     {
@@ -137,6 +204,14 @@ let pageSize = ref(10);
 let showModal = ref(false);
 let editCashDets = reactive({});
 let error = ref(false);
+
+// Password modal state
+let showPasswordModal = ref(false);
+let passwordCashier = reactive({});
+let newPassword = ref('');
+let confirmPassword = ref('');
+let passwordError = ref('');
+let passwordLoading = ref(false);
 
 const fetchCasheirs = async () => {
     try {
@@ -200,13 +275,58 @@ const updateCashier = async () => {
     }
 };
 
+const openPasswordModal = (item) => {
+    passwordCashier = item;
+    showPasswordModal.value = true;
+};
+
+const closePasswordModal = () => {
+    showPasswordModal.value = false;
+    passwordCashier = {};
+    newPassword.value = '';
+    confirmPassword.value = '';
+    passwordError.value = '';
+};
+
+const updateCashierPassword = async () => {
+    passwordError.value = '';
+
+    if (!newPassword.value) {
+        passwordError.value = 'New password is required.';
+        return;
+    }
+    if (newPassword.value.length < 6) {
+        passwordError.value = 'Password must be at least 6 characters.';
+        return;
+    }
+    if (newPassword.value !== confirmPassword.value) {
+        passwordError.value = 'Passwords do not match.';
+        return;
+    }
+
+    try {
+        passwordLoading.value = true;
+        const res = await axios.put('Retail/cashier-password', {
+            cashierId: passwordCashier.id,
+            newPassword: newPassword.value
+        });
+        if (res.status === 200) {
+            closePasswordModal();
+            snackbar.add({
+                type: 'success',
+                text: 'Password updated successfully.'
+            });
+        }
+    } catch (err) {
+        passwordError.value = err?.response?.data?.message || `Failed to update password: ${err.message}`;
+    } finally {
+        passwordLoading.value = false;
+    }
+};
+
 onMounted(() => {
     fetchCasheirs();
-   
 });
-
-
-
 </script>
 
 <style scoped></style>
