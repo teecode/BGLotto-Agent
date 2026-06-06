@@ -11,6 +11,7 @@
                             <th class="px-4 py-4 whitespace-nowrap text-center w-12">#</th>
                             <th class="px-4 py-4 min-w-[200px]">Bet Numbers</th>
                             <th class="px-4 py-4 whitespace-nowrap">Nap</th>
+                            <th class="px-4 py-4 whitespace-nowrap">Type</th>
                             <th class="px-4 py-4 whitespace-nowrap text-right">Lines</th>
                             <th class="px-4 py-4 whitespace-nowrap text-right">Stake/Line</th>
                             <th class="px-4 py-4 whitespace-nowrap text-right">Amount</th>
@@ -33,6 +34,10 @@
                                 <span class="bg-gray-100 dark:bg-navy-900 text-navy-500 dark:text-navy-300 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider">
                                     {{ item.betType?.name || 'N/A' }}
                                 </span>
+                            </td>
+                            <td class="px-4 py-4 font-bold">
+                                <span v-if="item.winningType === 2" class="bg-brand-50 text-brand-500 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold">Machine</span>
+                                <span v-else class="bg-gray-100 dark:bg-navy-900 text-navy-500 dark:text-navy-300 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold">Normal</span>
                             </td>
                             <td class="px-4 py-4 text-right font-medium">{{ item.lines }}</td>
                             <td class="px-4 py-4 text-right font-medium">₦ {{ convertNumber(item.stakePerLine) }}</td>
