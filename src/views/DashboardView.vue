@@ -324,12 +324,12 @@ const yesterday = ref(format(new Date(aDayAgo), 'yyyy-MM-dd'))
 
 const shopStatsList = computed(() => {
   return [
-    { label: 'Total Sales', value: shopStats.value?.totalSales || '0', subLabel: 'Overall shop performance' },
-    { label: 'Cancelled', value: shopStats.value?.totalCanceled || '0', subLabel: 'Cancelled tickets' },
-    { label: 'Net Sales', value: shopStats.value?.totalNetSales || '0', subLabel: 'Sales - Cancelled' },
-    { label: 'Claimed', value: shopStats.value?.totalWinnings || '0', subLabel: 'Total payouts' },
-    { label: 'Commission', value: shopStats.value?.totalCommission || '0', subLabel: 'Earnings this month' },
-    { label: 'Net Balance', value: shopStats.value?.totalNetBalance || '0', subLabel: 'Final balance' },
+    { label: 'Total Sales', value: shopStats.value?.totalSales || '0', subLabel: 'Today\'s total sales' },
+    { label: 'Cancelled', value: shopStats.value?.totalCanceled || '0', subLabel: 'Today\'s cancelled tickets' },
+    { label: 'Net Sales', value: shopStats.value?.totalNetSales || '0', subLabel: 'Today\'s net sales' },
+    { label: 'Claimed', value: shopStats.value?.totalWinnings || '0', subLabel: 'Today\'s payouts' },
+    { label: 'Commission', value: shopStats.value?.totalCommission || '0', subLabel: 'Today\'s earnings' },
+    { label: 'Net Balance', value: shopStats.value?.totalNetBalance || '0', subLabel: 'Today\'s net balance' },
   ]
 })
 
