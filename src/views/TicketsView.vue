@@ -100,32 +100,32 @@
 
       <template v-slot:description>
         <div class="mt-6 space-y-6">
-          <div v-if="ticketDetails" class="relative overflow-hidden grid grid-cols-2 gap-6 bg-gradient-to-br from-brand-50 to-white dark:from-navy-900 dark:to-navy-800 p-8 rounded-3xl border border-brand-100/50 dark:border-navy-700 shadow-sm">
-            <div class="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-32 text-brand-500">
+          <div v-if="ticketDetails" class="relative overflow-hidden flex flex-col md:grid md:grid-cols-2 gap-6 bg-gradient-to-r from-brand-900 to-brand-700 dark:from-navy-900 dark:to-navy-800 p-6 md:p-8 rounded-3xl border border-brand-800 shadow-xl">
+            <div class="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-32 text-white">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
               </svg>
             </div>
-            <div class="relative z-10">
-              <p class="text-[10px] font-bold text-navy-300 uppercase tracking-widest">Ticket ID</p>
-              <p class="text-lg font-bold text-navy-700 dark:text-white mt-1">#{{ ticketDetails.id }}</p>
+            <div class="relative z-10 flex flex-col">
+              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Ticket ID</p>
+              <p class="text-lg font-bold text-white mt-1">#{{ ticketDetails.id }}</p>
             </div>
-            <div class="text-right relative z-10">
-              <p class="text-[10px] font-bold text-navy-300 uppercase tracking-widest">Played By</p>
-              <div class="inline-flex items-center gap-2 mt-1 px-3 py-1 bg-white/80 dark:bg-navy-900/80 backdrop-blur-sm rounded-full border border-gray-100 dark:border-navy-700 shadow-sm">
-                 <div class="size-5 rounded-full bg-brand-100 dark:bg-navy-800 flex items-center justify-center">
-                    <svg class="size-3 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            <div class="md:text-right relative z-10 flex flex-col md:items-end">
+              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Played By</p>
+              <div class="inline-flex items-center gap-2 mt-1 px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 shadow-sm w-fit">
+                 <div class="size-5 rounded-full bg-brand-500 flex items-center justify-center">
+                    <svg class="size-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                  </div>
-                 <p class="text-sm font-bold text-navy-700 dark:text-white">{{ ticketDetails.playedBy }}</p>
+                 <p class="text-sm font-bold text-white">{{ ticketDetails.playedBy }}</p>
               </div>
             </div>
-            <div class="mt-2 relative z-10">
-              <p class="text-[10px] font-bold text-navy-300 uppercase tracking-widest">Total Stake</p>
-              <p class="text-2xl font-black text-navy-700 dark:text-white mt-1">₦ {{ ticketDetails.amount }}</p>
+            <div class="mt-2 md:mt-4 relative z-10">
+              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Total Stake</p>
+              <p class="text-3xl font-black text-white mt-1">₦ {{ ticketDetails.amount }}</p>
             </div>
-            <div class="mt-2 text-right relative z-10">
-              <p class="text-[10px] font-bold text-navy-300 uppercase tracking-widest">Possible Win</p>
-              <p class="text-2xl font-black text-brand-500 mt-1">₦ {{ ticketDetails.wonAmount }}</p>
+            <div class="mt-2 md:mt-4 md:text-right relative z-10">
+              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Possible Win</p>
+              <p class="text-3xl font-black text-green-400 mt-1">₦ {{ ticketDetails.wonAmount }}</p>
             </div>
           </div>
           

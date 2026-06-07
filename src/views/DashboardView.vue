@@ -369,7 +369,7 @@ const fetchUserStats = async () => {
 const fetchStats = async () => {
   try {
     const res = await axios.get(
-      `report/shop/dailygame?FromDate=${yesterday.value}&ToDate=${today.value}&ShopId=${userId.value}`
+      `report/shop/dailygame?FromDate=${today.value}&ToDate=${today.value}&ShopId=${userId.value}`
     )
     shopStats.value = res.data
   } catch (err) {
