@@ -195,7 +195,7 @@ let cashierTableHeader = reactive([
     },
     {
         label: "LastName",
-        key: "firstname"
+        key: "lastname"
     },
     {
         label: "ShopName",
