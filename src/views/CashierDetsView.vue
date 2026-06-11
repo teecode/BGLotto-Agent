@@ -34,9 +34,12 @@
     <Modal :show="showModal" @close="closeModal">
         <template v-slot:title>
             <div class="flex items-center justify-between">
-                <h5 class="text-xl font-bold text-navy-700 dark:text-white">Update Cashier</h5>
+                <div>
+                    <p class="text-xs font-semibold text-brand-500 uppercase tracking-widest mb-0.5">Edit Cashier</p>
+                    <h5 class="text-xl font-bold text-navy-700 dark:text-white leading-tight">{{ editCashDets.firstname }} {{ editCashDets.lastname }}</h5>
+                </div>
                 <button @click="closeModal" class="p-2 hover:bg-gray-100 dark:hover:bg-navy-700 rounded-full transition-colors text-navy-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -44,41 +47,52 @@
         </template>
 
         <template v-slot:description>
-            <div class="mt-6 space-y-4">
-                <div class="p-4 bg-gray-50 dark:bg-navy-900 rounded-2xl mb-6 border border-gray-100 dark:border-navy-700">
-                    <p class="text-xs text-navy-400 uppercase tracking-widest font-bold">Cashier Name</p>
-                    <p class="text-lg font-bold text-navy-700 dark:text-white mt-1">{{ editCashDets.firstname }} {{ editCashDets.lastname }}</p>
+            <div class="mt-5 space-y-5">
+                <!-- Name fields -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-400 uppercase tracking-widest mb-1.5">First Name</label>
+                        <input type="text" v-model="editCashDets.firstname" placeholder="First name"
+                            class="w-full px-3 py-2.5 bg-gray-50 dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-sm text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-navy-400 uppercase tracking-widest mb-1.5">Last Name</label>
+                        <input type="text" v-model="editCashDets.lastname" placeholder="Last name"
+                            class="w-full px-3 py-2.5 bg-gray-50 dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-sm text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none">
+                    </div>
                 </div>
 
-                <div class="space-y-4 px-1">
-                    <label class="flex items-center justify-between cursor-pointer group">
+                <!-- Permissions -->
+                <div class="bg-gray-50 dark:bg-navy-900 rounded-2xl border border-gray-100 dark:border-navy-700 divide-y divide-gray-100 dark:divide-navy-700 overflow-hidden">
+                    <label class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-navy-800 transition-colors">
                         <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Active Status</span>
-                        <input type="checkbox" v-model="editCashDets.isActive" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                        <input type="checkbox" v-model="editCashDets.isActive" class="w-4.5 h-4.5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
                     </label>
-                    <label class="flex items-center justify-between cursor-pointer group">
+                    <label class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-navy-800 transition-colors">
                         <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Can Delete Ticket</span>
-                        <input type="checkbox" v-model="editCashDets.canDelete" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                        <input type="checkbox" v-model="editCashDets.canDelete" class="w-4.5 h-4.5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
                     </label>
-                    <label class="flex items-center justify-between cursor-pointer group">
+                    <label class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-navy-800 transition-colors">
                         <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Can Cashout</span>
-                        <input type="checkbox" v-model="editCashDets.canCashout" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                        <input type="checkbox" v-model="editCashDets.canCashout" class="w-4.5 h-4.5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
                     </label>
-                    <label class="flex items-center justify-between cursor-pointer group">
+                    <label class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-navy-800 transition-colors">
                         <span class="text-sm font-medium text-navy-700 dark:text-navy-200">Can Place Bet</span>
-                        <input type="checkbox" v-model="editCashDets.canPlaceBet" class="w-5 h-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
+                        <input type="checkbox" v-model="editCashDets.canPlaceBet" class="w-4.5 h-4.5 rounded border-gray-300 text-brand-500 focus:ring-brand-500 cursor-pointer">
                     </label>
+                </div>
 
-                    <div class="pt-6 mt-6 border-t border-gray-100 dark:border-navy-700">
-                        <label class="block text-sm font-medium text-navy-700 dark:text-navy-200 mb-2">Stake Limit (₦)</label>
-                        <input type="number" class="w-full px-4 py-3 bg-white dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none font-bold"
-                            v-model="editCashDets.maxStakeLimit">
-                    </div>
+                <!-- Stake limit -->
+                <div>
+                    <label class="block text-xs font-semibold text-navy-400 uppercase tracking-widest mb-1.5">Stake Limit (₦)</label>
+                    <input type="number" v-model="editCashDets.maxStakeLimit"
+                        class="w-full px-4 py-3 bg-gray-50 dark:bg-navy-900 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none font-bold text-lg">
                 </div>
             </div>
         </template>
 
         <template v-slot:buttons>
-            <div class="mt-8 flex gap-3 w-full">
+            <div class="mt-6 flex gap-3 w-full">
                 <button class="flex-1 py-3 text-sm font-bold text-navy-700 dark:text-white bg-gray-100 hover:bg-gray-200 dark:bg-navy-900 dark:hover:bg-navy-700 rounded-xl transition-all"
                     @click="closeModal">
                     Cancel
@@ -252,8 +266,10 @@ const closeModal = () => {
 
 const updateCashier = async () => {
     try {
-        const res = await axios.put(`Retail/agent-cashier-update`, {
+        const res = await axios.post(`Retail/agent-cashier-update`, {
             id: editCashDets.id,
+            firstname: editCashDets.firstname,
+            lastname: editCashDets.lastname,
             isActive: editCashDets.isActive,
             canDeleteTicket: editCashDets.canDelete,
             canCashout: editCashDets.canCashout,
