@@ -268,7 +268,7 @@ const checkTicketStatus = async () => {
     } catch (err) {
         snackbar.add({
             type: 'error',
-            text: `Ticket verification failed: ${err?.response?.data?.message || err.message}`
+            text: err?.response?.data?.message || err.message || 'Ticket verification failed'
         })
     } finally {
         checking.value = false;
@@ -297,7 +297,7 @@ const cashoutTicket = async () => {
     } catch (err) {
         snackbar.add({
             type: 'error',
-            text: `Cashout failed: ${err?.response?.data?.message || err.message}`
+            text: err?.response?.data?.message || err.message || 'Cashout failed'
         })
     } finally {
         cashoutProcessing.value = false;
