@@ -110,10 +110,10 @@
     <!-- Cashout Modal -->
     <Modal :show="showModal" @close="closeModal">
       <template v-slot:title>
-        <div class="flex items-center justify-between">
-          <h5 class="text-xl font-bold text-navy-700 dark:text-white">Confirm Cashout</h5>
-          <button @click="closeModal" class="p-2 hover:bg-gray-100 dark:hover:bg-navy-700 rounded-full transition-colors text-navy-400">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <div class="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-navy-700 w-full">
+          <h5 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-navy-700 to-navy-500 dark:from-white dark:to-gray-300">Confirm Cashout</h5>
+          <button @click="closeModal" class="p-2 bg-gray-50 hover:bg-gray-200 dark:bg-navy-900 dark:hover:bg-navy-700 rounded-full transition-all text-navy-500 dark:text-navy-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -121,40 +121,40 @@
       </template>
 
       <template v-slot:description>
-        <div class="mt-6 space-y-6">
-          <div class="bg-green-50 dark:bg-green-500/10 p-6 rounded-2xl border border-green-100 dark:border-green-500/20">
-             <div class="flex items-center gap-4 text-green-600 dark:text-green-400 mb-4">
-               <div class="size-10 rounded-xl bg-white dark:bg-navy-800 flex items-center justify-center shadow-sm">
-                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <div class="mt-4 space-y-8 w-full">
+          <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-500/10 dark:to-emerald-500/5 p-6 rounded-3xl border border-green-100 dark:border-green-500/20 shadow-inner">
+             <div class="flex items-center gap-4 text-green-600 dark:text-green-400 mb-6">
+               <div class="size-12 rounded-2xl bg-white dark:bg-navy-800 flex items-center justify-center shadow-md">
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6 text-green-500">
                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                  </svg>
                </div>
                <div>
-                 <p class="text-[10px] uppercase font-bold text-green-500/70">Validation Success</p>
-                 <p class="text-sm font-bold">Ticket is a winner!</p>
+                 <p class="text-xs uppercase tracking-widest font-black text-green-500/80">Validation Success</p>
+                 <p class="text-lg font-bold">Ticket is a winner!</p>
                </div>
              </div>
-             <div class="grid grid-cols-2 gap-y-4 pt-4 border-t border-green-100 dark:border-green-500/20">
+             <div class="grid grid-cols-2 gap-y-4 pt-5 border-t border-green-200 dark:border-green-500/20">
                 <div class="space-y-1">
-                   <p class="text-[10px] uppercase font-bold text-green-500/60">Ticket ID</p>
-                   <p class="text-sm font-bold text-navy-700 dark:text-white">#{{ form.ticketId }}</p>
+                   <p class="text-[10px] uppercase tracking-widest font-bold text-green-600/60 dark:text-green-400/60">Ticket ID</p>
+                   <p class="text-base font-bold text-navy-700 dark:text-white">#{{ form.ticketId }}</p>
                 </div>
                 <div class="space-y-1 text-right">
-                   <p class="text-[10px] uppercase font-bold text-green-500/60">Winnings</p>
-                   <p class="text-lg font-bold text-green-600">₦ {{ winningAmount }}</p>
+                   <p class="text-[10px] uppercase tracking-widest font-bold text-green-600/60 dark:text-green-400/60">Winnings</p>
+                   <p class="text-2xl font-black text-green-600 dark:text-green-400 drop-shadow-sm">₦ {{ winningAmount.toLocaleString() }}</p>
                 </div>
              </div>
           </div>
 
-          <div class="space-y-2">
-            <label class="text-sm font-bold text-navy-700 dark:text-navy-300 ml-1">Enter Payout PIN</label>
+          <div class="space-y-3">
+            <label class="text-xs font-bold text-navy-500 dark:text-navy-300 ml-2 uppercase tracking-widest">Enter Payout PIN</label>
             <input 
               v-model="form.payoutPin"
               type="password" 
               placeholder="••••"
-              class="w-full px-4 py-4 bg-gray-50 dark:bg-navy-900 border-2 border-transparent focus:border-brand-500/20 rounded-2xl outline-none text-navy-700 dark:text-white font-bold text-center text-2xl tracking-[1em] transition-all"
+              class="w-full px-6 py-5 bg-gray-50 dark:bg-navy-900 border-2 border-gray-100 dark:border-navy-900 focus:border-brand-500/50 rounded-2xl outline-none text-navy-700 dark:text-white font-black text-center text-3xl tracking-[0.5em] transition-all shadow-inner placeholder:text-gray-300 dark:placeholder:text-navy-700"
             />
-            <p class="text-[10px] text-navy-300 text-center mt-2 italic">Please ask the customer to provide their payout PIN from the SMS/Slip.</p>
+            <p class="text-xs text-navy-400 text-center font-medium mt-3">Please ask the customer to provide their payout PIN from the SMS/Slip.</p>
           </div>
         </div>
       </template>
@@ -163,17 +163,17 @@
         <div class="flex gap-4 mt-8 w-full">
           <button
             @click="closeModal"
-            class="flex-1 py-4 px-6 rounded-2xl font-bold text-navy-500 hover:bg-gray-100 dark:hover:bg-navy-700 transition-colors"
+            class="flex-1 py-4 px-6 rounded-2xl font-bold text-navy-600 dark:text-navy-300 bg-gray-50 hover:bg-gray-100 dark:bg-navy-900 dark:hover:bg-navy-700 transition-all active:scale-[0.98]"
           >
             Cancel
           </button>
           <button
             @click="cashoutTicket"
             :disabled="!form.payoutPin || cashoutProcessing"
-            class="flex-1 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-brand-500/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            class="flex-[2] bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 disabled:from-brand-500/50 disabled:to-brand-600/50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-brand-500/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
           >
-            <Spinner v-if="cashoutProcessing" class="size-4" />
-            {{ cashoutProcessing ? 'Processing...' : 'Complete Payout' }}
+            <Spinner v-if="cashoutProcessing" class="size-5" />
+            <span class="text-lg">{{ cashoutProcessing ? 'Processing...' : 'Complete Payout' }}</span>
           </button>
         </div>
       </template>
