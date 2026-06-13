@@ -74,6 +74,7 @@
       <div class="flex flex-wrap gap-3">
         <div v-for="(term, idx) in inoperativeTerminals" :key="idx" class="bg-white dark:bg-navy-800 border border-amber-200 dark:border-amber-700/50 rounded-xl px-4 py-3 shadow-sm min-w-[150px]">
           <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Terminal {{ term.terminalSerial }}</p>
+          <p class="text-xs text-navy-600 dark:text-navy-300 font-medium mb-1 truncate">{{ term.cashierName }} (@{{ term.cashierUsername }})</p>
           <p class="text-sm font-bold text-navy-700 dark:text-white">Sales: ₦ {{ term.totalSales }}</p>
           <p class="text-[10px] font-medium text-navy-400 mt-1">Assigned: {{ term.assignedDate ? format(new Date(term.assignedDate), 'dd MMM, yyyy') : 'N/A' }}</p>
         </div>
