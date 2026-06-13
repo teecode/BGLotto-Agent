@@ -60,6 +60,26 @@
       </div>
     </div>
 
+    <!-- Inoperative Terminals Warning -->
+    <div v-if="inoperativeTerminals.length > 0" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-500 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
+      <div class="flex items-center gap-3 text-amber-800 dark:text-amber-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <h4 class="text-lg font-bold">Terminal Repossession Warning</h4>
+      </div>
+      <p class="text-amber-700 dark:text-amber-400 font-medium">
+        We will be repossessing the following terminals if they remain in-operative (sales less than ₦5,000 and assigned for more than 7 days).
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <div v-for="(term, idx) in inoperativeTerminals" :key="idx" class="bg-white dark:bg-navy-800 border border-amber-200 dark:border-amber-700/50 rounded-xl px-4 py-3 shadow-sm min-w-[150px]">
+          <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Terminal {{ term.terminalSerial }}</p>
+          <p class="text-sm font-bold text-navy-700 dark:text-white">Sales: ₦ {{ term.totalSales }}</p>
+          <p class="text-[10px] font-medium text-navy-400 mt-1">Assigned: {{ term.assignedDate ? format(new Date(term.assignedDate), 'dd MMM, yyyy') : 'N/A' }}</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Games & Results Section -->
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
       <!-- Games Section -->
@@ -315,6 +335,7 @@ const dailyGames = ref([])
 const dailySales = ref({ totalSales: 0 })
 const dailyGameResults = ref([])
 const shopActivities = ref([])
+const inoperativeTerminals = ref([])
 const loadingActivities = ref(false)
 
 const today = ref(format(new Date(), 'yyyy-MM-dd'))
@@ -458,6 +479,17 @@ const fetchActivities = async () => {
   }
 }
 
+const fetchInoperativeTerminals = async () => {
+  try {
+    const res = await axios.get(`report/terminals/inoperative-warning?shopId=${userId.value}&days=7&threshold=5000`)
+    if(res.data) {
+      inoperativeTerminals.value = res.data
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 const isFormValid = computed(() => amount.value > 0)
 
 const walletBalance = computed(() => {
@@ -485,6 +517,7 @@ onMounted(() => {
   fetchDailySales()
   fetchGamesResult()
   fetchActivities()
+  fetchInoperativeTerminals()
 })
 
 watchEffect(() => {
