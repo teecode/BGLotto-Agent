@@ -42,6 +42,27 @@
         :loading="loading2"
         :empty="error"
       >
+        <template #item-dateFromLong="{ dateFromLong }">
+          <span class="font-bold text-navy-700 dark:text-navy-200">
+            {{ format(new Date(dateFromLong), 'dd MMM, yyyy') }}
+          </span>
+        </template>
+        <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
+        <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
+        <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
+        <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
+        <template #item-paid="{ paid }">₦ {{ convertNumber(paid) }}</template>
+        <template #item-net_Balance="{ net_Balance }">
+          <span :class="net_Balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
+            ₦ {{ convertNumber(net_Balance) }}
+          </span>
+        </template>
+        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
+        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
+        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
+        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
+        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
+        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
       </AppTable>
     </div>
   </div>
@@ -58,6 +79,7 @@ import 'vue-datepicker-next/index.css'
 import Spinner from '@/components/Spinner.vue'
 import AppTable from '@/components/AppTable.vue'
 import { format } from 'date-fns'
+import { convertNumber } from '../services/convertNumber'
 
 const snackbar = useSnackbar()
 const authStore = useAuthStore()
@@ -109,6 +131,30 @@ let cashierTableHeader = reactive([
   {
     label: 'Claimed',
     key: 'paid'
+  },
+  {
+    label: '5/90 Sales',
+    key: 'lotto590Sales'
+  },
+  {
+    label: '5/90 Winnings',
+    key: 'lotto590Winnings'
+  },
+  {
+    label: '5/90 Comm.',
+    key: 'lotto590Commission'
+  },
+  {
+    label: 'Accum. Sales',
+    key: 'accumulatorSales'
+  },
+  {
+    label: 'Accum. Winnings',
+    key: 'accumulatorWinnings'
+  },
+  {
+    label: 'Accum. Comm.',
+    key: 'accumulatorCommission'
   },
   {
     label: 'Balance',

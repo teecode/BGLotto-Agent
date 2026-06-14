@@ -58,6 +58,36 @@
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest relative z-10">Net Balance</p>
           <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate relative z-10">₦ {{ convertNumber(shopStats.totalNetBalance) }}</p>
         </div>
+        <!-- 5/90 Sales -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Sales</p>
+          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Sales) }}</p>
+        </div>
+        <!-- 5/90 Winnings -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Claimed</p>
+          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Winnings) }}</p>
+        </div>
+        <!-- 5/90 Comm -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Commission</p>
+          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Commission) }}</p>
+        </div>
+        <!-- Accum. Sales -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Sales</p>
+          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorSales) }}</p>
+        </div>
+        <!-- Accum. Winnings -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Claimed</p>
+          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorWinnings) }}</p>
+        </div>
+        <!-- Accum. Comm -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Commission</p>
+          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorCommission) }}</p>
+        </div>
     </div>
 
     <!-- Content Card (Table) -->
@@ -69,6 +99,22 @@
         :dataCount="shopTableStats.length"
         :empty="error"
       >
+        <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
+        <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
+        <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
+        <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
+        <template #item-commision="{ commision }">₦ {{ convertNumber(commision) }}</template>
+        <template #item-net_Balance="{ net_Balance }">
+          <span :class="net_Balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
+            ₦ {{ convertNumber(net_Balance) }}
+          </span>
+        </template>
+        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
+        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
+        <template #item-lotto590Commision="{ lotto590Commision }">₦ {{ convertNumber(lotto590Commision) }}</template>
+        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
+        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
+        <template #item-accumulatorCommision="{ accumulatorCommision }">₦ {{ convertNumber(accumulatorCommision) }}</template>
       </AppTable>
     </div>
   </div>
@@ -127,6 +173,30 @@ let tableHeader = reactive([
   {
     label: 'Commission',
     key: 'commision'
+  },
+  {
+    label: '5/90 Sales',
+    key: 'lotto590Sales'
+  },
+  {
+    label: '5/90 Winnings',
+    key: 'lotto590Winnings'
+  },
+  {
+    label: '5/90 Comm.',
+    key: 'lotto590Commision'
+  },
+  {
+    label: 'Accum. Sales',
+    key: 'accumulatorSales'
+  },
+  {
+    label: 'Accum. Winnings',
+    key: 'accumulatorWinnings'
+  },
+  {
+    label: 'Accum. Comm.',
+    key: 'accumulatorCommision'
   },
   {
     label: 'Balance',

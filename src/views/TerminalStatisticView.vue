@@ -16,6 +16,21 @@
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
         <AppTable :header="cashierTableHeader" :fields="terminals" :loading="loading2" :empty="error">
+            <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
+            <template #item-paid="{ paid }">₦ {{ convertNumber(paid) }}</template>
+            <template #item-commision="{ commision }">₦ {{ convertNumber(commision) }}</template>
+            <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
+            <template #item-net_Balance="{ net_Balance }">
+                <span :class="net_Balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
+                    ₦ {{ convertNumber(net_Balance) }}
+                </span>
+            </template>
+            <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
+            <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
+            <template #item-lotto590Commision="{ lotto590Commision }">₦ {{ convertNumber(lotto590Commision) }}</template>
+            <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
+            <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
+            <template #item-accumulatorCommision="{ accumulatorCommision }">₦ {{ convertNumber(accumulatorCommision) }}</template>
         </AppTable>
     </div>
   </div>
@@ -32,6 +47,7 @@ import 'vue-datepicker-next/index.css';
 import Spinner from '@/components/Spinner.vue';
 import AppTable from '@/components/AppTable.vue';
 import { format } from 'date-fns';
+import { convertNumber } from '../services/convertNumber';
 
 
 const snackbar = useSnackbar();
@@ -80,6 +96,30 @@ let cashierTableHeader = reactive([
     {
         label: "Cancelled",
         key: "cancelled"
+    },
+    {
+        label: "5/90 Sales",
+        key: "lotto590Sales"
+    },
+    {
+        label: "5/90 Winnings",
+        key: "lotto590Winnings"
+    },
+    {
+        label: "5/90 Comm.",
+        key: "lotto590Commision"
+    },
+    {
+        label: "Accum. Sales",
+        key: "accumulatorSales"
+    },
+    {
+        label: "Accum. Winnings",
+        key: "accumulatorWinnings"
+    },
+    {
+        label: "Accum. Comm.",
+        key: "accumulatorCommision"
     },
     {
         label: "Balance",

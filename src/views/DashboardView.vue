@@ -210,6 +210,14 @@
         <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
         <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
         <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
+        
+        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
+        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
+        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
+        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
+        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
+        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
+
         <template #item-balance="{ balance }">
           <span :class="balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
             ₦ {{ convertNumber(balance) }}
@@ -357,6 +365,12 @@ const shopStatsList = computed(() => {
     { label: 'Claimed', value: convertNumber(shopStats.value?.totalClaimed) || '0', subLabel: 'Today\'s payouts' },
     { label: 'Commission', value: convertNumber(shopStats.value?.totalCommission) || '0', subLabel: 'Today\'s earnings' },
     { label: 'Net Balance', value: convertNumber(shopStats.value?.totalNetBalance) || '0', subLabel: 'Today\'s net balance' },
+    { label: '5/90 Sales', value: convertNumber(shopStats.value?.totalLotto590Sales) || '0', subLabel: '5/90 total sales' },
+    { label: '5/90 Winnings', value: convertNumber(shopStats.value?.totalLotto590Winnings) || '0', subLabel: '5/90 total winnings' },
+    { label: '5/90 Comm.', value: convertNumber(shopStats.value?.totalLotto590Commission) || '0', subLabel: '5/90 total commission' },
+    { label: 'Accum. Sales', value: convertNumber(shopStats.value?.totalAccumulatorSales) || '0', subLabel: 'Accumulator total sales' },
+    { label: 'Accum. Winnings', value: convertNumber(shopStats.value?.totalAccumulatorWinnings) || '0', subLabel: 'Accumulator total winnings' },
+    { label: 'Accum. Comm.', value: convertNumber(shopStats.value?.totalAccumulatorCommission) || '0', subLabel: 'Accumulator total commission' }
   ]
 })
 
@@ -367,6 +381,12 @@ const tableHeader = [
   { label: 'Net Sales', key: 'netSales' },
   { label: 'Commission', key: 'commission' },
   { label: 'Claimed', key: 'claimed' },
+  { label: '5/90 Sales', key: 'lotto590Sales' },
+  { label: '5/90 Winnings', key: 'lotto590Winnings' },
+  { label: '5/90 Comm.', key: 'lotto590Commission' },
+  { label: 'Accum. Sales', key: 'accumulatorSales' },
+  { label: 'Accum. Winnings', key: 'accumulatorWinnings' },
+  { label: 'Accum. Comm.', key: 'accumulatorCommission' },
   { label: 'Balance', key: 'balance' }
 ]
 
