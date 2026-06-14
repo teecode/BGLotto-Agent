@@ -27,10 +27,10 @@
             </template>
             <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
             <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
-            <template #item-lotto590Commision="{ lotto590Commision }">₦ {{ convertNumber(lotto590Commision) }}</template>
+            <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
             <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
             <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
-            <template #item-accumulatorCommision="{ accumulatorCommision }">₦ {{ convertNumber(accumulatorCommision) }}</template>
+            <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
         </AppTable>
     </div>
   </div>
@@ -107,7 +107,7 @@ let cashierTableHeader = reactive([
     },
     {
         label: "5/90 Comm.",
-        key: "lotto590Commision"
+        key: "lotto590Commission"
     },
     {
         label: "Accum. Sales",
@@ -119,7 +119,7 @@ let cashierTableHeader = reactive([
     },
     {
         label: "Accum. Comm.",
-        key: "accumulatorCommision"
+        key: "accumulatorCommission"
     },
     {
         label: "Balance",
