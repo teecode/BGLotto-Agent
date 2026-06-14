@@ -45,7 +45,7 @@
         <!-- Claimed -->
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Cashout</p>
-          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalWinnings) }}</p>
+          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalClaimed) }}</p>
         </div>
         <!-- Commissions -->
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
@@ -125,8 +125,8 @@ let tableHeader = reactive([
     key: 'netSales'
   },
   {
-    label: 'Winnings',
-    key: 'winnings'
+    label: 'Claimed',
+    key: 'claimed'
   },
   {
     label: 'Commission',

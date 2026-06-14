@@ -1,7 +1,7 @@
 <template>
     <main v-if="show"
         class="backdrop overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none flex justify-center items-center p-4">
-        <div class="flex flex-col space-y-6 p-8 rounded-[2rem] border border-gray-100 dark:border-navy-700 bg-white dark:bg-navy-800 shadow-2xl mx-auto w-full max-w-lg transform transition-all">
+        <div :class="['flex flex-col space-y-6 p-8 rounded-[2rem] border border-gray-100 dark:border-navy-700 bg-white dark:bg-navy-800 shadow-2xl mx-auto w-full transform transition-all', maxWidth]">
             <slot name="icon"></slot>
             <div class="flex flex-col w-full">
                 <slot name="title"></slot>
@@ -18,7 +18,11 @@
 
 <script setup>
 defineProps({
-    show: Boolean
+    show: Boolean,
+    maxWidth: {
+        type: String,
+        default: 'max-w-lg'
+    }
 })
 
 </script>

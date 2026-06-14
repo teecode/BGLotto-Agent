@@ -68,11 +68,7 @@
           <span class="font-bold">₦ {{ amount }}</span>
         </template>
 
-        <template #item-wonAmount="{ wonAmount }">
-          <span :class="wonAmount > 0 ? 'text-green-500 font-bold' : 'text-navy-300'">
-            ₦ {{ wonAmount }}
-          </span>
-        </template>
+
 
         <template #item-view="item">
           <button 
@@ -86,7 +82,7 @@
     </div>
 
     <!-- Ticket Modal -->
-    <Modal :show="showModal" @close="closeModal">
+    <Modal :show="showModal" @close="closeModal" maxWidth="max-w-4xl">
       <template v-slot:title>
         <div class="flex items-center justify-between">
           <h5 class="text-xl font-bold text-navy-700 dark:text-white">Ticket Details</h5>
@@ -203,10 +199,7 @@ let ticketsTableHeader = reactive([
         label: "Amount",
         key: "amount"
     },
-    {
-        label: "Won Amount",
-        key: "wonAmount"
-    },
+
     {
         label: "View Ticket",
         key: "view"

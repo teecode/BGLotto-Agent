@@ -29,17 +29,11 @@
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="grid grid-cols-1 gap-3 text-sm">
                         <div class="bg-gray-50 dark:bg-navy-900 rounded-xl p-2.5 flex flex-col justify-center">
                             <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Amount</p>
                             <p class="font-bold text-navy-700 dark:text-white mt-0.5">₦ {{ convertNumber(item.amount) }}</p>
                             <p class="text-[10px] text-navy-400 mt-0.5">{{ item.lines }} lines × ₦{{ convertNumber(item.stakePerLine) }}</p>
-                        </div>
-                        <div class="bg-brand-50/50 dark:bg-navy-900 rounded-xl p-2.5 flex flex-col justify-center">
-                            <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Won Amount</p>
-                            <p class="font-bold text-lg mt-0.5" :class="item.wonAmount > 0 ? 'text-green-500' : 'text-navy-300'">
-                                ₦ {{ convertNumber(item.wonAmount) }}
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -66,7 +60,6 @@
                             <th class="px-4 py-4 whitespace-nowrap text-right">Lines</th>
                             <th class="px-4 py-4 whitespace-nowrap text-right">Stake/Line</th>
                             <th class="px-4 py-4 whitespace-nowrap text-right">Amount</th>
-                            <th class="px-4 py-4 whitespace-nowrap text-right">Won Amount</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100/80 dark:divide-navy-700">
@@ -93,11 +86,6 @@
                             <td class="px-4 py-4 text-right font-medium">{{ item.lines }}</td>
                             <td class="px-4 py-4 text-right font-medium">₦ {{ convertNumber(item.stakePerLine) }}</td>
                             <td class="px-4 py-4 text-right font-bold text-navy-700 dark:text-white">₦ {{ convertNumber(item.amount) }}</td>
-                            <td class="px-4 py-4 text-right font-bold">
-                                <span :class="item.wonAmount > 0 ? 'text-green-500' : 'text-navy-300'">
-                                    ₦ {{ convertNumber(item.wonAmount) }}
-                                </span>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
