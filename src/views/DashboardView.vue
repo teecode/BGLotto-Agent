@@ -73,9 +73,9 @@
       </p>
       <div class="flex flex-wrap gap-3">
         <div v-for="(term, idx) in inoperativeTerminals" :key="idx" class="bg-white dark:bg-navy-800 border border-amber-200 dark:border-amber-700/50 rounded-xl px-4 py-3 shadow-sm min-w-[150px]">
-          <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Terminal {{ term.terminalSerial }}</p>
+          <p class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">Terminal {{ term.terminalSerial }}</p>
           <p class="text-xs text-navy-600 dark:text-navy-300 font-medium mb-1 truncate">{{ term.cashierName }} (@{{ term.cashierUsername }})</p>
-          <p class="text-sm font-bold text-navy-700 dark:text-white">Sales: ₦ {{ term.totalSales }}</p>
+          <p class="text-sm font-bold text-navy-700 dark:text-white">Sales: ₦ {{ convertNumber(term.totalSales) }}</p>
           <p class="text-[10px] font-medium text-navy-400 mt-1">Assigned: {{ term.assignedDate ? format(new Date(term.assignedDate), 'dd MMM, yyyy') : 'N/A' }}</p>
         </div>
       </div>
@@ -88,7 +88,7 @@
         <div class="flex items-center justify-between mb-8">
           <div>
             <h4 class="text-xl font-bold text-navy-700 dark:text-white">Daily Live Sales</h4>
-            <p class="text-3xl font-bold text-brand-500 mt-1">₦ {{ dailySales.totalSales || 0 }}</p>
+            <p class="text-3xl font-bold text-brand-500 mt-1">₦ {{ convertNumber(dailySales.totalSales) || 0 }}</p>
           </div>
           <div class="size-14 bg-brand-50 dark:bg-navy-900 rounded-2xl flex items-center justify-center text-brand-500">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
@@ -315,6 +315,11 @@ const snackbar = useSnackbar()
 const authStore = useAuthStore()
 const router = useRouter()
 
+const convertNumber = (num) => {
+  if (num === null || num === undefined) return '0'
+  return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+}
+
 const userStats = ref([])
 const userId = ref(Number(authStore.user.shopId))
 const loading = ref(false)
@@ -346,12 +351,12 @@ const yesterday = ref(format(new Date(aDayAgo), 'yyyy-MM-dd'))
 
 const shopStatsList = computed(() => {
   return [
-    { label: 'Total Sales', value: shopStats.value?.totalSales || '0', subLabel: 'Today\'s total sales' },
-    { label: 'Cancelled', value: shopStats.value?.totalCanceled || '0', subLabel: 'Today\'s cancelled tickets' },
-    { label: 'Net Sales', value: shopStats.value?.totalNetSales || '0', subLabel: 'Today\'s net sales' },
-    { label: 'Claimed', value: shopStats.value?.totalWinnings || '0', subLabel: 'Today\'s payouts' },
-    { label: 'Commission', value: shopStats.value?.totalCommission || '0', subLabel: 'Today\'s earnings' },
-    { label: 'Net Balance', value: shopStats.value?.totalNetBalance || '0', subLabel: 'Today\'s net balance' },
+    { label: 'Total Sales', value: convertNumber(shopStats.value?.totalSales) || '0', subLabel: 'Today\'s total sales' },
+    { label: 'Cancelled', value: convertNumber(shopStats.value?.totalCanceled) || '0', subLabel: 'Today\'s cancelled tickets' },
+    { label: 'Net Sales', value: convertNumber(shopStats.value?.totalNetSales) || '0', subLabel: 'Today\'s net sales' },
+    { label: 'Claimed', value: convertNumber(shopStats.value?.totalWinnings) || '0', subLabel: 'Today\'s payouts' },
+    { label: 'Commission', value: convertNumber(shopStats.value?.totalCommission) || '0', subLabel: 'Today\'s earnings' },
+    { label: 'Net Balance', value: convertNumber(shopStats.value?.totalNetBalance) || '0', subLabel: 'Today\'s net balance' },
   ]
 })
 
