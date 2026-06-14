@@ -82,7 +82,7 @@
     </div>
 
     <!-- Ticket Modal -->
-    <Modal :show="showModal" @close="closeModal" maxWidth="max-w-4xl">
+    <Modal :show="showModal" @close="closeModal" maxWidth="max-w-6xl">
       <template v-slot:title>
         <div class="flex items-center justify-between">
           <h5 class="text-xl font-bold text-navy-700 dark:text-white">Ticket Details</h5>
@@ -118,10 +118,6 @@
             <div class="mt-2 md:mt-4 relative z-10">
               <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Total Stake</p>
               <p class="text-3xl font-black text-white mt-1">₦ {{ ticketDetails.amount }}</p>
-            </div>
-            <div class="mt-2 md:mt-4 md:text-right relative z-10">
-              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Possible Win</p>
-              <p class="text-3xl font-black text-green-400 mt-1">₦ {{ ticketDetails.wonAmount }}</p>
             </div>
           </div>
           

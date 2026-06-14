@@ -73,9 +73,9 @@
       </p>
       <div class="flex flex-wrap gap-3">
         <div v-for="(term, idx) in inoperativeTerminals" :key="idx" class="bg-white dark:bg-navy-800 border border-amber-200 dark:border-amber-700/50 rounded-xl px-4 py-3 shadow-sm min-w-[150px]">
-          <p class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">Terminal {{ term.terminalSerial }}</p>
+          <p class="text-base font-bold text-amber-500 uppercase tracking-widest mb-1">Terminal {{ term.terminalSerial }}</p>
           <p class="text-xs text-navy-600 dark:text-navy-300 font-medium mb-1 truncate">{{ term.cashierName }} (@{{ term.cashierUsername }})</p>
-          <p class="text-sm font-bold text-navy-700 dark:text-white">Sales: ₦ {{ convertNumber(term.totalSales) }}</p>
+          <p class="text-sm font-bold text-navy-700 dark:text-white">7-Day Sales: ₦ {{ convertNumber(term.totalSales) }}</p>
           <p class="text-[10px] font-medium text-navy-400 mt-1">Assigned: {{ term.assignedDate ? format(new Date(term.assignedDate), 'dd MMM, yyyy') : 'N/A' }}</p>
         </div>
       </div>
@@ -205,14 +205,14 @@
             {{ format(new Date(dateFromLong), 'dd MMM, yyyy') }}
           </span>
         </template>
-        <template #item-sales="{ sales }">₦ {{ sales }}</template>
-        <template #item-cancelled="{ cancelled }">₦ {{ cancelled }}</template>
-        <template #item-netSales="{ netSales }">₦ {{ netSales }}</template>
-        <template #item-commission="{ commission }">₦ {{ commission }}</template>
-        <template #item-winnings="{ winnings }">₦ {{ winnings }}</template>
+        <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
+        <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
+        <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
+        <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
+        <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
         <template #item-balance="{ balance }">
           <span :class="balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
-            ₦ {{ balance }}
+            ₦ {{ convertNumber(balance) }}
           </span>
         </template>
       </AppTable>
@@ -354,7 +354,7 @@ const shopStatsList = computed(() => {
     { label: 'Total Sales', value: convertNumber(shopStats.value?.totalSales) || '0', subLabel: 'Today\'s total sales' },
     { label: 'Cancelled', value: convertNumber(shopStats.value?.totalCanceled) || '0', subLabel: 'Today\'s cancelled tickets' },
     { label: 'Net Sales', value: convertNumber(shopStats.value?.totalNetSales) || '0', subLabel: 'Today\'s net sales' },
-    { label: 'Claimed', value: convertNumber(shopStats.value?.totalWinnings) || '0', subLabel: 'Today\'s payouts' },
+    { label: 'Claimed', value: convertNumber(shopStats.value?.totalClaimed) || '0', subLabel: 'Today\'s payouts' },
     { label: 'Commission', value: convertNumber(shopStats.value?.totalCommission) || '0', subLabel: 'Today\'s earnings' },
     { label: 'Net Balance', value: convertNumber(shopStats.value?.totalNetBalance) || '0', subLabel: 'Today\'s net balance' },
   ]
@@ -366,7 +366,7 @@ const tableHeader = [
   { label: 'Cancelled', key: 'cancelled' },
   { label: 'Net Sales', key: 'netSales' },
   { label: 'Commission', key: 'commission' },
-  { label: 'Claimed', key: 'winnings' },
+  { label: 'Claimed', key: 'claimed' },
   { label: 'Balance', key: 'balance' }
 ]
 
