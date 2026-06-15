@@ -63,7 +63,7 @@
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Sales</p>
           <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Sales) }}</p>
         </div>
-        <!-- 5/90 Winnings -->
+        <!-- 5/90 Claimed -->
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Claimed</p>
           <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Winnings) }}</p>
@@ -78,7 +78,7 @@
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Sales</p>
           <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorSales) }}</p>
         </div>
-        <!-- Accum. Winnings -->
+        <!-- Accum. Claimed -->
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Claimed</p>
           <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorWinnings) }}</p>
@@ -179,7 +179,7 @@ let tableHeader = reactive([
     key: 'lotto590Sales'
   },
   {
-    label: '5/90 Winnings',
+    label: '5/90 Claimed',
     key: 'lotto590Winnings'
   },
   {
@@ -191,7 +191,7 @@ let tableHeader = reactive([
     key: 'accumulatorSales'
   },
   {
-    label: 'Accum. Winnings',
+    label: 'Accum. Claimed',
     key: 'accumulatorWinnings'
   },
   {

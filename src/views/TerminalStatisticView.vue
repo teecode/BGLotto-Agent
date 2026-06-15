@@ -102,7 +102,7 @@ let cashierTableHeader = reactive([
         key: "lotto590Sales"
     },
     {
-        label: "5/90 Winnings",
+        label: "5/90 Claimed",
         key: "lotto590Winnings"
     },
     {
@@ -114,7 +114,7 @@ let cashierTableHeader = reactive([
         key: "accumulatorSales"
     },
     {
-        label: "Accum. Winnings",
+        label: "Accum. Claimed",
         key: "accumulatorWinnings"
     },
     {

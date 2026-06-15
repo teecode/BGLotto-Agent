@@ -366,10 +366,10 @@ const shopStatsList = computed(() => {
     { label: 'Commission', value: convertNumber(shopStats.value?.totalCommission) || '0', subLabel: 'Today\'s earnings' },
     { label: 'Net Balance', value: convertNumber(shopStats.value?.totalNetBalance) || '0', subLabel: 'Today\'s net balance' },
     { label: '5/90 Sales', value: convertNumber(shopStats.value?.totalLotto590Sales) || '0', subLabel: '5/90 total sales' },
-    { label: '5/90 Winnings', value: convertNumber(shopStats.value?.totalLotto590Winnings) || '0', subLabel: '5/90 total winnings' },
+    { label: '5/90 Claimed', value: convertNumber(shopStats.value?.totalLotto590Winnings) || '0', subLabel: '5/90 total claimed' },
     { label: '5/90 Comm.', value: convertNumber(shopStats.value?.totalLotto590Commission) || '0', subLabel: '5/90 total commission' },
     { label: 'Accum. Sales', value: convertNumber(shopStats.value?.totalAccumulatorSales) || '0', subLabel: 'Accumulator total sales' },
-    { label: 'Accum. Winnings', value: convertNumber(shopStats.value?.totalAccumulatorWinnings) || '0', subLabel: 'Accumulator total winnings' },
+    { label: 'Accum. Claimed', value: convertNumber(shopStats.value?.totalAccumulatorWinnings) || '0', subLabel: 'Accumulator total claimed' },
     { label: 'Accum. Comm.', value: convertNumber(shopStats.value?.totalAccumulatorCommission) || '0', subLabel: 'Accumulator total commission' }
   ]
 })
@@ -382,10 +382,10 @@ const tableHeader = [
   { label: 'Commission', key: 'commission' },
   { label: 'Claimed', key: 'claimed' },
   { label: '5/90 Sales', key: 'lotto590Sales' },
-  { label: '5/90 Winnings', key: 'lotto590Winnings' },
+  { label: '5/90 Claimed', key: 'lotto590Winnings' },
   { label: '5/90 Comm.', key: 'lotto590Commission' },
   { label: 'Accum. Sales', key: 'accumulatorSales' },
-  { label: 'Accum. Winnings', key: 'accumulatorWinnings' },
+  { label: 'Accum. Claimed', key: 'accumulatorWinnings' },
   { label: 'Accum. Comm.', key: 'accumulatorCommission' },
   { label: 'Balance', key: 'balance' }
 ]
