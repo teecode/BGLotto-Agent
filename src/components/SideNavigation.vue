@@ -17,6 +17,23 @@
                         <p class="font-medium text-navy-700 dark:text-navy-300 group-hover:text-brand-500 dark:group-hover:text-white">Dashboard</p>
                     </router-link>
 
+                    <router-link to="/dashboard/notifications" class="group flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-brand-50 dark:hover:bg-navy-700">
+                        <div class="relative p-2 rounded-lg bg-brand-50 dark:bg-navy-700 group-hover:bg-brand-500 group-hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                            <span v-if="unreadCount > 0" class="absolute -top-1 -right-1 size-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow">
+                                {{ unreadCount > 9 ? '9+' : unreadCount }}
+                            </span>
+                        </div>
+                        <p class="font-medium text-navy-700 dark:text-navy-300 group-hover:text-brand-500 dark:group-hover:text-white">
+                            Notifications
+                            <span v-if="unreadCount > 0" class="ml-2 px-1.5 py-0.5 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-[10px] font-bold rounded-full">
+                                {{ unreadCount }}
+                            </span>
+                        </p>
+                    </router-link>
+
                     <!-- Agency Management -->
                     <div class="w-full">
                         <div @click="openSub(1)" class="group flex items-center justify-between p-3 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-navy-700">
@@ -96,14 +113,27 @@
             <img class="w-24 object-contain" src="@/assets/images/maxilotto.png" alt="Maxilotto Logo">
             <h3 class="text-[10px] font-bold text-navy-400 uppercase tracking-widest pl-1">Agent Portal</h3>
         </div>
-        <button @click="showMobile = !showMobile" class="p-2 rounded-xl bg-brand-50 dark:bg-navy-700 text-brand-500 dark:text-white">
-            <svg v-if="!showMobile" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-        </button>
+        <div class="flex items-center gap-2">
+            <!-- Notification Bell (mobile header) -->
+            <button @click="changeMobileRoute('/dashboard/notifications')" class="relative p-2 rounded-xl bg-brand-50 dark:bg-navy-700 text-brand-500 dark:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                </svg>
+                <span v-if="unreadCount > 0"
+                    class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-sm">
+                    {{ unreadCount > 99 ? '99+' : unreadCount }}
+                </span>
+            </button>
+            <!-- Hamburger -->
+            <button @click="showMobile = !showMobile" class="p-2 rounded-xl bg-brand-50 dark:bg-navy-700 text-brand-500 dark:text-white">
+                <svg v-if="!showMobile" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
 
         <!-- Mobile Drawer Overlay -->
         <div v-show="showMobile" @click="showMobile = false" class="fixed inset-0 bg-navy-900/60 backdrop-blur-sm z-40 transition-opacity duration-300"></div>
@@ -123,6 +153,23 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
                     <span class="font-bold">Dashboard</span>
+                </div>
+
+                <div @click="changeMobileRoute('/dashboard/notifications')" class="flex items-center justify-between gap-4 p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-navy-700">
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-navy-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                            <span v-if="unreadCount > 0" class="absolute -top-1 -right-1 size-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                                {{ unreadCount > 9 ? '9+' : unreadCount }}
+                            </span>
+                        </div>
+                        <span class="font-semibold text-navy-700 dark:text-white">Notifications</span>
+                    </div>
+                    <span v-if="unreadCount > 0" class="px-2 py-0.5 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold rounded-full">
+                        {{ unreadCount }}
+                    </span>
                 </div>
 
                 <!-- Agency Submenu Mobile -->
@@ -190,19 +237,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '../stores/auth';
+import { useNotificationStore } from '../stores/notifications';
 import { useRouter } from 'vue-router';
 import { useSnackbar } from "vue3-snackbar";
 
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
 const router = useRouter();
 
 const initials = ref("");
 const show = ref(false);
 const show2 = ref(false);
 const showMobile = ref(false);
+
+const unreadCount = computed(() => notificationStore.unreadCount);
 
 const agencyLinks = [
     { label: 'Agency Details', to: '/dashboard/agent-details' },
@@ -249,6 +300,7 @@ const getLetters = () => {
 
 onMounted(() => {
     getLetters();
+    notificationStore.fetchUnreadCount();
 });
 </script>
 

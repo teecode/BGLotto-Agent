@@ -97,6 +97,11 @@ const router = createRouter({
           path: 'lodgement',
           name: 'Lodgement',
           component: () => import('../views/LodgementView.vue')
+        },
+        {
+          path: 'notifications',
+          name: 'Notifications',
+          component: () => import('../views/NotificationsView.vue')
         }
       ]
     }
