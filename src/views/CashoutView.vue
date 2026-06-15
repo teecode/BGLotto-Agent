@@ -24,7 +24,7 @@
             class="w-full px-4 py-4 bg-gray-100 dark:bg-navy-800 border-2 border-transparent rounded-2xl cursor-not-allowed transition-all flex items-center justify-between opacity-80"
           >
             <span class="text-navy-700 dark:text-white font-bold">
-              {{ authStore.user.firstname }} {{ authStore.user.lastname }} ({{ authStore.user.id }})
+              {{ authStore.user.firstName }} {{ authStore.user.lastName }} ({{ authStore.user.customerId }})
             </span>
             <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-navy-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7a4 4 0 00-8 0v4h8z" />
@@ -110,7 +110,7 @@
              <div v-if="ticketDetails" class="mt-5 pt-4 border-t border-green-200 dark:border-green-500/20">
                <div class="bg-white/50 dark:bg-navy-900/50 rounded-xl p-4 border border-green-100 dark:border-green-500/10">
                  <p class="text-sm text-navy-600 dark:text-navy-300 leading-relaxed">
-                   This ticket will be registered as cashed out under the principal agent <strong class="text-navy-800 dark:text-white font-black">{{ ticketDetails.payoutByFullName || authStore.user.firstname + ' ' + authStore.user.lastname }}</strong> and the terminal serial <strong class="text-navy-800 dark:text-white font-black">{{ ticketDetails.payoutByTerminalId || 'N/A' }}</strong>.
+                   This ticket will be registered as cashed out under the principal agent <strong class="text-navy-800 dark:text-white font-black">{{ ticketDetails.payoutByFullName || authStore.user.firstName + ' ' + authStore.user.lastName }}</strong> and the terminal serial <strong class="text-navy-800 dark:text-white font-black">{{ ticketDetails.payoutByTerminalId || 'N/A' }}</strong>.
                  </p>
                </div>
              </div>
@@ -238,7 +238,7 @@ const closeModal = () => {
 }
 
 onMounted(() => {
-    form.customerId = authStore.user.id;
+    form.customerId = authStore.user.customerId;
 });
 </script>
 
