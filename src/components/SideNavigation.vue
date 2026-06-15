@@ -300,7 +300,8 @@ const getLetters = () => {
 
 onMounted(() => {
     getLetters();
-    notificationStore.fetchUnreadCount();
+    const shopId = Number(authStore.user?.shopId ?? 0);
+    notificationStore.fetchUnreadCount(shopId);
 });
 </script>
 

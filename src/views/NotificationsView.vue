@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <div class="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
     <!-- Header -->
     <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
@@ -143,10 +143,13 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { useNotificationStore } from '@/stores/notifications'
+import { useAuthStore } from '@/stores/auth'
 import { format, formatDistanceToNow } from 'date-fns'
 
 const snackbar = useSnackbar()
 const notificationStore = useNotificationStore()
+const authStore = useAuthStore()
+const shopId = computed(() => Number(authStore.user?.shopId ?? 0))
 
 const notifications = ref([])
 const totalRecords = ref(0)
@@ -164,7 +167,7 @@ const load = async () => {
   try {
     loading.value = true
     const res = await axios.get(
-      `api/v1/Notification/ShopNotifications?onlyUnread=${onlyUnread.value}&page=${page.value}&pageSize=${pageSize.value}`
+      `api/v1/Notification/ShopNotifications?shopId=${shopId.value}&onlyUnread=${onlyUnread.value}&page=${page.value}&pageSize=${pageSize.value}`
     )
     notifications.value = res.data?.data ?? []
     totalRecords.value = res.data?.totalRecords ?? 0
@@ -179,7 +182,7 @@ const openDetail = async (n) => {
   selected.value = n
   if (!n.isRead) {
     try {
-      await axios.put(`api/v1/Notification/ShopNotifications/${n.id}/Read`)
+      await axios.put(`api/v1/Notification/ShopNotifications/${n.id}/Read?shopId=${shopId.value}`)
       n.isRead = true
       notificationStore.decrement()
     } catch {
@@ -195,7 +198,7 @@ const closeDetail = () => {
 const markAllRead = async () => {
   try {
     markingAll.value = true
-    await axios.put('api/v1/Notification/ShopNotifications/ReadAll')
+    await axios.put(`api/v1/Notification/ShopNotifications/ReadAll?shopId=${shopId.value}`)
     notifications.value.forEach(n => (n.isRead = true))
     notificationStore.reset()
     snackbar.add({ type: 'success', text: 'All notifications marked as read' })
@@ -249,6 +252,6 @@ const typeBadge = (type) => {
 
 onMounted(() => {
   load()
-  notificationStore.fetchUnreadCount()
+  notificationStore.fetchUnreadCount(shopId.value)
 })
 </script>

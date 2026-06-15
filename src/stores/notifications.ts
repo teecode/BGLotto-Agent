@@ -5,9 +5,9 @@ import axios from 'axios';
 export const useNotificationStore = defineStore('notificationStore', () => {
     const unreadCount = ref(0);
 
-    const fetchUnreadCount = async () => {
+    const fetchUnreadCount = async (shopId: number = 0) => {
         try {
-            const res = await axios.get('api/v1/Notification/ShopNotifications/UnreadCount');
+            const res = await axios.get(`api/v1/Notification/ShopNotifications/UnreadCount?shopId=${shopId}`);
             unreadCount.value = res.data?.count ?? 0;
         } catch {
             // silently fail
