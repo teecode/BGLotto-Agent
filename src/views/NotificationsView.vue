@@ -208,7 +208,7 @@ const closeDetail = () => {
 const markSelectedRead = async () => {
   if (!selected.value || selected.value.isRead) return
   try {
-    await axios.put(`Notification/ShopNotifications/${selected.value.id}/Read?shopId=${shopId.value}`)
+    await axios.post(`Notification/ShopNotifications/${selected.value.id}/Read?shopId=${shopId.value}`)
     selected.value.isRead = true
     selected.value.readAt = new Date().toISOString()
     notificationStore.decrement()
