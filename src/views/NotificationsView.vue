@@ -167,7 +167,7 @@ const load = async () => {
   try {
     loading.value = true
     const res = await axios.get(
-      `api/v1/Notification/ShopNotifications?shopId=${shopId.value}&onlyUnread=${onlyUnread.value}&page=${page.value}&pageSize=${pageSize.value}`
+      `Notification/ShopNotifications?shopId=${shopId.value}&onlyUnread=${onlyUnread.value}&page=${page.value}&pageSize=${pageSize.value}`
     )
     notifications.value = res.data?.data ?? []
     totalRecords.value = res.data?.totalRecords ?? 0
@@ -182,7 +182,7 @@ const openDetail = async (n) => {
   selected.value = n
   if (!n.isRead) {
     try {
-      await axios.put(`api/v1/Notification/ShopNotifications/${n.id}/Read?shopId=${shopId.value}`)
+      await axios.put(`Notification/ShopNotifications/${n.id}/Read?shopId=${shopId.value}`)
       n.isRead = true
       notificationStore.decrement()
     } catch {
@@ -198,7 +198,7 @@ const closeDetail = () => {
 const markAllRead = async () => {
   try {
     markingAll.value = true
-    await axios.put(`api/v1/Notification/ShopNotifications/ReadAll?shopId=${shopId.value}`)
+    await axios.put(`Notification/ShopNotifications/ReadAll?shopId=${shopId.value}`)
     notifications.value.forEach(n => (n.isRead = true))
     notificationStore.reset()
     snackbar.add({ type: 'success', text: 'All notifications marked as read' })
