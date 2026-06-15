@@ -54,6 +54,11 @@ const router = createRouter({
           component: () => import('../views/CashierReports.vue')
         },
         {
+          path: 'cashier-summary-report',
+          name: 'CashierSummaryReport',
+          component: () => import('../views/CashierSummaryReport.vue')
+        },
+        {
           path: 'shop-statistics',
           name: 'Statistics',
           component: () => import('../views/ShopStatisticsView.vue'),

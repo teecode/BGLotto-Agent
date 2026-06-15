@@ -259,6 +259,7 @@ const agencyLinks = [
     { label: 'Agency Details', to: '/dashboard/agent-details' },
     { label: 'Cashier Details', to: '/dashboard/cashier-details' },
     { label: 'Cashier Reports', to: '/dashboard/cashier-reports' },
+    { label: 'Cashier Summary', to: '/dashboard/cashier-summary-report' },
     { label: 'Shop Statistics', to: '/dashboard/shop-statistics' },
     { label: 'Game Statistics', to: '/dashboard/game-statistics' },
     { label: 'Tickets', to: '/dashboard/tickets' },
