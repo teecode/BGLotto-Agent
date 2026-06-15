@@ -18,55 +18,17 @@
     <!-- Check Form Section -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="space-y-2 relative" ref="dropdownRef">
-          <label class="text-xs font-bold text-navy-400 uppercase tracking-widest ml-1">Customer</label>
+        <div class="space-y-2 relative">
+          <label class="text-xs font-bold text-navy-400 uppercase tracking-widest ml-1">Principal Agent</label>
           <div 
-            class="w-full px-4 py-4 bg-gray-50 dark:bg-navy-900 border-2 border-transparent focus-within:border-brand-500/20 rounded-2xl cursor-pointer transition-all flex items-center justify-between"
-            @click="showDropdown = !showDropdown"
+            class="w-full px-4 py-4 bg-gray-100 dark:bg-navy-800 border-2 border-transparent rounded-2xl cursor-not-allowed transition-all flex items-center justify-between opacity-80"
           >
-            <span v-if="selectedCashier" class="text-navy-700 dark:text-white font-bold">
-              {{ selectedCashier.firstname }} {{ selectedCashier.lastname }} ({{ selectedCashier.id }})
+            <span class="text-navy-700 dark:text-white font-bold">
+              {{ authStore.user.firstname }} {{ authStore.user.lastname }} ({{ authStore.user.id }})
             </span>
-            <span v-else class="text-navy-400 font-bold">Select Customer</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-navy-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-navy-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7a4 4 0 00-8 0v4h8z" />
             </svg>
-          </div>
-          
-          <div v-if="showDropdown" class="absolute z-10 w-full mt-2 bg-white dark:bg-navy-800 rounded-2xl shadow-xl border border-gray-100 dark:border-navy-700 overflow-hidden">
-            <div class="p-2">
-              <input 
-                v-model="searchQuery"
-                type="text" 
-                placeholder="Search by name or ID..."
-                class="w-full px-4 py-2 bg-gray-50 dark:bg-navy-900 border border-gray-100 dark:border-navy-700 rounded-xl outline-none text-navy-700 dark:text-white text-sm"
-                @click.stop
-              />
-            </div>
-            <ul class="max-h-60 overflow-y-auto">
-              <li 
-                v-if="loadingCashiers"
-                class="px-4 py-3 text-sm text-navy-400 text-center"
-              >
-                Loading...
-              </li>
-              <li 
-                v-else-if="filteredCashiers.length === 0"
-                class="px-4 py-3 text-sm text-navy-400 text-center"
-              >
-                No customers found.
-              </li>
-              <li 
-                v-else
-                v-for="cashier in filteredCashiers" 
-                :key="cashier.id"
-                @click="selectCashier(cashier)"
-                class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-navy-700 cursor-pointer text-sm font-medium text-navy-700 dark:text-white flex items-center justify-between"
-              >
-                <span>{{ cashier.firstname }} {{ cashier.lastname }}</span>
-                <span class="text-xs text-navy-400">ID: {{ cashier.id }}</span>
-              </li>
-            </ul>
           </div>
         </div>
         <div class="space-y-2">
@@ -144,6 +106,14 @@
                    <p class="text-2xl font-black text-green-600 dark:text-green-400 drop-shadow-sm">₦ {{ winningAmount.toLocaleString() }}</p>
                 </div>
              </div>
+             
+             <div v-if="ticketDetails" class="mt-5 pt-4 border-t border-green-200 dark:border-green-500/20">
+               <div class="bg-white/50 dark:bg-navy-900/50 rounded-xl p-4 border border-green-100 dark:border-green-500/10">
+                 <p class="text-sm text-navy-600 dark:text-navy-300 leading-relaxed">
+                   This ticket will be registered as cashed out under the principal agent <strong class="text-navy-800 dark:text-white font-black">{{ ticketDetails.payoutByFullName || authStore.user.firstname + ' ' + authStore.user.lastname }}</strong> and the terminal serial <strong class="text-navy-800 dark:text-white font-black">{{ ticketDetails.payoutByTerminalId || 'N/A' }}</strong>.
+                 </p>
+               </div>
+             </div>
           </div>
 
           <div class="space-y-3">
@@ -197,57 +167,13 @@ const showModal = ref(false);
 const checking = ref(false);
 const cashoutProcessing = ref(false);
 const winningAmount = ref(0);
+const ticketDetails = ref(null);
 
 const form = reactive({
     customerId: "",
     ticketId: "",
     payoutPin: ""
 });
-
-// Dropdown State
-const showDropdown = ref(false);
-const dropdownRef = ref(null);
-
-onClickOutside(dropdownRef, () => {
-  showDropdown.value = false;
-});
-
-const searchQuery = ref("");
-const cashiers = ref([]);
-const loadingCashiers = ref(false);
-const selectedCashier = ref(null);
-
-const filteredCashiers = computed(() => {
-    if (!searchQuery.value) return cashiers.value;
-    const query = searchQuery.value.toLowerCase();
-    return cashiers.value.filter(c => 
-        (c.firstname && c.firstname.toLowerCase().includes(query)) || 
-        (c.lastname && c.lastname.toLowerCase().includes(query)) ||
-        (c.id && c.id.toString().includes(query))
-    );
-});
-
-const selectCashier = (cashier) => {
-    selectedCashier.value = cashier;
-    form.customerId = cashier.id;
-    showDropdown.value = false;
-    searchQuery.value = "";
-};
-
-const fetchCashiers = async () => {
-    try {
-        loadingCashiers.value = true;
-        const res = await axios.get(`Retail/cashiers?ShopId=${authStore.user.shopId}`);
-        cashiers.value = res.data.data || [];
-    } catch (err) {
-        snackbar.add({
-            type: 'error',
-            text: `Failed to load customers: ${err.message}`
-        });
-    } finally {
-        loadingCashiers.value = false;
-    }
-};
 
 const isCheckValid = computed(() => {
   return !!(form.customerId && form.ticketId);
@@ -263,6 +189,7 @@ const checkTicketStatus = async () => {
         })
         if (res.status == 200) {
             winningAmount.value = res.data.data.wonAmount || 0;
+            ticketDetails.value = res.data.data;
             showModal.value = true;
         }
     } catch (err) {
@@ -307,10 +234,11 @@ const cashoutTicket = async () => {
 const closeModal = () => {
     showModal.value = false;
     form.payoutPin = "";
+    ticketDetails.value = null;
 }
 
 onMounted(() => {
-    fetchCashiers();
+    form.customerId = authStore.user.id;
 });
 </script>
 
