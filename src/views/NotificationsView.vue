@@ -126,10 +126,29 @@
 
           <p class="text-navy-600 dark:text-navy-300 leading-relaxed whitespace-pre-line mb-6">{{ selected.message }}</p>
 
-          <div class="flex items-center justify-between text-xs text-navy-300 pt-4 border-t border-gray-100 dark:border-navy-700">
-            <span>{{ formatDate(selected.createdAt) }}</span>
-            <span v-if="selected.isRead && selected.readAt" class="text-green-500 font-medium">Read {{ formatDate(selected.readAt) }}</span>
-            <span v-else class="text-brand-400 font-medium">Unread</span>
+          <div class="pt-4 border-t border-gray-100 dark:border-navy-700 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-xs text-navy-300">
+              <span>{{ formatDate(selected.createdAt) }}</span>
+              <span v-if="selected.isRead && selected.readAt" class="text-green-500 font-medium">
+                · Read {{ formatDate(selected.readAt) }}
+              </span>
+            </div>
+            <button
+              v-if="!selected.isRead"
+              @click="markSelectedRead"
+              class="flex items-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold rounded-xl transition-colors active:scale-[0.97]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="size-3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              Mark as read
+            </button>
+            <span v-else class="flex items-center gap-1.5 text-xs font-medium text-green-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="size-3.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+              Read
+            </span>
           </div>
         </div>
       </div>
@@ -178,27 +197,30 @@ const load = async () => {
   }
 }
 
-const openDetail = async (n) => {
+const openDetail = (n) => {
   selected.value = n
-  if (!n.isRead) {
-    try {
-      await axios.put(`Notification/ShopNotifications/${n.id}/Read?shopId=${shopId.value}`)
-      n.isRead = true
-      notificationStore.decrement()
-    } catch {
-      // silently fail
-    }
-  }
 }
 
 const closeDetail = () => {
   selected.value = null
 }
 
+const markSelectedRead = async () => {
+  if (!selected.value || selected.value.isRead) return
+  try {
+    await axios.put(`Notification/ShopNotifications/${selected.value.id}/Read?shopId=${shopId.value}`)
+    selected.value.isRead = true
+    selected.value.readAt = new Date().toISOString()
+    notificationStore.decrement()
+  } catch {
+    snackbar.add({ type: 'error', text: 'Failed to mark notification as read' })
+  }
+}
+
 const markAllRead = async () => {
   try {
     markingAll.value = true
-    await axios.put(`Notification/ShopNotifications/ReadAll?shopId=${shopId.value}`)
+    await axios.post(`Notification/ShopNotifications/ReadAll?shopId=${shopId.value}`)
     notifications.value.forEach(n => (n.isRead = true))
     notificationStore.reset()
     snackbar.add({ type: 'success', text: 'All notifications marked as read' })
