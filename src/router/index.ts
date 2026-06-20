@@ -59,6 +59,11 @@ const router = createRouter({
           component: () => import('../views/CashierSummaryReport.vue')
         },
         {
+          path: 'commission-calculator',
+          name: 'CommissionCalculator',
+          component: () => import('../views/CommissionCalculatorView.vue')
+        },
+        {
           path: 'shop-statistics',
           name: 'Statistics',
           component: () => import('../views/ShopStatisticsView.vue'),
