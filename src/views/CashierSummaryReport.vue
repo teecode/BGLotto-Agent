@@ -220,9 +220,9 @@
                     <span class="px-1.5 py-0.5 bg-brand-100 dark:bg-brand-900/30 rounded">5/90</span>
                   </span>
                 </td>
+                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Sales) }}</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Commission) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Winnings) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
@@ -235,9 +235,9 @@
                     <span class="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 rounded">Accum</span>
                   </span>
                 </td>
+                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorSales) }}</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorCommission) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorWinnings) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
