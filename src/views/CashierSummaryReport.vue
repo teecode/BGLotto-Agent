@@ -220,12 +220,15 @@
                     <span class="px-1.5 py-0.5 bg-brand-100 dark:bg-brand-900/30 rounded">5/90</span>
                   </span>
                 </td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Sales) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Sales) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Commission) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Winnings) }}</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs font-semibold"
+                    :class="(row.lotto590Sales - row.lotto590Commission - row.lotto590Winnings) < 0 ? 'text-red-400' : 'text-green-500'">
+                  ₦ {{ fmt(round2(row.lotto590Sales - row.lotto590Commission - row.lotto590Winnings)) }}
+                </td>
               </tr>
               <!-- Accumulator sub-row -->
               <tr class="bg-purple-50/40 dark:bg-purple-500/5">
@@ -235,12 +238,15 @@
                     <span class="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 rounded">Accum</span>
                   </span>
                 </td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorSales) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorSales) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorCommission) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorWinnings) }}</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs font-semibold"
+                    :class="(row.accumulatorSales - row.accumulatorCommission - row.accumulatorWinnings) < 0 ? 'text-red-400' : 'text-green-500'">
+                  ₦ {{ fmt(round2(row.accumulatorSales - row.accumulatorCommission - row.accumulatorWinnings)) }}
+                </td>
               </tr>
             </template>
           </tbody>
@@ -345,6 +351,7 @@ const stats = reactive({
 })
 
 const fmt = (val) => convertNumber(val ?? 0)
+const round2 = (n) => Math.round(n * 100) / 100
 
 const onDateChange = (val) => {
   if (val && val[0] && val[1]) {
