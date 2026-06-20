@@ -154,17 +154,19 @@
           </div>
           <!-- Game breakdown -->
           <div class="px-4 py-3 space-y-2.5">
-            <div class="flex items-center justify-between">
+            <div class="space-y-1">
               <span class="text-xs font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20 px-2 py-0.5 rounded-lg">5/90</span>
-              <div class="flex items-center gap-3 text-xs text-navy-500 dark:text-navy-400">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-navy-500 dark:text-navy-400 pl-1">
                 <span>Sales: <span class="font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.lotto590Sales) }}</span></span>
+                <span>Comm: <span class="font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.lotto590Commission) }}</span></span>
                 <span>Claimed: <span class="font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.lotto590Winnings) }}</span></span>
               </div>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="space-y-1">
               <span class="text-xs font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 px-2 py-0.5 rounded-lg">Accum</span>
-              <div class="flex items-center gap-3 text-xs text-navy-500 dark:text-navy-400">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-navy-500 dark:text-navy-400 pl-1">
                 <span>Sales: <span class="font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.accumulatorSales) }}</span></span>
+                <span>Comm: <span class="font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.accumulatorCommission) }}</span></span>
                 <span>Claimed: <span class="font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.accumulatorWinnings) }}</span></span>
               </div>
             </div>
@@ -221,7 +223,7 @@
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Sales) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Commission) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.lotto590Winnings) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
               </tr>
@@ -236,7 +238,7 @@
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorSales) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
-                <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
+                <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorCommission) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-600 dark:text-navy-300">₦ {{ fmt(row.accumulatorWinnings) }}</td>
                 <td class="px-4 py-2 text-right text-xs text-navy-300 dark:text-navy-600">—</td>
               </tr>
