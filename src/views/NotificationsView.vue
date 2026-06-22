@@ -104,8 +104,8 @@
     <Teleport to="body">
       <div v-if="selected" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-navy-900/60 backdrop-blur-sm" @click="closeDetail"></div>
-        <div class="relative w-full max-w-lg bg-white dark:bg-navy-800 rounded-3xl shadow-2xl p-8 z-10 animate-in zoom-in-95 duration-200">
-          <div class="flex items-start justify-between mb-6">
+        <div class="relative w-full max-w-lg md:max-w-2xl lg:max-w-3xl max-h-[90vh] flex flex-col bg-white dark:bg-navy-800 rounded-3xl shadow-2xl p-6 sm:p-8 z-10 animate-in zoom-in-95 duration-200">
+          <div class="flex items-start justify-between mb-6 shrink-0">
             <div class="flex items-center gap-3">
               <div :class="['size-10 rounded-xl flex items-center justify-center shrink-0', typeIcon(selected.type).bg]">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" :class="['size-5', typeIcon(selected.type).text]">
@@ -124,9 +124,11 @@
             </button>
           </div>
 
-          <p class="text-navy-600 dark:text-navy-300 leading-relaxed whitespace-pre-line mb-6">{{ selected.message }}</p>
+          <div class="overflow-y-auto flex-1 min-h-0 mb-6 pr-2 -mr-2">
+            <p class="text-navy-600 dark:text-navy-300 leading-relaxed whitespace-pre-line">{{ selected.message }}</p>
+          </div>
 
-          <div class="pt-4 border-t border-gray-100 dark:border-navy-700 flex items-center justify-between gap-3">
+          <div class="pt-4 border-t border-gray-100 dark:border-navy-700 flex items-center justify-between gap-3 shrink-0">
             <div class="flex items-center gap-2 text-xs text-navy-300">
               <span>{{ formatDate(selected.createdAt) }}</span>
               <span v-if="selected.isRead && selected.readAt" class="text-green-500 font-medium">
