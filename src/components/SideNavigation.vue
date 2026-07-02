@@ -266,6 +266,7 @@ const agencyLinks = [
     { label: 'Tickets', to: '/dashboard/tickets' },
     { label: 'Transactions', to: '/dashboard/transactions' },
     { label: 'Terminal Statistics', to: '/dashboard/terminal-statistic' },
+    { label: 'Bonus Log', to: '/dashboard/bonus-log' },
     { label: 'Lodgement', to: '/dashboard/lodgement' },
 ];
 

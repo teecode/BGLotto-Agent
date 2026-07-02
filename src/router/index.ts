@@ -60,8 +60,13 @@ const router = createRouter({
         },
         {
           path: 'commission-calculator',
-          name: 'CommissionCalculator',
+          name: 'DashboardCommissionCalculator',
           component: () => import('../views/CommissionCalculatorView.vue')
+        },
+        {
+          path: 'bonus-log',
+          name: 'BonusLog',
+          component: () => import('../views/BonusLogView.vue')
         },
         {
           path: 'shop-statistics',
