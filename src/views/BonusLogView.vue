@@ -80,7 +80,7 @@ import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
 import Spinner from '@/components/Spinner.vue'
 import AppTable from '@/components/AppTable.vue'
-import { format } from 'date-fns'
+import { format, startOfMonth, endOfMonth, subMonths } from 'date-fns'
 import { convertNumber } from '../services/convertNumber'
 
 const snackbar = useSnackbar()
@@ -91,14 +91,18 @@ let cashierDets = ref([])
 
 const userId = ref(Number(authStore.user.shopId))
 
-let date = ref([format(new Date(), 'yyyy-MM-dd'), format(new Date(), 'yyyy-MM-dd')])
+const prevMonth = subMonths(new Date(), 1)
+const startOfPrev = format(startOfMonth(prevMonth), 'yyyy-MM-dd')
+const endOfPrev = format(endOfMonth(prevMonth), 'yyyy-MM-dd')
+
+let date = ref([startOfPrev, endOfPrev])
 let loading = ref(false)
 let error = ref(false)
 let loading2 = ref(false)
 let cashierName = ref('')
 let filterZeroBonuses = ref(true)
-let startDate = ref(format(new Date(), 'yyyy-MM-dd'))
-let endDate = ref(format(new Date(), 'yyyy-MM-dd'))
+let startDate = ref(startOfPrev)
+let endDate = ref(endOfPrev)
 const allBonuses = ref([])
 
 let bonusTableHeader = reactive([
