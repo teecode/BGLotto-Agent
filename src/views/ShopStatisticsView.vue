@@ -81,6 +81,15 @@
         <!-- Accum. Claimed -->
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Claimed</p>
+          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorWinnings) }}</p>
+        </div>
+        <!-- Accum. Comm -->
+        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Commission</p>
+          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorCommission) }}</p>
+        </div>
+    </div>
+
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
         <div class="flex items-center justify-between mb-4">
