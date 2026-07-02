@@ -1,14 +1,16 @@
 <template>
   <div class="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <!-- Header Card -->
-    <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full flex flex-col md:flex-row items-center justify-between gap-6">
-      <div>
-        <h2 class="text-2xl font-bold text-navy-700 dark:text-white">Bonus Log</h2>
-        <p class="text-navy-400 font-medium mt-1">Review bonuses earned by cashiers</p>
+    <!-- Filters Section -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl p-5 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      <div class="flex-shrink-0">
+        <h2 class="text-xl lg:text-2xl font-bold text-navy-700 dark:text-white">Bonus Log</h2>
+        <p class="text-navy-400 font-medium mt-1 text-sm lg:text-base">Review bonuses earned by cashiers</p>
       </div>
       
-      <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-        <div class="w-full md:w-[200px]">
+      <div class="flex flex-col sm:flex-row flex-wrap lg:flex-nowrap items-center gap-4 w-full lg:w-auto mt-2 lg:mt-0">
+        
+        <!-- Cashier Dropdown -->
+        <div class="w-full sm:w-[200px]">
           <div class="flex justify-center" v-if="loading">
             <Spinner />
           </div>
@@ -20,12 +22,14 @@
           </select>
         </div>
         
-        <div class="flex items-center gap-2 px-2">
+        <!-- Zero Bonuses Filter -->
+        <div class="flex items-center gap-2 px-2 w-full sm:w-auto justify-start">
             <input type="checkbox" id="filterZero" v-model="filterZeroBonuses" class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 cursor-pointer">
             <label for="filterZero" class="text-sm font-medium text-navy-700 dark:text-white cursor-pointer select-none">Hide Zero Bonuses</label>
         </div>
 
-        <div class="w-full md:w-auto">
+        <!-- Date Picker -->
+        <div class="w-full sm:w-auto">
             <date-picker
             v-model:value="date"
             type="date"
@@ -37,8 +41,9 @@
             class="custom-datepicker w-full"
             ></date-picker>
         </div>
+
       </div>
-    </header>
+    </div>
 
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
