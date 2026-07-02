@@ -96,35 +96,55 @@
 
       <template v-slot:description>
         <div class="mt-6 space-y-6">
-          <div v-if="ticketDetails" class="relative overflow-hidden flex flex-col md:grid md:grid-cols-2 gap-6 bg-gradient-to-r from-brand-900 to-brand-700 dark:from-navy-900 dark:to-navy-800 p-6 md:p-8 rounded-3xl border border-brand-800 shadow-xl">
-            <div class="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-32 text-white">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
-              </svg>
+          <div v-if="ticketDetails" class="relative overflow-hidden flex flex-col items-center bg-white dark:bg-navy-900 p-8 rounded-sm shadow-2xl border-2 border-dashed border-gray-300 dark:border-navy-600 max-w-md mx-auto text-navy-800 dark:text-white">
+            
+            <div class="w-full text-center border-b-2 border-dashed border-gray-200 dark:border-navy-700 pb-6 mb-6">
+               <h3 class="text-2xl font-black tracking-widest uppercase text-navy-900 dark:text-white">MaxiLotto</h3>
+               <p class="text-sm font-bold text-navy-500 dark:text-navy-400 mt-1 uppercase">Official Ticket Receipt</p>
+               <p class="text-xs text-navy-500 dark:text-navy-400 mt-4 font-mono">ID: #{{ ticketDetails.id }}</p>
+               <p class="text-xs text-navy-500 dark:text-navy-400 font-mono mt-1">Cashier: {{ ticketDetails.playedBy }}</p>
             </div>
-            <div class="relative z-10 flex flex-col">
-              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Ticket ID</p>
-              <p class="text-lg font-bold text-white mt-1">#{{ ticketDetails.id }}</p>
-            </div>
-            <div class="md:text-right relative z-10 flex flex-col md:items-end">
-              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Played By</p>
-              <div class="inline-flex items-center gap-2 mt-1 px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 shadow-sm w-fit">
-                 <div class="size-5 rounded-full bg-brand-500 flex items-center justify-center">
-                    <svg class="size-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                 </div>
-                 <p class="text-sm font-bold text-white">{{ ticketDetails.playedBy }}</p>
+
+            <div class="w-full space-y-4">
+              <div class="flex justify-between items-end border-b-2 border-dashed border-gray-200 dark:border-navy-700 pb-4 mb-4">
+                 <span class="text-sm font-bold text-navy-500 dark:text-navy-400 uppercase">Total Stake</span>
+                 <span class="text-2xl font-black">₦ {{ ticketDetails.amount }}</span>
+              </div>
+              <div class="w-full">
+                 <p class="text-center text-xs font-bold text-navy-400 uppercase tracking-widest mb-4">Bet Slips</p>
+                 <TicketTable :betslips="ticketDetails?.betslips"></TicketTable>
               </div>
             </div>
-            <div class="mt-2 md:mt-4 relative z-10">
-              <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Total Stake</p>
-              <p class="text-3xl font-black text-white mt-1">₦ {{ ticketDetails.amount }}</p>
-            </div>
-          </div>
-          
-          <div class="mt-4">
-            <h6 class="text-sm font-bold text-navy-700 dark:text-white mb-4 ml-1">Bet Slips</h6>
-            <div class="bg-white/50 dark:bg-navy-800/50 rounded-3xl overflow-hidden">
-              <TicketTable :betslips="ticketDetails?.betslips"></TicketTable>
+
+            <div class="w-full flex flex-col items-center mt-8 opacity-60">
+               <!-- Barcode placeholder -->
+               <svg class="h-12 w-full max-w-[200px]" preserveAspectRatio="none" viewBox="0 0 200 40">
+                  <rect x="0" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="8" y="0" width="2" height="40" fill="currentColor" />
+                  <rect x="14" y="0" width="8" height="40" fill="currentColor" />
+                  <rect x="26" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="34" y="0" width="2" height="40" fill="currentColor" />
+                  <rect x="40" y="0" width="6" height="40" fill="currentColor" />
+                  <rect x="50" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="58" y="0" width="8" height="40" fill="currentColor" />
+                  <rect x="70" y="0" width="2" height="40" fill="currentColor" />
+                  <rect x="76" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="84" y="0" width="6" height="40" fill="currentColor" />
+                  <rect x="94" y="0" width="2" height="40" fill="currentColor" />
+                  <rect x="100" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="108" y="0" width="8" height="40" fill="currentColor" />
+                  <rect x="120" y="0" width="2" height="40" fill="currentColor" />
+                  <rect x="126" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="134" y="0" width="6" height="40" fill="currentColor" />
+                  <rect x="144" y="0" width="2" height="40" fill="currentColor" />
+                  <rect x="150" y="0" width="8" height="40" fill="currentColor" />
+                  <rect x="162" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="170" y="0" width="2" height="40" fill="currentColor" />
+                  <rect x="176" y="0" width="6" height="40" fill="currentColor" />
+                  <rect x="186" y="0" width="4" height="40" fill="currentColor" />
+                  <rect x="194" y="0" width="6" height="40" fill="currentColor" />
+               </svg>
+               <p class="text-[10px] text-navy-400 font-mono mt-2 tracking-widest">{{ ticketDetails.id }}</p>
             </div>
           </div>
         </div>

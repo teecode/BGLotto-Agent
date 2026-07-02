@@ -7,7 +7,7 @@
           <h2 class="text-2xl lg:text-3xl font-bold text-navy-700 dark:text-white tracking-tight">
             Welcome back, {{ authStore.user.firstName }}!
           </h2>
-          <p class="text-navy-400 font-medium">Here's what's happening in your shop today.</p>
+          <p class="text-navy-400 font-medium">Here's what's happening in your shop today, <span class="font-bold text-brand-500">{{ format(new Date(), 'dd MMM, yyyy') }}</span>.</p>
         </div>
         
         <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -199,7 +199,7 @@
         @dateUpdated="updateDateChanged"
         :dataCount="userStats.length"
       >
-        <template #tableheadertext>Shop Performance History</template>
+        <template #tableheadertext>Daily Live Sales History</template>
         <template #item-dateFromLong="{ dateFromLong }">
           <span class="font-bold text-navy-700 dark:text-navy-200">
             {{ format(new Date(dateFromLong), 'dd MMM, yyyy') }}

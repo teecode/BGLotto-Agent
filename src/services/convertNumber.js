@@ -1,8 +1,9 @@
 export function convertNumber(item) {
-    if(item === ''){
-        return null
+    if(item === '' || item === null || item === undefined){
+        return null;
     } else {
-        return item?.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+        const num = Number(item);
+        if (isNaN(num)) return item;
+        return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-   
 }
