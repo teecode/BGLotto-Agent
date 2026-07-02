@@ -36,33 +36,35 @@
 
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-navy-700 dark:text-white">Cashier Report</h3>
+            <div class="px-3 py-1 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 font-semibold rounded-lg text-sm">
+                {{ startDate }} to {{ endDate }}
+            </div>
+        </div>
+        
       <AppTable
         :header="cashierTableHeader"
         :fields="selectedCashier"
         :loading="loading2"
         :empty="error"
       >
-        <template #item-dateFromLong="{ dateFromLong }">
-          <span class="font-bold text-navy-700 dark:text-navy-200">
-            {{ format(new Date(dateFromLong), 'dd MMM, yyyy') }}
-          </span>
-        </template>
         <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
         <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
-        <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
+        <template #item-netSales="{ sales, cancelled }">₦ {{ convertNumber(sales - cancelled) }}</template>
         <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
         <template #item-paid="{ paid }">₦ {{ convertNumber(paid) }}</template>
+        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
+        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
+        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
+        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
+        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
+        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
         <template #item-net_Balance="{ net_Balance }">
           <span :class="net_Balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
             ₦ {{ convertNumber(net_Balance) }}
           </span>
         </template>
-        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
-        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
-        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
-        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
-        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
-        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
       </AppTable>
     </div>
   </div>
@@ -85,11 +87,11 @@ const snackbar = useSnackbar()
 const authStore = useAuthStore()
 const router = useRouter()
 
-let cashierDets = reactive([])
+let cashierDets = ref([])
 
 const userId = ref(Number(authStore.user.shopId))
 
-let date = ref()
+let date = ref([format(new Date(), 'yyyy-MM-dd'), format(new Date(), 'yyyy-MM-dd')])
 let loading = ref(false)
 let error = ref(false)
 let loading2 = ref(false)
@@ -99,10 +101,6 @@ let endDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const selectedCashier = ref([])
 
 let cashierTableHeader = reactive([
-  {
-    label: 'Date',
-    key: 'dateFromLong'
-  },
   {
     label: 'Cashier',
     key: 'customerUsername'
@@ -123,7 +121,6 @@ let cashierTableHeader = reactive([
     label: 'Net Sales',
     key: 'netSales'
   },
-
   {
     label: 'Commission',
     key: 'commission'
@@ -137,24 +134,24 @@ let cashierTableHeader = reactive([
     key: 'lotto590Sales'
   },
   {
-    label: '5/90 Claimed',
-    key: 'lotto590Winnings'
-  },
-  {
     label: '5/90 Comm.',
     key: 'lotto590Commission'
+  },
+  {
+    label: '5/90 Claimed',
+    key: 'lotto590Winnings'
   },
   {
     label: 'Accum. Sales',
     key: 'accumulatorSales'
   },
   {
-    label: 'Accum. Claimed',
-    key: 'accumulatorWinnings'
-  },
-  {
     label: 'Accum. Comm.',
     key: 'accumulatorCommission'
+  },
+  {
+    label: 'Accum. Claimed',
+    key: 'accumulatorWinnings'
   },
   {
     label: 'Balance',
@@ -163,19 +160,22 @@ let cashierTableHeader = reactive([
 ])
 
 const updateDateFilter = () => {
-  startDate.value = date.value[0]
-  endDate.value = date.value[1]
+  if (date.value && date.value.length === 2) {
+    startDate.value = date.value[0]
+    endDate.value = date.value[1]
+  }
 }
 
 const fetchCasheirs = async () => {
   try {
     loading.value = true
     const res = await axios.get(`Retail/cashiers?ShopId=${userId.value}`)
-    cashierDets = res.data.data
+    cashierDets.value = res.data.data
     // totalData.value = res.data.totalCount;
     // totalPages.value = res.data.totalPages;
     loading.value = false
   } catch (err) {
+    loading.value = false
     snackbar.add({
       type: 'error',
       text: `Please contact support ${err.message}`
@@ -186,16 +186,19 @@ const fetchCasheirs = async () => {
 const getCashierDetails = async () => {
   try {
     loading2.value = true
+    error.value = false
     const res = await axios.get(
       `report/customerterminal/dailygame?fromDate=${startDate.value}&toDate=${endDate.value}&shopCode=${authStore.user.shopCode}&CashierId=${cashierId.value}`
     )
-    selectedCashier.value = res.data.items
-    if (selectedCashier.length == 0) {
+    selectedCashier.value = res.data.items || []
+    if (selectedCashier.value.length === 0) {
       error.value = true
     }
     loading2.value = false
   } catch (err) {
     console.log(err)
+    loading2.value = false
+    error.value = true
   }
 }
 

@@ -81,40 +81,37 @@
         <!-- Accum. Claimed -->
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Claimed</p>
-          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorWinnings) }}</p>
-        </div>
-        <!-- Accum. Comm -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Commission</p>
-          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorCommission) }}</p>
-        </div>
-    </div>
-
-    <!-- Content Card (Table) -->
+    <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-navy-700 dark:text-white">Game Report</h3>
+            <div class="px-3 py-1 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 font-semibold rounded-lg text-sm">
+                {{ yesterday }} to {{ today }}
+            </div>
+        </div>
+        
       <AppTable
         :header="tableHeader"
         :fields="shopTableStats"
         :loading="loading"
-        :dataCount="shopTableStats.length"
         :empty="error"
       >
         <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
         <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
-        <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
-        <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
+        <template #item-netSales="{ sales, cancelled }">₦ {{ convertNumber(sales - cancelled) }}</template>
         <template #item-commision="{ commision }">₦ {{ convertNumber(commision) }}</template>
+        <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
+        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
+        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
+        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
+        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
+        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
+        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
         <template #item-net_Balance="{ net_Balance }">
           <span :class="net_Balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
             ₦ {{ convertNumber(net_Balance) }}
           </span>
         </template>
-        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
-        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
-        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
-        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
-        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
-        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
       </AppTable>
     </div>
   </div>
@@ -138,7 +135,7 @@ const aDayAgo = new Date()
 aDayAgo.setDate(aDayAgo.getDate() - 1)
 let yesterday = ref(format(new Date(aDayAgo), 'yyyy-MM-dd'))
 let loading = ref(false)
-let setNewDate = ref(new Date())
+let setNewDate = ref([format(new Date(aDayAgo), 'yyyy-MM-dd'), format(new Date(), 'yyyy-MM-dd')])
 let error = ref(false)
 
 const shopStats = ref([])
@@ -146,10 +143,6 @@ const shopTableStats = ref([])
 const userCode = ref(authStore.user.shopCode)
 
 let tableHeader = reactive([
-  {
-    label: 'Date',
-    key: 'date'
-  },
   {
     label: 'Game',
     key: 'gameName'
@@ -167,36 +160,36 @@ let tableHeader = reactive([
     key: 'netSales'
   },
   {
-    label: 'Claimed',
-    key: 'claimed'
-  },
-  {
     label: 'Commission',
     key: 'commision'
+  },
+  {
+    label: 'Claimed',
+    key: 'claimed'
   },
   {
     label: '5/90 Sales',
     key: 'lotto590Sales'
   },
   {
-    label: '5/90 Claimed',
-    key: 'lotto590Winnings'
-  },
-  {
     label: '5/90 Comm.',
     key: 'lotto590Commission'
+  },
+  {
+    label: '5/90 Claimed',
+    key: 'lotto590Winnings'
   },
   {
     label: 'Accum. Sales',
     key: 'accumulatorSales'
   },
   {
-    label: 'Accum. Claimed',
-    key: 'accumulatorWinnings'
-  },
-  {
     label: 'Accum. Comm.',
     key: 'accumulatorCommission'
+  },
+  {
+    label: 'Accum. Claimed',
+    key: 'accumulatorWinnings'
   },
   {
     label: 'Balance',
@@ -205,26 +198,32 @@ let tableHeader = reactive([
 ])
 
 const updateDate = () => {
-  today.value = setNewDate.value[1]
-  yesterday.value = setNewDate.value[0]
+  if (setNewDate.value && setNewDate.value.length === 2) {
+    yesterday.value = setNewDate.value[0]
+    today.value = setNewDate.value[1]
+  }
 }
 
 const fetchShopGameStats = async () => {
   try {
     loading.value = true
+    error.value = false
     const res = await axios.get(
       `report/DailyGameReportByShop?FromDate=${yesterday.value}&ToDate=${today.value}&ShopCode=${userCode.value}`
     )
     shopStats.value = res.data
-    shopTableStats.value = res.data.items
+    shopTableStats.value = res.data.items || []
     loading.value = false
-    if (shopTableStats.value.length == 0) {
+    if (shopTableStats.value.length === 0) {
       error.value = true
     }
   } catch (err) {
+    console.log(err)
+    loading.value = false
+    error.value = true
     snackbar.add({
       type: 'error',
-      text: `Please contact support ${err.message}`
+      text: `Failed to load stats: ${err.message}`
     })
   }
 }
@@ -239,12 +238,3 @@ watchEffect(() => {
 </script>
 
 <style scoped></style>
-
-<!-- const fetchShopGameStats = async() => {
-    try{
-    const res = await axios.get(`report/DailyGameReportByShop?FromDate=2024-06-05&ToDate=2024-06-09&ShopCode=LAG/UNISOFT `)
-    console.log(res)
-    } catch(err){
-
-    }
-}; -->
