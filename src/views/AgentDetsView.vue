@@ -132,7 +132,34 @@
           </div>
         </div>
       </div>
-
+    </div>
+    
+    <!-- Terminal Allocation Section -->
+    <div v-if="!loading" class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full flex flex-col">
+      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-navy-700">
+        <div class="p-2.5 rounded-xl bg-green-50 text-brand-500 dark:bg-navy-900">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-navy-700 dark:text-white">Cashier Terminal Allocation</h3>
+      </div>
+      
+      <AppTable
+        :header="terminalTableHeader"
+        :fields="terminals"
+        :loading="loadingTerminals"
+        :empty="terminalsError"
+      >
+        <template #item-isActive="{ isActive }">
+          <span :class="isActive ? 'text-green-500 bg-green-50 px-2 py-1 rounded text-xs font-bold' : 'text-red-500 bg-red-50 px-2 py-1 rounded text-xs font-bold'">
+            {{ isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </template>
+        <template #item-customerName="{ customerName }">
+          <span class="font-medium text-navy-700 dark:text-white">{{ customerName || 'Unassigned' }}</span>
+        </template>
+      </AppTable>
     </div>
   </div>
 </template>
@@ -146,6 +173,7 @@ import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
 import logOut from '../services/logout';
 import Spinner from '../components/Spinner.vue';
+import AppTable from '@/components/AppTable.vue';
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
 const router = useRouter();
@@ -158,6 +186,16 @@ const user = ref([]);
 
 const userId = ref(Number(authStore.user.shopId));
 let loading = ref()
+
+let loadingTerminals = ref(false)
+let terminalsError = ref(false)
+let terminals = ref([])
+
+let terminalTableHeader = reactive([
+  { label: 'Terminal ID', key: 'terminalId' },
+  { label: 'Cashier Name', key: 'customerName' },
+  { label: 'Status', key: 'isActive' }
+])
 
 const fetchUserdets = async () => {
     try {
@@ -178,8 +216,30 @@ const fetchUserdets = async () => {
     }
 };
 
+const fetchTerminals = async () => {
+    try {
+        loadingTerminals.value = true;
+        terminalsError.value = false;
+        const res = await axios.get(`Terminal/terminals?ShopId=${userId.value}`);
+        terminals.value = res.data.data || [];
+        if (terminals.value.length === 0) {
+            terminalsError.value = true;
+        }
+        loadingTerminals.value = false;
+    } catch (err) {
+        console.log(err)
+        terminalsError.value = true;
+        loadingTerminals.value = false;
+        snackbar.add({
+            type: 'error',
+            text: `Failed to fetch terminals: ${err.message}`
+        });
+    }
+};
+
 onMounted(() => {
     fetchUserdets();
+    fetchTerminals();
 });
 
 
