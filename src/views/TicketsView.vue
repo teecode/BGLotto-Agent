@@ -44,15 +44,7 @@
       <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
         <h3 class="text-sm font-medium text-navy-400 mb-2">Stake (Current Page)</h3>
         <p class="text-3xl font-bold text-brand-500">₦ {{ totalAmount.toLocaleString() }}</p>
-      </div>
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Paid (Current Page)</h3>
-        <p class="text-3xl font-bold text-blue-500">₦ {{ totalPaidAmount.toLocaleString() }}</p>
-      </div>
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Lost (Current Page)</h3>
-        <p class="text-3xl font-bold text-red-500">₦ {{ totalLostAmount.toLocaleString() }}</p>
-      </div>
+      </div>     
       <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
         <h3 class="text-sm font-medium text-navy-400 mb-2">Cancelled (Current Page)</h3>
         <p class="text-3xl font-bold text-gray-500">₦ {{ totalCancelledAmount.toLocaleString() }}</p>
@@ -60,6 +52,10 @@
       <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
         <h3 class="text-sm font-medium text-navy-400 mb-2">Undecided (Current Page)</h3>
         <p class="text-3xl font-bold text-yellow-500">₦ {{ totalUndecidedAmount.toLocaleString() }}</p>
+      </div>
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Paid (Current Page)</h3>
+        <p class="text-3xl font-bold text-blue-500">₦ {{ totalPaidAmount.toLocaleString() }}</p>
       </div>
     </div>
 
