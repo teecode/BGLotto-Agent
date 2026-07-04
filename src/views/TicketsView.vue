@@ -35,6 +35,18 @@
       </div>
     </header>
 
+    <!-- Summary Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" v-if="totalData !== null">
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Total Tickets Returned</h3>
+        <p class="text-3xl font-bold text-navy-700 dark:text-white">{{ totalData }}</p>
+      </div>
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Total Amount (Current Page)</h3>
+        <p class="text-3xl font-bold text-brand-500">₦ {{ totalAmount.toLocaleString() }}</p>
+      </div>
+    </div>
+
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700">
       <AppTable 
@@ -165,7 +177,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watchEffect } from 'vue';
+import { ref, reactive, onMounted, watchEffect, computed } from 'vue';
 import axios from 'axios';
 import { useSnackbar } from "vue3-snackbar";
 import { useAuthStore } from '@/stores/auth';
@@ -187,12 +199,15 @@ let cashierDets = reactive([]);
 let loading = ref(false);
 let totalData = ref(null);
 let totalPages = ref(0);
-let pageSize = ref(10);
+let pageSize = ref(100);
 let selectedCashier = ref("");
 let error = ref(false);
 let showModal = ref(false);
 let ticketDetails = ref([]);
 
+const totalAmount = computed(() => {
+    return tickets.value.reduce((sum, t) => sum + (t.amount || 0), 0);
+});
 
 let ticketsTableHeader = reactive([
     {
@@ -206,6 +221,10 @@ let ticketsTableHeader = reactive([
     {
         label: "Cashier",
         key: "playedBy"
+    },
+    {
+        label: "Shop Name",
+        key: "shopName"
     },
     {
         label: "Game",
