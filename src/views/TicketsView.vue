@@ -36,14 +36,30 @@
     </header>
 
     <!-- Summary Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" v-if="totalData !== null">
+    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-6 mb-6" v-if="totalData !== null">
       <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
         <h3 class="text-sm font-medium text-navy-400 mb-2">Total Tickets Returned</h3>
         <p class="text-3xl font-bold text-navy-700 dark:text-white">{{ totalData }}</p>
       </div>
       <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Total Amount (Current Page)</h3>
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Stake (Current Page)</h3>
         <p class="text-3xl font-bold text-brand-500">₦ {{ totalAmount.toLocaleString() }}</p>
+      </div>
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Paid (Current Page)</h3>
+        <p class="text-3xl font-bold text-blue-500">₦ {{ totalPaidAmount.toLocaleString() }}</p>
+      </div>
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Lost (Current Page)</h3>
+        <p class="text-3xl font-bold text-red-500">₦ {{ totalLostAmount.toLocaleString() }}</p>
+      </div>
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Cancelled (Current Page)</h3>
+        <p class="text-3xl font-bold text-gray-500">₦ {{ totalCancelledAmount.toLocaleString() }}</p>
+      </div>
+      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
+        <h3 class="text-sm font-medium text-navy-400 mb-2">Undecided (Current Page)</h3>
+        <p class="text-3xl font-bold text-yellow-500">₦ {{ totalUndecidedAmount.toLocaleString() }}</p>
       </div>
     </div>
 
@@ -207,6 +223,36 @@ let ticketDetails = ref([]);
 
 const totalAmount = computed(() => {
     return tickets.value.reduce((sum, t) => sum + (t.amount || 0), 0);
+});
+
+const totalWonAmount = computed(() => {
+    return tickets.value
+        .filter(t => t.status?.name === 'Won' || t.status?.name === 'Paid')
+        .reduce((sum, t) => sum + (t.wonAmount || 0), 0);
+});
+
+const totalPaidAmount = computed(() => {
+    return tickets.value
+        .filter(t => t.status?.name === 'Paid')
+        .reduce((sum, t) => sum + (t.wonAmount || 0), 0);
+});
+
+const totalCancelledAmount = computed(() => {
+    return tickets.value
+        .filter(t => t.status?.name === 'Cancelled')
+        .reduce((sum, t) => sum + (t.amount || 0), 0);
+});
+
+const totalUndecidedAmount = computed(() => {
+    return tickets.value
+        .filter(t => t.status?.name === 'Undecided')
+        .reduce((sum, t) => sum + (t.amount || 0), 0);
+});
+
+const totalLostAmount = computed(() => {
+    return tickets.value
+        .filter(t => t.status?.name === 'Lost')
+        .reduce((sum, t) => sum + (t.amount || 0), 0);
 });
 
 let ticketsTableHeader = reactive([
