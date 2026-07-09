@@ -15,7 +15,7 @@
             :dataCount="cashierDets.length" :empty="error">
 
             <template #item-action="item">
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2">
                     <button v-if="isPrincipalAgent" @click="editCashier(item)"
                         class="px-4 py-2 bg-brand-50 hover:bg-brand-100 dark:bg-navy-900 dark:hover:bg-navy-700 text-brand-500 font-bold rounded-xl text-xs transition-all active:scale-[0.95]">
                         Edit Cashier
