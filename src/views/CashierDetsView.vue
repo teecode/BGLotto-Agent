@@ -322,7 +322,7 @@ const updateCashierPassword = async () => {
 
     try {
         passwordLoading.value = true;
-        const res = await axios.put('Retail/cashier-password', {
+        const res = await axios.post('Retail/cashier-password', {
             cashierId: passwordCashier.id,
             newPassword: newPassword.value
         });
