@@ -22,7 +22,12 @@ function inline(text) {
 
 export function renderMarkdown(md) {
   if (!md) return ''
-  const escaped = escapeHtml(md)
+  // Normalize CRLF/CR to LF first - otherwise a stray trailing \r survives
+  // the later split('\n') calls, and since JS regex `.` and `$` don't match
+  // or anchor across \r, every ^...$ anchored rule below (headings, in
+  // particular) silently fails to match on Windows-authored content.
+  const normalized = md.replace(/\r\n?/g, '\n')
+  const escaped = escapeHtml(normalized)
   const blocks = escaped.split(/\n\s*\n/)
 
   return blocks
