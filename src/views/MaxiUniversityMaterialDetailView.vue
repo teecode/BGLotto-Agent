@@ -84,25 +84,68 @@
           </a>
         </div>
       </div>
+
+      <!-- Previous / Next -->
+      <div v-if="prevEntry || nextEntry" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          v-if="prevEntry"
+          type="button"
+          @click="goTo(prevEntry)"
+          class="flex items-center gap-3 p-5 rounded-2xl bg-white dark:bg-navy-800 shadow-sm border border-gray-100 dark:border-navy-700 hover:border-brand-200 dark:hover:border-brand-500/30 hover:shadow-md transition-all text-left"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-300 shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-navy-300">Previous</p>
+            <p class="font-bold text-navy-700 dark:text-white truncate">{{ prevEntry.subject }}</p>
+          </div>
+        </button>
+        <div v-else class="hidden sm:block"></div>
+
+        <button
+          v-if="nextEntry"
+          type="button"
+          @click="goTo(nextEntry)"
+          class="flex items-center justify-end gap-3 p-5 rounded-2xl bg-white dark:bg-navy-800 shadow-sm border border-gray-100 dark:border-navy-700 hover:border-brand-200 dark:hover:border-brand-500/30 hover:shadow-md transition-all text-right"
+        >
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-navy-300">Next</p>
+            <p class="font-bold text-navy-700 dark:text-white truncate">{{ nextEntry.subject }}</p>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-300 shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+      </div>
+      <div v-else-if="curriculum.loaded" class="text-center py-4">
+        <p class="text-sm font-medium text-navy-400">You've reached the end of the course. Nice work.</p>
+      </div>
     </template>
 
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { getEmbed, formatBytes } from '@/services/mediaEmbed'
 import { renderMarkdown } from '@/services/markdown'
+import { useMaxiUniversityStore } from '@/stores/maxiUniversity'
 
 const route = useRoute()
+const router = useRouter()
 const snackbar = useSnackbar()
+const curriculum = useMaxiUniversityStore()
 
-const sectionId = route.params.sectionId
-const topicId = route.params.topicId
-const materialId = route.params.materialId
+// Computed, not plain consts - Previous/Next navigate within this same
+// component instance (Vue Router reuses it when only params change), so
+// these need to track the route reactively rather than freeze at first mount.
+const sectionId = computed(() => route.params.sectionId)
+const topicId = computed(() => route.params.topicId)
+const materialId = computed(() => route.params.materialId)
 
 const material = ref(null)
 const loading = ref(false)
@@ -110,10 +153,14 @@ const loading = ref(false)
 const embed = computed(() => getEmbed(material.value?.link))
 const renderedContent = computed(() => renderMarkdown(material.value?.content))
 
+const adjacent = computed(() => curriculum.getAdjacent(materialId.value))
+const prevEntry = computed(() => adjacent.value.prev)
+const nextEntry = computed(() => adjacent.value.next)
+
 const load = async () => {
   try {
     loading.value = true
-    const res = await axios.get(`MaxiUniversity/Agent/Materials/${materialId}`)
+    const res = await axios.get(`MaxiUniversity/Agent/Materials/${materialId.value}`)
     material.value = res.data ?? null
     if (material.value) recordView()
   } catch (err) {
@@ -125,14 +172,31 @@ const load = async () => {
 
 const recordView = async () => {
   try {
-    await axios.post(`MaxiUniversity/Agent/Materials/${materialId}/View`)
+    await axios.post(`MaxiUniversity/Agent/Materials/${materialId.value}/View`)
   } catch {
     // View tracking must never break content viewing - fail silently.
   }
 }
 
+const goTo = (entry) => {
+  if (!entry) return
+  router.push({
+    name: 'MaxiUniversityMaterialDetail',
+    params: { sectionId: entry.sectionId, topicId: entry.topicId, materialId: entry.materialId },
+  })
+}
+
+watch(
+  () => route.params.materialId,
+  () => {
+    load()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+)
+
 onMounted(() => {
   load()
+  curriculum.ensureLoaded()
 })
 </script>
 
