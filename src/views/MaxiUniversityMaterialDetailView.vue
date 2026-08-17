@@ -24,12 +24,21 @@
     <template v-else>
       <!-- Header -->
       <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
+        <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-50 text-brand-600 dark:bg-navy-900 dark:text-brand-400 mb-2">
+          {{ material.type }}
+        </span>
         <h2 class="text-2xl font-bold text-navy-700 dark:text-white">{{ material.subject }}</h2>
         <p class="text-navy-400 font-medium mt-2 whitespace-pre-line">{{ material.description }}</p>
       </header>
 
+      <!-- Text lesson content -->
+      <div v-if="material.type === 'Text' && material.content"
+        class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
+        <div class="md-content" v-html="renderedContent"></div>
+      </div>
+
       <!-- Media -->
-      <div v-if="material.link" class="bg-white dark:bg-navy-800 rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-navy-700">
+      <div v-if="material.type !== 'Text' && material.link" class="bg-white dark:bg-navy-800 rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-navy-700">
         <div v-if="embed.type === 'youtube' || embed.type === 'vimeo'" class="rounded-2xl overflow-hidden bg-black">
           <iframe :src="embed.embedUrl" class="w-full aspect-video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
@@ -86,6 +95,7 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { getEmbed, formatBytes } from '@/services/mediaEmbed'
+import { renderMarkdown } from '@/services/markdown'
 
 const route = useRoute()
 const snackbar = useSnackbar()
@@ -98,6 +108,7 @@ const material = ref(null)
 const loading = ref(false)
 
 const embed = computed(() => getEmbed(material.value?.link))
+const renderedContent = computed(() => renderMarkdown(material.value?.content))
 
 const load = async () => {
   try {
@@ -124,3 +135,71 @@ onMounted(() => {
   load()
 })
 </script>
+
+<style scoped>
+.md-content :deep(h1),
+.md-content :deep(h2),
+.md-content :deep(h3) {
+  font-weight: 700;
+  color: rgb(51 65 85 / 1);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.dark .md-content :deep(h1),
+.dark .md-content :deep(h2),
+.dark .md-content :deep(h3) {
+  color: white;
+}
+.md-content :deep(h1:first-child),
+.md-content :deep(h2:first-child),
+.md-content :deep(h3:first-child) {
+  margin-top: 0;
+}
+.md-content :deep(h1) { font-size: 1.375rem; }
+.md-content :deep(h2) { font-size: 1.2rem; }
+.md-content :deep(h3) { font-size: 1.05rem; }
+.md-content :deep(p) {
+  margin: 0.85em 0;
+  line-height: 1.65;
+}
+.md-content :deep(ul),
+.md-content :deep(ol) {
+  margin: 0.85em 0;
+  padding-left: 1.4em;
+  line-height: 1.65;
+}
+.md-content :deep(ul) { list-style: disc; }
+.md-content :deep(ol) { list-style: decimal; }
+.md-content :deep(li) { margin: 0.3em 0; }
+.md-content :deep(strong) { font-weight: 700; }
+.md-content :deep(em) { font-style: italic; }
+.md-content :deep(code) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  padding: 0.15em 0.4em;
+  border-radius: 0.35em;
+  background: rgb(244 247 254 / 1);
+}
+.dark .md-content :deep(code) { background: rgb(17 28 68 / 1); }
+.md-content :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.9em;
+}
+.md-content :deep(th),
+.md-content :deep(td) {
+  text-align: left;
+  padding: 0.55em 0.75em;
+  border: 1px solid rgb(243 244 246 / 1);
+}
+.dark .md-content :deep(th),
+.dark .md-content :deep(td) {
+  border-color: rgb(48 44 84 / 1);
+}
+.md-content :deep(th) {
+  font-weight: 700;
+  background: rgb(244 247 254 / 1);
+}
+.dark .md-content :deep(th) { background: rgb(17 28 68 / 1); }
+</style>

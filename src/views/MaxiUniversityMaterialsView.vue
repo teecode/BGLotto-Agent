@@ -39,7 +39,10 @@
           </svg>
         </div>
         <div class="min-w-0 flex-1">
-          <p class="font-bold text-navy-700 dark:text-white">{{ m.subject }}</p>
+          <div class="flex items-center gap-2 flex-wrap">
+            <p class="font-bold text-navy-700 dark:text-white">{{ m.subject }}</p>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-gray-100 text-navy-400 dark:bg-navy-900 dark:text-navy-300">{{ m.type }}</span>
+          </div>
           <p class="text-sm text-navy-400 font-medium mt-1 line-clamp-2">{{ m.description }}</p>
         </div>
         <span v-if="m.attachments?.length" class="shrink-0 text-[11px] font-bold px-2 py-1 rounded-full bg-brand-50 text-brand-600 dark:bg-navy-900 dark:text-brand-400">
