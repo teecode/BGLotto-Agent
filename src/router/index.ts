@@ -117,6 +117,26 @@ const router = createRouter({
           path: 'notifications',
           name: 'Notifications',
           component: () => import('../views/NotificationsView.vue')
+        },
+        {
+          path: 'maxi-university',
+          name: 'MaxiUniversity',
+          component: () => import('../views/MaxiUniversitySectionsView.vue')
+        },
+        {
+          path: 'maxi-university/sections/:sectionId',
+          name: 'MaxiUniversityTopics',
+          component: () => import('../views/MaxiUniversityTopicsView.vue')
+        },
+        {
+          path: 'maxi-university/sections/:sectionId/topics/:topicId',
+          name: 'MaxiUniversityMaterials',
+          component: () => import('../views/MaxiUniversityMaterialsView.vue')
+        },
+        {
+          path: 'maxi-university/sections/:sectionId/topics/:topicId/materials/:materialId',
+          name: 'MaxiUniversityMaterialDetail',
+          component: () => import('../views/MaxiUniversityMaterialDetailView.vue')
         }
       ]
     }

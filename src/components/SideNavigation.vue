@@ -34,6 +34,15 @@
                         </p>
                     </router-link>
 
+                    <router-link to="/dashboard/maxi-university" class="group flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-brand-50 dark:hover:bg-navy-700">
+                        <div class="p-2 rounded-lg bg-brand-50 dark:bg-navy-700 group-hover:bg-brand-500 group-hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                            </svg>
+                        </div>
+                        <p class="font-medium text-navy-700 dark:text-navy-300 group-hover:text-brand-500 dark:group-hover:text-white">Maxi University</p>
+                    </router-link>
+
                     <!-- Agency Management -->
                     <div class="w-full">
                         <div @click="openSub(1)" class="group flex items-center justify-between p-3 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-navy-700">
@@ -170,6 +179,13 @@
                     <span v-if="unreadCount > 0" class="px-2 py-0.5 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold rounded-full">
                         {{ unreadCount }}
                     </span>
+                </div>
+
+                <div @click="changeMobileRoute('/dashboard/maxi-university')" class="flex items-center gap-4 p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-navy-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-navy-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                    </svg>
+                    <span class="font-semibold text-navy-700 dark:text-white">Maxi University</span>
                 </div>
 
                 <!-- Agency Submenu Mobile -->
