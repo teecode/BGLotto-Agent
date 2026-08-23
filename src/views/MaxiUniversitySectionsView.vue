@@ -46,6 +46,27 @@
       </div>
     </div>
 
+    <!-- Quiz CTA -->
+    <div v-if="!loading" class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="size-12 rounded-2xl bg-brand-50 dark:bg-navy-700 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-brand-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </div>
+        <div>
+          <p class="font-bold text-navy-700 dark:text-white">Ready to test your knowledge?</p>
+          <p class="text-sm text-navy-400 font-medium mt-0.5">Take the assessment and earn your certificate.</p>
+        </div>
+      </div>
+      <router-link
+        to="/dashboard/maxi-university/quiz"
+        class="shrink-0 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl transition-colors active:scale-[0.98] whitespace-nowrap"
+      >
+        Take the Quiz
+      </router-link>
+    </div>
+
   </div>
 </template>
 

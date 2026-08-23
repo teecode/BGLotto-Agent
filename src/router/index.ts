@@ -137,6 +137,11 @@ const router = createRouter({
           path: 'maxi-university/sections/:sectionId/topics/:topicId/materials/:materialId',
           name: 'MaxiUniversityMaterialDetail',
           component: () => import('../views/MaxiUniversityMaterialDetailView.vue')
+        },
+        {
+          path: 'maxi-university/quiz',
+          name: 'MaxiUniversityQuiz',
+          component: () => import('../views/MaxiUniversityQuizView.vue')
         }
       ]
     }
