@@ -54,6 +54,7 @@
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-navy-700">
           <p class="text-xs font-semibold text-navy-400 uppercase tracking-wider">Total Claimed</p>
           <p class="text-xl font-bold text-navy-700 dark:text-white mt-1">₦ {{ fmt(stats.totalPaid) }}</p>
+          <p class="text-xs text-navy-400 font-medium mt-0.5">{{ stats.totalClaimedCount }} ticket{{ stats.totalClaimedCount !== 1 ? 's' : '' }}</p>
         </div>
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-navy-700">
           <p class="text-xs font-semibold text-navy-400 uppercase tracking-wider">Total Commission</p>
@@ -150,6 +151,7 @@
             <div class="bg-white dark:bg-navy-800 p-3">
               <p class="text-[10px] text-navy-400 uppercase font-semibold">Claimed</p>
               <p class="text-sm font-bold text-navy-700 dark:text-white mt-0.5">₦ {{ fmt(row.paid) }}</p>
+              <p class="text-[10px] text-navy-400 mt-0.5">{{ row.claimedCount ?? 0 }} ticket{{ (row.claimedCount ?? 0) !== 1 ? 's' : '' }}</p>
             </div>
           </div>
           <!-- Game breakdown -->
@@ -207,7 +209,10 @@
                 <td class="px-4 py-3 text-right text-navy-500 dark:text-navy-400">₦ {{ fmt(row.cancelled) }}</td>
                 <td class="px-4 py-3 text-right font-medium text-navy-700 dark:text-navy-200">₦ {{ fmt(row.netSales) }}</td>
                 <td class="px-4 py-3 text-right text-navy-500 dark:text-navy-400">₦ {{ fmt(row.commission) }}</td>
-                <td class="px-4 py-3 text-right text-navy-500 dark:text-navy-400">₦ {{ fmt(row.paid) }}</td>
+                <td class="px-4 py-3 text-right text-navy-500 dark:text-navy-400">
+                  ₦ {{ fmt(row.paid) }}
+                  <span class="block text-[10px] text-navy-300 dark:text-navy-500">{{ row.claimedCount ?? 0 }} ticket{{ (row.claimedCount ?? 0) !== 1 ? 's' : '' }}</span>
+                </td>
                 <td class="px-4 py-3 text-right font-bold" :class="row.netBalance < 0 ? 'text-red-500' : 'text-green-500'">
                   ₦ {{ fmt(row.netBalance) }}
                 </td>
@@ -257,7 +262,10 @@
               <td class="px-4 py-3 text-right font-bold text-navy-700 dark:text-white">₦ {{ fmt(stats.totalCancelled) }}</td>
               <td class="px-4 py-3 text-right font-bold text-navy-700 dark:text-white">₦ {{ fmt(stats.totalSales - stats.totalCancelled) }}</td>
               <td class="px-4 py-3 text-right font-bold text-navy-700 dark:text-white">₦ {{ fmt(stats.totalCommission) }}</td>
-              <td class="px-4 py-3 text-right font-bold text-navy-700 dark:text-white">₦ {{ fmt(stats.totalPaid) }}</td>
+              <td class="px-4 py-3 text-right font-bold text-navy-700 dark:text-white">
+                ₦ {{ fmt(stats.totalPaid) }}
+                <span class="block text-[10px] font-medium text-navy-400">{{ stats.totalClaimedCount }} ticket{{ stats.totalClaimedCount !== 1 ? 's' : '' }}</span>
+              </td>
               <td class="px-4 py-3 text-right font-bold" :class="stats.totalNetBalance < 0 ? 'text-red-500' : 'text-green-500'">
                 ₦ {{ fmt(stats.totalNetBalance) }}
               </td>
@@ -338,6 +346,7 @@ const stats = reactive({
   totalSales: 0,
   totalCancelled: 0,
   totalPaid: 0,
+  totalClaimedCount: 0,
   totalCommission: 0,
   totalNetBalance: 0,
   totalLotto590Sales: 0,
@@ -377,6 +386,7 @@ const load = async () => {
       totalSales: data.totalSales ?? 0,
       totalCancelled: data.totalCancelled ?? 0,
       totalPaid: data.totalPaid ?? 0,
+      totalClaimedCount: data.totalClaimedCount ?? 0,
       totalCommission: data.totalCommission ?? 0,
       totalNetBalance: data.totalNetBalance ?? 0,
       totalLotto590Sales: data.totalLotto590Sales ?? 0,
