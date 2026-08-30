@@ -46,6 +46,7 @@
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
           <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Claimed</p>
           <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalClaimed) }}</p>
+          <p class="text-[10px] text-navy-400 font-medium mt-1">{{ shopStats.totalClaimedCount ?? 0 }} ticket{{ (shopStats.totalClaimedCount ?? 0) !== 1 ? 's' : '' }}</p>
         </div>
         <!-- Commissions -->
         <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
@@ -110,6 +111,7 @@
         <template #item-netSales="{ sales, cancelled }">₦ {{ convertNumber(sales - cancelled) }}</template>
         <template #item-commision="{ commision }">₦ {{ convertNumber(commision) }}</template>
         <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
+        <template #item-claimedCount="{ claimedCount }">{{ claimedCount ?? 0 }}</template>
         <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
         <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
         <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
@@ -175,6 +177,10 @@ let tableHeader = reactive([
   {
     label: 'Claimed',
     key: 'claimed'
+  },
+  {
+    label: 'Claimed Count',
+    key: 'claimedCount'
   },
   {
     label: '5/90 Sales',

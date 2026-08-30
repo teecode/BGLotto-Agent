@@ -210,7 +210,8 @@
         <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
         <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
         <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
-        
+        <template #item-claimedCount="{ claimedCount }">{{ claimedCount ?? 0 }}</template>
+
         <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
         <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
         <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
@@ -362,7 +363,7 @@ const shopStatsList = computed(() => {
     { label: 'Total Sales', value: convertNumber(shopStats.value?.totalSales) || '0', subLabel: 'Today\'s total sales' },
     { label: 'Cancelled', value: convertNumber(shopStats.value?.totalCanceled) || '0', subLabel: 'Today\'s cancelled tickets' },
     { label: 'Net Sales', value: convertNumber(shopStats.value?.totalNetSales) || '0', subLabel: 'Today\'s net sales' },
-    { label: 'Claimed', value: convertNumber(shopStats.value?.totalClaimed) || '0', subLabel: 'Today\'s payouts' },
+    { label: 'Claimed', value: convertNumber(shopStats.value?.totalClaimed) || '0', subLabel: `${shopStats.value?.totalClaimedCount ?? 0} ticket${(shopStats.value?.totalClaimedCount ?? 0) !== 1 ? 's' : ''} claimed` },
     { label: 'Commission', value: convertNumber(shopStats.value?.totalCommission) || '0', subLabel: 'Today\'s earnings' },
     { label: 'Net Balance', value: convertNumber(shopStats.value?.totalNetBalance) || '0', subLabel: 'Today\'s net balance' },
     { label: '5/90 Sales', value: convertNumber(shopStats.value?.totalLotto590Sales) || '0', subLabel: '5/90 total sales' },
@@ -381,6 +382,7 @@ const tableHeader = [
   { label: 'Net Sales', key: 'netSales' },
   { label: 'Commission', key: 'commission' },
   { label: 'Claimed', key: 'claimed' },
+  { label: 'Claimed Count', key: 'claimedCount' },
   { label: '5/90 Sales', key: 'lotto590Sales' },
   { label: '5/90 Claimed', key: 'lotto590Winnings' },
   { label: '5/90 Comm.', key: 'lotto590Commission' },

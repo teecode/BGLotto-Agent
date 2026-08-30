@@ -56,6 +56,7 @@
       <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
         <h3 class="text-sm font-medium text-navy-400 mb-2">Paid (Current Page)</h3>
         <p class="text-3xl font-bold text-blue-500">₦ {{ totalPaidAmount.toLocaleString() }}</p>
+        <p class="text-xs text-navy-400 mt-1">{{ totalPaidCount }} ticket{{ totalPaidCount !== 1 ? 's' : '' }} claimed</p>
       </div>
     </div>
 
@@ -231,6 +232,10 @@ const totalPaidAmount = computed(() => {
     return tickets.value
         .filter(t => t.status?.name === 'Paid')
         .reduce((sum, t) => sum + (t.wonAmount || 0), 0);
+});
+
+const totalPaidCount = computed(() => {
+    return tickets.value.filter(t => t.status?.name === 'Paid').length;
 });
 
 const totalCancelledAmount = computed(() => {

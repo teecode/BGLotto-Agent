@@ -198,6 +198,7 @@
             <div class="text-right">
               <p class="text-[10px] text-navy-400 uppercase font-semibold">Total Cashier Payout</p>
               <p class="text-sm font-bold text-green-600 dark:text-green-400">₦ {{ fmt(row.totalCashierPayout) }}</p>
+              <p class="text-[10px] text-navy-400 mt-0.5">{{ row.claimedCount }} claimed ticket{{ row.claimedCount !== 1 ? 's' : '' }}</p>
             </div>
           </div>
 
@@ -286,7 +287,10 @@
               <td class="px-4 py-3 text-right font-semibold text-green-600 dark:text-green-400">₦ {{ fmt(row.accumulatorCashierComm) }}</td>
               <td class="px-4 py-3 text-right text-purple-500">₦ {{ fmt(row.accumulatorPrincipalComm) }}</td>
               <!-- Total -->
-              <td class="px-4 py-3 text-right font-bold text-green-600 dark:text-green-400 border-l border-gray-100 dark:border-navy-700">₦ {{ fmt(row.totalCashierPayout) }}</td>
+              <td class="px-4 py-3 text-right font-bold text-green-600 dark:text-green-400 border-l border-gray-100 dark:border-navy-700">
+                ₦ {{ fmt(row.totalCashierPayout) }}
+                <span class="block text-[10px] font-medium text-navy-400">{{ row.claimedCount }} ticket{{ row.claimedCount !== 1 ? 's' : '' }}</span>
+              </td>
             </tr>
           </tbody>
           <tfoot>
@@ -300,7 +304,10 @@
               <td class="px-4 py-3 text-right text-navy-700 dark:text-white">₦ {{ fmt(totals.accumulatorTotalComm) }}</td>
               <td class="px-4 py-3 text-right text-green-600 dark:text-green-400">₦ {{ fmt(totals.accumulatorCashierComm) }}</td>
               <td class="px-4 py-3 text-right text-purple-500">₦ {{ fmt(totals.accumulatorPrincipalComm) }}</td>
-              <td class="px-4 py-3 text-right text-green-600 dark:text-green-400 border-l border-gray-100 dark:border-navy-700">₦ {{ fmt(totals.grandCashierComm) }}</td>
+              <td class="px-4 py-3 text-right text-green-600 dark:text-green-400 border-l border-gray-100 dark:border-navy-700">
+                ₦ {{ fmt(totals.grandCashierComm) }}
+                <span class="block text-[10px] font-medium text-navy-400">{{ totals.totalClaimedCount }} ticket{{ totals.totalClaimedCount !== 1 ? 's' : '' }}</span>
+              </td>
             </tr>
           </tfoot>
         </table>
@@ -357,6 +364,7 @@ const totals = reactive({
   accumulatorPrincipalComm: 0,
   grandCashierComm: 0,
   grandPrincipalComm: 0,
+  totalClaimedCount: 0,
 })
 
 const fmt = (val) => convertNumber(val ?? 0)
@@ -397,6 +405,7 @@ const calculate = async () => {
         cashierId: row.cashierId,
         cashierUsername: row.cashierUsername,
         cashierName: row.cashierName,
+        claimedCount: row.claimedCount ?? 0,
         lotto590Sales: row.lotto590Sales,
         lotto590TotalComm,
         lotto590CashierComm,
@@ -422,6 +431,7 @@ const calculate = async () => {
       accumulatorPrincipalComm: sum('accumulatorPrincipalComm'),
       grandCashierComm: round2(sum('lotto590CashierComm') + sum('accumulatorCashierComm')),
       grandPrincipalComm: round2(sum('lotto590PrincipalComm') + sum('accumulatorPrincipalComm')),
+      totalClaimedCount: sum('claimedCount'),
     })
 
     calcLoaded.value = true

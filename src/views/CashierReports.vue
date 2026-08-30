@@ -54,6 +54,7 @@
         <template #item-netSales="{ sales, cancelled }">₦ {{ convertNumber(sales - cancelled) }}</template>
         <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
         <template #item-paid="{ paid }">₦ {{ convertNumber(paid) }}</template>
+        <template #item-claimedCount="{ claimedCount }">{{ claimedCount ?? 0 }}</template>
         <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
         <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
         <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
@@ -128,6 +129,10 @@ let cashierTableHeader = reactive([
   {
     label: 'Claimed',
     key: 'paid'
+  },
+  {
+    label: 'Claimed Count',
+    key: 'claimedCount'
   },
   {
     label: '5/90 Sales',
