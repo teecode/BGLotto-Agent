@@ -23,6 +23,7 @@
         :fields="userPayouts" 
         :loading="loading" 
         :paginated="true"
+        :currentPage="page"
         @pageChange="updatePage" 
         :totalPages="totalPages" 
         :pageSize="pageSize" 
@@ -38,12 +39,12 @@
             <span class="font-bold text-navy-700 dark:text-navy-200">
               {{ format(new Date(requestedDate), 'dd MMM, yyyy') }}
             </span>
-            <p class="text-[10px] text-navy-300">{{ format(new Date(requestedDate), 'hh:mm a') }}</p>
+            <p class="text-[10px] text-navy-400">{{ format(new Date(requestedDate), 'hh:mm a') }}</p>
           </div>
         </template>
 
         <template #item-amount="{ amount }">
-          <span class="font-bold text-navy-700 dark:text-white">₦ {{ amount }}</span>
+          <span class="font-bold text-navy-700 dark:text-white">{{ moneyExact(amount) }}</span>
         </template>
 
         <template #item-isPaid="{ isPaid }">
@@ -91,7 +92,7 @@
                  </svg>
                </div>
                <div>
-                 <p class="text-[10px] uppercase font-bold text-navy-300">Target Bank Account</p>
+                 <p class="text-[10px] uppercase font-bold text-navy-400">Target Bank Account</p>
                  <p class="text-sm font-bold text-navy-700 dark:text-white">Settlement Account</p>
                </div>
              </div>
@@ -109,7 +110,7 @@
                 class="w-full pl-10 pr-4 py-4 bg-gray-50 dark:bg-navy-900 border-2 border-transparent focus:border-brand-500/20 rounded-2xl outline-none text-navy-700 dark:text-white font-bold transition-all"
               />
             </div>
-            <p class="text-[10px] text-navy-300 ml-1 italic">* Transaction fees may apply based on your plan.</p>
+            <p class="text-[10px] text-navy-400 ml-1 italic">* Transaction fees may apply based on your plan.</p>
           </div>
         </div>
       </template>
@@ -136,18 +137,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watchEffect, computed } from 'vue';
+import { moneyExact } from '@/services/format'
+import { ref, watchEffect, computed } from 'vue';
 import axios from 'axios';
 import { useSnackbar } from "vue3-snackbar";
 import { useAuthStore } from '../stores/auth';
-import { useRouter } from 'vue-router';
 import { format } from 'date-fns';
 import AppTable from '@/components/AppTable.vue';
 import Modal from '@/components/Modal.vue';
 
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
-const router = useRouter();
 
 const tableHeader = [
   { label: "Date", key: "requestedDate" },
@@ -166,7 +166,9 @@ const error = ref(false);
 const amount = ref("");
 const totalData = ref(null);
 const totalPages = ref(0);
-const pageSize = ref(10);
+const pageSize = ref(20);
+// The page of requests on screen; the pager below the list changes it
+const page = ref(1);
 const startDate = ref("");
 const endDate = ref("");
 const processing = ref(false);
@@ -174,10 +176,11 @@ const processing = ref(false);
 const fetchUserPayout = async () => {
     try {
         loading.value = true;
-        const res = await axios.get(`RetailFinance/Payouts?ShopId=${userId.value}&startDate=${startDate.value}&endDate=${endDate.value}`);
-        userPayouts.value = res.data.data;
-        totalData.value = res.data.totalCount;
-        totalPages.value = res.data.totalPages;
+        const res = await axios.get(`RetailFinance/Payouts?ShopId=${userId.value}&startDate=${startDate.value}&endDate=${endDate.value}&Page=${page.value}&PageSize=${pageSize.value}`);
+        // The API answers with no content at all when there is nothing in the range
+        userPayouts.value = res.data?.data || [];
+        totalData.value = res.data?.totalCount || 0;
+        totalPages.value = res.data?.totalPages || 0;
         error.value = userPayouts.value.length === 0;
     } catch (err) {
         snackbar.add({ type: 'error', text: `Failed to fetch payouts: ${err.message}` });
@@ -215,20 +218,20 @@ const isFormValid = computed(() => amount.value > 0);
 
 const updateDateChanged = (updateDate) => {
     if (updateDate) {
-        startDate.value = updateDate[0];
-        endDate.value = updateDate[1];
+        // Clearing the picker hands back empty values; that means "no date filter"
+        startDate.value = updateDate[0] || "";
+        endDate.value = updateDate[1] || "";
+        // A new range starts again from its first page
+        page.value = 1;
     }
 };
 
-const updatePage = (page) => {
-    // Implement pagination if API supports it
-    fetchUserPayout();
+const updatePage = (next) => {
+    // fetchUserPayout reads the page, so the watchEffect below asks for it
+    page.value = next;
 };
 
-onMounted(() => {
-    fetchUserPayout();
-});
-
+// watchEffect runs once straight away, and again whenever a filter it reads changes
 watchEffect(() => {
     fetchUserPayout();
 })

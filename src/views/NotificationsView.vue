@@ -76,7 +76,7 @@
                 </div>
                 <p class="text-sm text-navy-400 font-medium mt-1 line-clamp-2">{{ n.message }}</p>
               </div>
-              <span class="shrink-0 text-[11px] text-navy-300 font-medium whitespace-nowrap">{{ formatDate(n.createdAt) }}</span>
+              <span class="shrink-0 text-[11px] text-navy-400 font-medium whitespace-nowrap">{{ formatDate(n.createdAt) }}</span>
             </div>
           </div>
         </div>
@@ -129,7 +129,7 @@
           </div>
 
           <div class="pt-4 border-t border-gray-100 dark:border-navy-700 flex items-center justify-between gap-3 shrink-0">
-            <div class="flex items-center gap-2 text-xs text-navy-300">
+            <div class="flex items-center gap-2 text-xs text-navy-400">
               <span>{{ formatDate(selected.createdAt) }}</span>
               <span v-if="selected.isRead && selected.readAt" class="text-green-500 font-medium">
                 · Read {{ formatDate(selected.readAt) }}

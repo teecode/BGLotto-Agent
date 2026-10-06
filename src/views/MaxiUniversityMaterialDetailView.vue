@@ -78,7 +78,7 @@
                 <p class="text-xs text-navy-400 font-medium">{{ formatBytes(a.bytes) }}</p>
               </div>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-300 shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-400 shrink-0">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
           </a>
@@ -93,11 +93,11 @@
           @click="goTo(prevEntry)"
           class="flex items-center gap-3 p-5 rounded-2xl bg-white dark:bg-navy-800 shadow-sm border border-gray-100 dark:border-navy-700 hover:border-brand-200 dark:hover:border-brand-500/30 hover:shadow-md transition-all text-left"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-300 shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-400 shrink-0">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
           </svg>
           <div class="min-w-0">
-            <p class="text-[11px] font-bold uppercase tracking-wider text-navy-300">Previous</p>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-navy-400">Previous</p>
             <p class="font-bold text-navy-700 dark:text-white truncate">{{ prevEntry.subject }}</p>
           </div>
         </button>
@@ -110,10 +110,10 @@
           class="flex items-center justify-end gap-3 p-5 rounded-2xl bg-white dark:bg-navy-800 shadow-sm border border-gray-100 dark:border-navy-700 hover:border-brand-200 dark:hover:border-brand-500/30 hover:shadow-md transition-all text-right"
         >
           <div class="min-w-0">
-            <p class="text-[11px] font-bold uppercase tracking-wider text-navy-300">Next</p>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-navy-400">Next</p>
             <p class="font-bold text-navy-700 dark:text-white truncate">{{ nextEntry.subject }}</p>
           </div>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-300 shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-400 shrink-0">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
           </svg>
         </button>
@@ -130,14 +130,12 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
-import { useSnackbar } from 'vue3-snackbar'
 import { getEmbed, formatBytes } from '@/services/mediaEmbed'
 import { renderMarkdown } from '@/services/markdown'
 import { useMaxiUniversityStore } from '@/stores/maxiUniversity'
 
 const route = useRoute()
 const router = useRouter()
-const snackbar = useSnackbar()
 const curriculum = useMaxiUniversityStore()
 
 // Computed, not plain consts - Previous/Next navigate within this same

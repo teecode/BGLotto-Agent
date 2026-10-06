@@ -1,307 +1,387 @@
 <template>
-  <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <!-- Header Section -->
-    <header class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div class="space-y-2">
-          <h2 class="text-2xl lg:text-3xl font-bold text-navy-700 dark:text-white tracking-tight">
-            Welcome back, {{ authStore.user.firstName }}!
-          </h2>
-          <p class="text-navy-400 font-medium">Here's what's happening in your shop today, <span class="font-bold text-brand-500">{{ format(new Date(), 'dd MMM, yyyy') }}</span>.</p>
-        </div>
-        
-        <div class="flex flex-col sm:flex-row items-center gap-4">
-          <div class="bg-brand-50 dark:bg-navy-900 px-6 py-4 rounded-2xl border border-brand-100 dark:border-navy-700 w-full sm:w-auto">
-            <p class="text-[10px] uppercase tracking-widest font-bold text-brand-400 mb-1">Wallet Balance</p>
-            <p class="text-2xl font-bold text-navy-700 dark:text-white">₦ {{ walletBalance }}</p>
-          </div>
-          <button
-            @click="showModal = true"
-            class="w-full sm:w-auto bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-brand-500/30 transition-all active:scale-[0.98]"
-          >
-            Request Payout
-          </button>
-        </div>
+  <div class="space-y-5">
+    <!-- What is on screen, and the period it covers -->
+    <header class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div class="min-w-0">
+        <h1 class="text-2xl font-bold tracking-tight text-navy-700 dark:text-white">{{ greeting }}, {{ authStore.user.firstName || 'Agent' }}</h1>
+        <p class="mt-1 text-sm font-medium text-navy-400">
+          {{ periodText }}<span class="hidden sm:inline"> · compared with {{ comparedWith }}</span>
+        </p>
       </div>
-
-      <div class="mt-8 flex flex-wrap items-center gap-6 pt-6 border-t border-gray-100 dark:border-navy-700">
-        <div class="flex items-center gap-3">
-          <div class="size-10 rounded-xl bg-gray-50 dark:bg-navy-900 flex items-center justify-center text-brand-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5z" />
-            </svg>
-          </div>
-          <div>
-            <p class="text-[10px] uppercase font-bold text-navy-300">Account Number</p>
-            <p class="text-sm font-bold text-navy-700 dark:text-navy-100">{{ authStore.user.virtualAccountNumber }}</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="size-10 rounded-xl bg-gray-50 dark:bg-navy-900 flex items-center justify-center text-brand-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
-            </svg>
-          </div>
-          <div>
-            <p class="text-[10px] uppercase font-bold text-navy-300">Virtual Bank</p>
-            <p class="text-sm font-bold text-navy-700 dark:text-navy-100">{{ authStore.user.virtualAccountBank }}</p>
-          </div>
-        </div>
+      <div class="flex items-center gap-2">
+        <SegmentedControl v-model="period" :options="PERIODS" label="Period" />
+        <button
+          type="button"
+          class="btn-quiet shrink-0 px-3"
+          :disabled="loading"
+          :title="updatedAt ? `Updated ${clockTime(updatedAt)}` : 'Refresh'"
+          aria-label="Refresh figures"
+          @click="loadPeriod"
+        >
+          <AppIcon name="refresh" class="size-5" :class="loading ? 'animate-spin' : ''" />
+        </button>
       </div>
     </header>
 
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-      <div v-for="(stat, idx) in shopStatsList" :key="idx" 
-           class="bg-white dark:bg-navy-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-navy-700 hover:border-brand-500/30 transition-all group">
-        <p class="text-[10px] uppercase tracking-widest font-bold text-navy-300 mb-2 group-hover:text-brand-500 transition-colors">{{ stat.label }}</p>
-        <p class="text-lg lg:text-xl font-bold text-navy-700 dark:text-white truncate">₦ {{ stat.value }}</p>
-        <p v-if="stat.subLabel" class="text-[10px] text-navy-400 mt-1 font-medium italic opacity-70">{{ stat.subLabel }}</p>
+    <!-- Terminals at risk of being taken back -->
+    <section v-if="inoperativeTerminals.length > 0" class="rounded-3xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-500/40 dark:bg-amber-500/10 sm:p-5" aria-label="Terminal warning">
+      <div class="flex items-start gap-3">
+        <AppIcon name="warning" class="mt-0.5 size-6 text-amber-600 dark:text-amber-400" />
+        <div class="min-w-0 flex-1">
+          <h2 class="font-bold text-amber-900 dark:text-amber-200">
+            {{ inoperativeTerminals.length === 1 ? '1 terminal may be repossessed' : `${inoperativeTerminals.length} terminals may be repossessed` }}
+          </h2>
+          <p class="mt-0.5 text-sm text-amber-800 dark:text-amber-200/80">
+            Terminals that sell less than ₦5,000 in 7 days after being assigned are taken back.
+          </p>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            <li v-for="terminal in inoperativeTerminals" :key="terminal.terminalSerial" class="rounded-xl border border-amber-200 bg-white px-3 py-2 text-sm dark:border-amber-500/30 dark:bg-navy-800">
+              <p class="font-bold text-navy-700 dark:text-white">Terminal {{ terminal.terminalSerial }}</p>
+              <p class="text-navy-400">{{ terminal.cashierName || 'Unassigned' }} · {{ money(terminal.totalSales) }} in 7 days</p>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Inoperative Terminals Warning -->
-    <div v-if="inoperativeTerminals.length > 0" class="bg-amber-50 dark:bg-amber-900/20 border border-amber-500 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-      <div class="flex items-center gap-3 text-amber-800 dark:text-amber-500">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-        <h4 class="text-lg font-bold">Terminal Repossession Warning</h4>
-      </div>
-      <p class="text-amber-700 dark:text-amber-400 font-medium">
-        We will be repossessing the following terminals if they remain in-operative (sales less than ₦5,000 and assigned for more than 7 days).
+    <!-- A failed load says so, instead of showing zeros that look like a quiet day -->
+    <div v-if="error" class="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-red-200 bg-red-50 p-4 dark:border-red-500/30 dark:bg-red-500/10" role="alert">
+      <p class="flex items-center gap-3 text-sm font-semibold text-red-700 dark:text-red-300">
+        <AppIcon name="warning" class="size-5" />
+        <span>{{ error }}<template v-if="loaded && updatedAt"> The figures below are from {{ clockTime(updatedAt) }}.</template></span>
       </p>
-      <div class="flex flex-wrap gap-3">
-        <div v-for="(term, idx) in inoperativeTerminals" :key="idx" class="bg-white dark:bg-navy-800 border border-amber-200 dark:border-amber-700/50 rounded-xl px-4 py-3 shadow-sm min-w-[150px]">
-          <p class="text-base font-bold text-amber-500 uppercase tracking-widest mb-1">Terminal {{ term.terminalSerial }}</p>
-          <p class="text-xs text-navy-600 dark:text-navy-300 font-medium mb-1 truncate">{{ term.cashierName }} (@{{ term.cashierUsername }})</p>
-          <p class="text-sm font-bold text-navy-700 dark:text-white">7-Day Sales: ₦ {{ convertNumber(term.totalSales) }}</p>
-          <p class="text-[10px] font-medium text-navy-400 mt-1">Assigned: {{ term.assignedDate ? format(new Date(term.assignedDate), 'dd MMM, yyyy') : 'N/A' }}</p>
-        </div>
-      </div>
+      <button type="button" class="btn bg-red-600 text-white hover:bg-red-700" :disabled="loading" @click="loadPeriod">Try again</button>
     </div>
 
-    <!-- Games & Results Section -->
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-      <!-- Games Section -->
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
-        <div class="flex items-center justify-between mb-8">
-          <div>
-            <h4 class="text-xl font-bold text-navy-700 dark:text-white">Daily Live Sales</h4>
-            <p class="text-3xl font-bold text-brand-500 mt-1">₦ {{ convertNumber(dailySales.totalSales) || 0 }}</p>
-          </div>
-          <div class="size-14 bg-brand-50 dark:bg-navy-900 rounded-2xl flex items-center justify-center text-brand-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a.5.5 0 00.71 0L21.75 6.5M2.25 18V6.5h19.5V18" />
-            </svg>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <h4 class="text-sm font-bold text-navy-300 uppercase tracking-widest">Games of the day</h4>
-          
-          <div v-if="loading2" class="flex items-center justify-center py-10">
-            <Loading />
-          </div>
-          
-          <div v-else class="flex gap-4 overflow-x-auto pb-4 scroll-smooth custom-scrollbar">
-            <div v-for="game in dailyGames" :key="game.gameId"
-                 class="min-w-[160px] bg-gray-50 dark:bg-navy-900 p-4 rounded-2xl border border-transparent hover:border-brand-500/20 transition-all cursor-pointer group"
-                 :class="[!game.isActive ? 'opacity-40 grayscale' : '']">
-              <div class="relative mb-3">
-                <img :src="game.gameImageUrl ? (game.gameImageUrl.startsWith('http') ? game.gameImageUrl : `https://maxilotto.ng/${game.gameImageUrl.replace(/^\//, '')}`) : ''" :alt="game.gameName" class="w-20 h-20 object-contain mx-auto group-hover:scale-110 transition-transform">
-                <div v-if="game.isActive" class="absolute -top-1 -right-1 size-3 bg-green-500 rounded-full border-2 border-white dark:border-navy-900 shadow-sm animate-pulse"></div>
-              </div>
-              <div class="text-center space-y-1">
-                <p class="text-sm font-bold text-navy-700 dark:text-white truncate">{{ game.gameName }}</p>
-                <p class="text-[10px] font-bold text-brand-500">{{ game.gameCode }}</p>
-                <div class="pt-2 text-[10px] font-medium text-navy-400 space-y-0.5">
-                  <p>Start: {{ format(new Date(game.startDateTime), 'hh:mm a') }}</p>
-                  <p>End: {{ format(new Date(game.endDateTime), 'hh:mm a') }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Results Section -->
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700 overflow-hidden flex flex-col h-full">
-        <h4 class="text-xl font-bold text-navy-700 dark:text-white mb-6 shrink-0">Latest Results</h4>
-        
-        <div v-if="loading3" class="flex-1 flex items-center justify-center py-10">
-          <Loading />
-        </div>
-        <div v-else-if="error2 || !dailyGameResults.length" class="flex-1 flex items-center justify-center py-10 text-navy-400 font-medium">
-          No results found for today.
-        </div>
-        <div v-else class="space-y-4 overflow-y-auto custom-scrollbar flex-1 pr-2" style="max-height: 400px;">
-          <div v-for="(resultItem, idx) in dailyGameResults" :key="idx" class="p-4 sm:p-5 rounded-2xl bg-gray-50 dark:bg-navy-900/50 border border-gray-100 dark:border-navy-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 hover:bg-gray-100 dark:hover:bg-navy-900 transition-colors">
-            
-            <!-- Game Info -->
-            <div class="flex-1">
-              <p class="font-bold text-navy-700 dark:text-white text-base lg:text-lg">{{ resultItem.gameName }}</p>
-              <div class="flex items-center gap-2 mt-1.5 text-xs text-navy-400 font-medium">
-                <span v-if="resultItem.endDateTime" class="flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-3.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-                  Ended: {{ format(new Date(resultItem.endDateTime), 'hh:mm a') }}
-                </span>
-                <span v-else-if="resultItem.startDateTime" class="flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-3.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-                  Date: {{ format(new Date(resultItem.startDateTime), 'dd MMM, yyyy') }}
-                </span>
-              </div>
-            </div>
-            
-            <!-- Balls -->
-            <div class="space-y-3 w-full sm:w-auto">
-              <!-- Winning Balls -->
-              <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
-                <span class="text-[10px] sm:text-xs font-bold text-brand-500 uppercase tracking-widest bg-brand-50 dark:bg-brand-500/10 px-2 py-1 rounded-md">Win</span>
-                <div class="flex gap-2 sm:gap-2.5">
-                  <span v-for="i in 5" :key="`w-${i}`" class="size-8 sm:size-10 rounded-full bg-brand-500 text-white text-sm sm:text-base font-bold flex items-center justify-center shadow-md shadow-brand-500/20">
-                    {{ resultItem.result[`winningBall${i}`] }}
-                  </span>
-                </div>
-              </div>
-              
-              <!-- Machine Balls -->
-              <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
-                <span class="text-[10px] sm:text-xs font-bold text-navy-400 uppercase tracking-widest bg-gray-100 dark:bg-navy-800 px-2 py-1 rounded-md">Mac</span>
-                <div class="flex gap-2 sm:gap-2.5">
-                  <span v-for="i in 5" :key="`m-${i}`" class="size-8 sm:size-10 rounded-full bg-white dark:bg-navy-800 text-navy-700 dark:text-navy-300 border border-gray-200 dark:border-navy-700 text-sm sm:text-base font-bold flex items-center justify-center shadow-sm">
-                    {{ resultItem.result[`machineBall${i}`] }}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Stats Table -->
-    <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
-      <AppTable
-        :header="tableHeader"
-        :fields="userStats"
-        :loading="loading"
-        :totalPages="totalPages"
-        :pageSize="pageSize"
-        :totalRecords="totalData"
-        :empty="error"
-        :dateFilter="true"
-        @dateUpdated="updateDateChanged"
-        :dataCount="userStats.length"
-      >
-        <template #tableheadertext>Daily Live Sales History</template>
-        <template #item-dateFromLong="{ dateFromLong }">
-          <span class="font-bold text-navy-700 dark:text-navy-200">
-            {{ format(new Date(dateFromLong), 'dd MMM, yyyy') }}
-          </span>
-        </template>
-        <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
-        <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
-        <template #item-netSales="{ netSales }">₦ {{ convertNumber(netSales) }}</template>
-        <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
-        <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
-        <template #item-claimedCount="{ claimedCount }">{{ claimedCount ?? 0 }}</template>
-
-        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
-        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
-        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
-        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
-        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
-        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
-
-        <template #item-balance="{ balance }">
-          <span :class="balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
-            ₦ {{ convertNumber(balance) }}
-          </span>
-        </template>
-      </AppTable>
-    </div>
-
-    <!-- Shop Activities Table -->
-    <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-8 shadow-sm border border-gray-100 dark:border-navy-700">
-      <div class="flex items-center justify-between mb-6">
+    <!-- Wallet and the headline figures -->
+    <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+      <section class="flex flex-col justify-between gap-5 rounded-3xl bg-brand-600 p-5 text-white shadow-sm sm:p-6" aria-label="Wallet">
         <div>
-          <h4 class="text-xl font-bold text-navy-700 dark:text-white">Recent Shop Activities</h4>
-          <p class="text-sm font-medium text-navy-400 mt-1">Audit log of actions performed by your cashiers</p>
+          <p class="text-sm font-semibold text-white/80">Wallet balance</p>
+          <span v-if="!walletLoaded" class="skeleton mt-2 h-10 w-2/3 !bg-white/20"></span>
+          <p v-else class="tabular mt-1 whitespace-nowrap text-3xl font-bold tracking-tight sm:text-4xl">{{ moneyExact(walletBalance) }}</p>
         </div>
+
+        <div v-if="accountNumber" class="rounded-2xl bg-white/10 p-3.5">
+          <p class="text-xs font-semibold text-white/75">Fund your wallet by transfer to</p>
+          <div class="mt-1 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <p class="tabular truncate text-lg font-bold tracking-wide">{{ accountNumber }}</p>
+              <p class="truncate text-sm text-white/80">{{ accountBank }}</p>
+            </div>
+            <button type="button" class="btn shrink-0 bg-white/15 text-white hover:bg-white/25" @click="copyAccount">
+              <AppIcon :name="copied ? 'check' : 'copy'" class="size-5" />
+              {{ copied ? 'Copied' : 'Copy' }}
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="btn w-full bg-white py-3 text-base text-brand-700 hover:bg-brand-50" @click="showModal = true">
+          Request payout
+        </button>
+      </section>
+
+      <!-- With nothing loaded there are no figures to show: an empty space reads better than a row of ₦0 -->
+      <div v-if="!noFigures" class="grid grid-cols-2 gap-4 xl:col-span-2" :class="dimmed">
+        <StatTile
+          label="Net sales"
+          :value="money(current.netSales)"
+          :change="loaded ? change(current.netSales, previous.netSales) : null"
+          :previous="loaded && previous.netSales ? money(previous.netSales) : ''"
+          up-is="good"
+          :trend="days.map((day) => day.netSales)"
+          :loading="!loaded && !error"
+          hint="Stake placed, less the stake on cancelled tickets"
+        >
+          <!-- What the net figure is made of -->
+          <span class="tabular">Gross {{ money(current.sales) }} less {{ money(current.cancelled) }} cancelled</span>
+        </StatTile>
+        <StatTile
+          label="Commission earned"
+          :value="money(current.commission)"
+          :change="loaded ? change(current.commission, previous.commission) : null"
+          :previous="loaded && previous.commission ? money(previous.commission) : ''"
+          up-is="good"
+          :trend="days.map((day) => day.commission)"
+          :loading="!loaded && !error"
+          hint="Your commission on the period's sales"
+        >
+          <span class="tabular">{{ percent(current.commission, current.netSales) }} of net sales</span>
+        </StatTile>
+        <StatTile
+          label="Winnings paid"
+          :value="money(current.paid)"
+          :change="loaded ? change(current.paid, previous.paid) : null"
+          :previous="loaded && previous.paid ? money(previous.paid) : ''"
+          :trend="days.map((day) => day.paid)"
+          :loading="!loaded && !error"
+          hint="Winning tickets claimed and paid in your shop"
+        >
+          <span class="tabular">{{ count(current.paidCount) }} {{ current.paidCount === 1 ? 'ticket' : 'tickets' }} paid</span>
+        </StatTile>
+        <StatTile
+          label="Net balance"
+          :value="money(current.balance)"
+          :change="loaded ? change(current.balance, previous.balance) : null"
+          :previous="loaded && previous.balance ? money(previous.balance) : ''"
+          :trend="days.map((day) => day.balance)"
+          :loading="!loaded && !error"
+          hint="Net sales less commission and winnings paid"
+        >
+          <span>Net sales less commission and winnings paid</span>
+        </StatTile>
       </div>
-      <AppTable
-        :header="activityTableHeader"
-        :fields="shopActivities"
-        :loading="loadingActivities"
-        :empty="shopActivities.length === 0"
-      >
-        <template #item-dateCreated="{ dateCreated }">
-          <span class="font-bold text-navy-700 dark:text-navy-200">
-            {{ format(new Date(dateCreated), 'dd MMM, yyyy hh:mm a') }}
-          </span>
-        </template>
-        <template #item-userName="{ userName }">
-           <span class="font-medium text-navy-600 dark:text-navy-300">{{ userName }}</span>
-        </template>
-        <template #item-action="{ action }">
-          <span class="px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-500 dark:bg-navy-900 dark:text-brand-300">
-            {{ action }}
-          </span>
-        </template>
-        <template #item-details="{ details }">
-           <span class="text-sm text-navy-500 dark:text-navy-400">{{ details }}</span>
-        </template>
-      </AppTable>
     </div>
+
+    <!-- Trend, and where the sales came from -->
+    <div class="grid grid-cols-1 gap-4 xl:grid-cols-3" :class="dimmed">
+      <section v-if="!noFigures" class="card p-5 sm:p-6 xl:col-span-2">
+        <h2 class="text-lg font-bold text-navy-700 dark:text-white">Net sales and winnings paid by day</h2>
+        <p class="mb-4 mt-0.5 text-sm text-navy-400">{{ trendIsLast7Days ? 'The last 7 days, for context' : 'Each day of the selected period' }}</p>
+        <span v-if="!loaded" class="skeleton h-[280px] w-full"></span>
+        <TrendChart
+          v-else
+          :labels="trend.map((day) => shortDay(day.date))"
+          :series="[
+            { name: 'Net sales', values: trend.map((day) => day.netSales) },
+            { name: 'Winnings paid', values: trend.map((day) => day.paid) },
+          ]"
+          :format-value="money"
+          :format-axis="compactMoney"
+        />
+      </section>
+
+      <section class="card flex flex-col gap-5 p-5 sm:p-6">
+        <div>
+          <h2 class="text-lg font-bold text-navy-700 dark:text-white">Sales by product</h2>
+          <p class="mt-0.5 text-sm text-navy-400">Gross sales in the selected period</p>
+        </div>
+
+        <span v-if="cashiersLoading && !breakdown" class="skeleton h-24 w-full"></span>
+        <p v-else-if="cashiersError" class="text-sm font-medium text-navy-400">{{ cashiersError }}</p>
+        <template v-else-if="productTotal > 0">
+          <!-- One hue in two strengths: a share of the same thing, not two different things -->
+          <div class="flex h-3 gap-0.5 overflow-hidden rounded-full" role="img" :aria-label="`5/90 ${percent(breakdown!.lotto590Sales, productTotal, 0)}, Accumulator ${percent(breakdown!.accumulatorSales, productTotal, 0)}`">
+            <div class="bg-chart-1" :style="{ width: `${(breakdown!.lotto590Sales / productTotal) * 100}%` }"></div>
+            <div class="bg-chart-1/40" :style="{ width: `${(breakdown!.accumulatorSales / productTotal) * 100}%` }"></div>
+          </div>
+          <dl class="space-y-2 text-sm">
+            <div class="flex items-center justify-between gap-3">
+              <dt class="flex items-center gap-2 font-semibold text-navy-600 dark:text-navy-200"><span class="size-2.5 rounded-sm bg-chart-1" aria-hidden="true"></span>5/90</dt>
+              <dd class="tabular font-bold text-navy-700 dark:text-white">{{ money(breakdown!.lotto590Sales) }} <span class="font-medium text-navy-400">· {{ percent(breakdown!.lotto590Sales, productTotal, 0) }}</span></dd>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+              <dt class="flex items-center gap-2 font-semibold text-navy-600 dark:text-navy-200"><span class="size-2.5 rounded-sm bg-chart-1/40" aria-hidden="true"></span>Accumulator</dt>
+              <dd class="tabular font-bold text-navy-700 dark:text-white">{{ money(breakdown!.accumulatorSales) }} <span class="font-medium text-navy-400">· {{ percent(breakdown!.accumulatorSales, productTotal, 0) }}</span></dd>
+            </div>
+          </dl>
+        </template>
+        <p v-else class="text-sm font-medium text-navy-400">No sales in this period.</p>
+
+        <dl class="mt-auto space-y-3 border-t border-gray-100 pt-4 text-sm dark:border-navy-700">
+          <div v-for="ratio in ratios" :key="ratio.label" class="flex items-baseline justify-between gap-3" :title="ratio.hint">
+            <dt class="font-semibold text-navy-500">{{ ratio.label }}</dt>
+            <dd class="tabular font-bold text-navy-700 dark:text-white">{{ ratio.value }}</dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+
+    <!-- Who and what sold -->
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2" :class="dimmed">
+      <section class="card flex flex-col p-5 sm:p-6">
+        <div class="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-navy-700 dark:text-white">Top cashiers</h2>
+            <p class="mt-0.5 text-sm text-navy-400">By net sales in the selected period</p>
+          </div>
+          <RouterLink to="/dashboard/cashier-summary-report" class="btn-quiet shrink-0 py-2">All cashiers</RouterLink>
+        </div>
+
+        <div v-if="cashiersLoading && !breakdown" class="space-y-4" aria-hidden="true">
+          <span v-for="n in 4" :key="n" class="skeleton h-9 w-full"></span>
+        </div>
+        <p v-else-if="cashiersError" class="py-6 text-center text-sm font-medium text-navy-400">{{ cashiersError }}</p>
+        <BarList v-else-if="topCashiers.length > 0" :items="topCashiers" />
+        <p v-else class="py-6 text-center text-sm font-medium text-navy-400">No cashier has sold in this period.</p>
+
+        <p v-if="breakdown && breakdown.idle.length > 0 && topCashiers.length > 0" class="mt-5 rounded-2xl bg-navy-50 p-3 text-sm text-navy-500 dark:bg-navy-900">
+          <span class="font-bold text-navy-700 dark:text-white">{{ breakdown.idle.length }} {{ breakdown.idle.length === 1 ? 'cashier has' : 'cashiers have' }} not sold in this period:</span>
+          {{ idleNames }}
+        </p>
+      </section>
+
+      <section class="card flex flex-col p-5 sm:p-6">
+        <div class="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-navy-700 dark:text-white">Top games</h2>
+            <p class="mt-0.5 text-sm text-navy-400">By net sales in the selected period</p>
+          </div>
+          <RouterLink to="/dashboard/game-statistics" class="btn-quiet shrink-0 py-2">All games</RouterLink>
+        </div>
+
+        <div v-if="gamesLoading && games.length === 0" class="space-y-4" aria-hidden="true">
+          <span v-for="n in 4" :key="n" class="skeleton h-9 w-full"></span>
+        </div>
+        <p v-else-if="gamesError" class="py-6 text-center text-sm font-medium text-navy-400">{{ gamesError }}</p>
+        <BarList v-else-if="topGames.length > 0" :items="topGames" />
+        <p v-else class="py-6 text-center text-sm font-medium text-navy-400">No game sales in this period.</p>
+      </section>
+    </div>
+
+    <!-- Today's draws -->
+    <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <section class="card p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-navy-700 dark:text-white">Today's games</h2>
+        <p class="mb-4 mt-0.5 text-sm text-navy-400">{{ openGameCount === 0 ? 'No game is open right now' : openGameCount === 1 ? '1 game is open for sales' : `${openGameCount} games are open for sales` }}</p>
+
+        <div v-if="gamesTodayLoading" class="space-y-3" aria-hidden="true">
+          <span v-for="n in 4" :key="n" class="skeleton h-12 w-full"></span>
+        </div>
+        <p v-else-if="todaysGames.length === 0" class="py-6 text-center text-sm font-medium text-navy-400">No games are scheduled for today.</p>
+        <ul v-else class="max-h-[22rem] divide-y divide-gray-100 overflow-y-auto dark:divide-navy-700">
+          <li v-for="game in todaysGames" :key="game.gameId" class="flex items-center gap-3 py-3" :class="game.state === 'closed' ? 'opacity-60' : ''">
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-bold text-navy-700 dark:text-white">{{ game.gameName }} <span v-if="game.gameCode" class="font-medium text-navy-400">· {{ game.gameCode }}</span></p>
+              <p class="tabular text-sm text-navy-400">{{ clockTime(game.startDateTime) }} to {{ clockTime(game.endDateTime) }}</p>
+            </div>
+            <span class="shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold" :class="GAME_PILL[game.state as GameState]">{{ game.status }}</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="card p-5 sm:p-6">
+        <h2 class="text-lg font-bold text-navy-700 dark:text-white">Latest results</h2>
+        <p class="mb-4 mt-0.5 text-sm text-navy-400">Draws completed today</p>
+
+        <div v-if="resultsLoading" class="space-y-3" aria-hidden="true">
+          <span v-for="n in 3" :key="n" class="skeleton h-20 w-full"></span>
+        </div>
+        <p v-else-if="results.length === 0" class="py-6 text-center text-sm font-medium text-navy-400">No results yet today.</p>
+        <ul v-else class="max-h-[22rem] space-y-3 overflow-y-auto">
+          <li v-for="(item, index) in results" :key="index" class="rounded-2xl bg-navy-50 p-3.5 dark:bg-navy-900">
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="truncate font-bold text-navy-700 dark:text-white">{{ item.gameName }}</p>
+              <p v-if="item.endDateTime" class="tabular shrink-0 text-xs text-navy-400">Drawn {{ clockTime(item.endDateTime) }}</p>
+            </div>
+            <div class="mt-2.5 space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="w-16 shrink-0 text-xs font-bold uppercase tracking-wider text-navy-500">Winning</span>
+                <div class="flex gap-1.5">
+                  <span v-for="i in 5" :key="`w-${i}`" class="tabular flex size-8 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white sm:size-9">{{ item.result?.[`winningBall${i}`] }}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="w-16 shrink-0 text-xs font-bold uppercase tracking-wider text-navy-500">Machine</span>
+                <div class="flex gap-1.5">
+                  <span v-for="i in 5" :key="`m-${i}`" class="tabular flex size-8 items-center justify-center rounded-full border border-navy-200 bg-white text-sm font-bold text-navy-700 dark:border-navy-600 dark:bg-navy-800 dark:text-white sm:size-9">{{ item.result?.[`machineBall${i}`] }}</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- The same figures as the chart, day by day -->
+    <section v-if="!noFigures" class="card p-5 sm:p-6" :class="dimmed">
+      <div class="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-bold text-navy-700 dark:text-white">Daily figures</h2>
+          <p class="mt-0.5 text-sm text-navy-400">{{ trendIsLast7Days ? 'The last 7 days, newest first' : 'Each day of the selected period, newest first' }}</p>
+        </div>
+        <RouterLink to="/dashboard/shop-statistics" class="btn-quiet shrink-0 py-2">Shop statistics</RouterLink>
+      </div>
+      <span v-if="!loaded" class="skeleton h-40 w-full"></span>
+      <div v-else class="max-h-[26rem] overflow-auto">
+        <table class="w-full min-w-[640px] text-left text-sm">
+          <thead class="sticky top-0 bg-white dark:bg-navy-800">
+            <tr class="border-b border-navy-200 text-xs font-bold uppercase tracking-wider text-navy-400 dark:border-navy-600">
+              <th class="py-2.5 pr-4">Day</th>
+              <th class="px-4 py-2.5 text-right">Gross sales</th>
+              <th class="px-4 py-2.5 text-right">Cancelled</th>
+              <th class="px-4 py-2.5 text-right">Net sales</th>
+              <th class="px-4 py-2.5 text-right">Commission</th>
+              <th class="px-4 py-2.5 text-right">Winnings paid</th>
+              <th class="py-2.5 pl-4 text-right">Net balance</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-navy-700">
+            <tr v-for="day in [...trend].reverse()" :key="day.date.getTime()">
+              <td class="whitespace-nowrap py-3 pr-4 font-semibold text-navy-700 dark:text-white">{{ weekDay(day.date) }}</td>
+              <td class="whitespace-nowrap px-4 py-3 text-right text-navy-500">{{ money(day.sales) }}</td>
+              <td class="whitespace-nowrap px-4 py-3 text-right text-navy-500">{{ money(day.cancelled) }}</td>
+              <td class="whitespace-nowrap px-4 py-3 text-right font-bold text-navy-700 dark:text-white">{{ money(day.netSales) }}</td>
+              <td class="whitespace-nowrap px-4 py-3 text-right text-navy-500">{{ money(day.commission) }}</td>
+              <td class="whitespace-nowrap px-4 py-3 text-right text-navy-500">{{ money(day.paid) }}</td>
+              <td class="whitespace-nowrap py-3 pl-4 text-right font-bold" :class="day.balance < 0 ? 'text-red-600 dark:text-red-400' : 'text-navy-700 dark:text-white'">{{ money(day.balance) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- What cashiers have been doing -->
+    <section class="card p-5 sm:p-6">
+      <h2 class="text-lg font-bold text-navy-700 dark:text-white">Recent shop activity</h2>
+      <p class="mb-4 mt-0.5 text-sm text-navy-400">The latest actions by your cashiers</p>
+
+      <div v-if="activitiesLoading" class="space-y-3" aria-hidden="true">
+        <span v-for="n in 4" :key="n" class="skeleton h-10 w-full"></span>
+      </div>
+      <p v-else-if="activities.length === 0" class="py-6 text-center text-sm font-medium text-navy-400">No activity recorded yet.</p>
+      <ul v-else class="divide-y divide-gray-100 dark:divide-navy-700">
+        <li v-for="(activity, index) in activities" :key="activity.id ?? index" class="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:gap-4">
+          <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
+            <span class="font-bold text-navy-700 dark:text-white">{{ activity.userName }}</span>
+            <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-bold text-brand-600 dark:bg-brand-500/15 dark:text-brand-300">{{ activity.action }}</span>
+            <span class="min-w-0 break-words text-sm text-navy-500">{{ activity.details }}</span>
+          </div>
+          <time class="tabular shrink-0 text-xs text-navy-400">{{ dayAndTime(activity.dateCreated) }}</time>
+        </li>
+      </ul>
+    </section>
 
     <!-- Payout Modal -->
     <Modal :show="showModal" @close="closeModal">
       <template v-slot:title>
-        <h5 class="text-xl font-bold text-navy-700 dark:text-white">Create Payout Request</h5>
+        <h5 class="text-xl font-bold text-navy-700 dark:text-white">Request a payout</h5>
       </template>
 
       <template v-slot:description>
-        <div class="mt-6 space-y-4">
-          <div class="bg-brand-50 dark:bg-navy-900 p-4 rounded-2xl flex justify-between items-center mb-6">
-            <span class="text-sm font-medium text-navy-400">Available Balance</span>
-            <span class="text-lg font-bold text-navy-700 dark:text-white">₦ {{ walletBalance }}</span>
+        <form id="payout-form" class="mt-4 space-y-4" novalidate @submit.prevent="submitPayout">
+          <div class="flex items-center justify-between rounded-2xl bg-navy-50 p-4 dark:bg-navy-900">
+            <span class="text-sm font-medium text-navy-400">Wallet balance</span>
+            <span class="tabular text-lg font-bold text-navy-700 dark:text-white">{{ moneyExact(walletBalance) }}</span>
           </div>
-          
-          <div class="space-y-2">
-            <label class="text-sm font-bold text-navy-700 dark:text-navy-300 ml-1">Desired Amount</label>
+
+          <div class="space-y-1.5">
+            <label for="payout-amount" class="text-sm font-bold text-navy-700 dark:text-navy-200">Amount</label>
             <div class="relative">
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-navy-400 font-bold">₦</span>
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-navy-400" aria-hidden="true">₦</span>
               <input
+                id="payout-amount"
                 v-model.number="amount"
                 type="number"
+                inputmode="decimal"
+                min="0"
+                step="any"
                 placeholder="0.00"
-                class="w-full pl-10 pr-4 py-4 bg-gray-50 dark:bg-navy-900 border-2 border-transparent focus:border-brand-500/20 rounded-2xl outline-none text-navy-700 dark:text-white font-bold transition-all"
+                class="tabular w-full rounded-2xl border border-navy-200 bg-white py-3.5 pl-10 pr-4 font-bold text-navy-700 outline-none transition-colors focus:border-brand-500 dark:border-navy-600 dark:bg-navy-900 dark:text-white"
+                :aria-invalid="!!payoutError"
+                aria-describedby="payout-error"
               />
             </div>
+            <p v-if="payoutError" id="payout-error" class="text-sm font-semibold text-red-600 dark:text-red-400" role="alert">{{ payoutError }}</p>
           </div>
-        </div>
+        </form>
       </template>
 
       <template v-slot:buttons>
-        <div class="flex gap-4 mt-8 w-full">
-          <button
-            @click="closeModal"
-            class="flex-1 py-4 px-6 rounded-2xl font-bold text-navy-500 hover:bg-gray-100 dark:hover:bg-navy-700 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            @click="submitPayout"
-            :disabled="!isFormValid || processing"
-            class="flex-1 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-brand-500/30 transition-all active:scale-[0.98]"
-          >
-            {{ processing ? 'Processing...' : 'Submit Request' }}
+        <div class="flex w-full gap-3">
+          <button type="button" class="btn-quiet flex-1 py-3.5" @click="closeModal">Cancel</button>
+          <button type="submit" form="payout-form" class="btn-primary flex-1 py-3.5" :disabled="processing">
+            {{ processing ? 'Sending...' : 'Send request' }}
           </button>
         </div>
       </template>
@@ -309,259 +389,356 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, onMounted, watchEffect, computed } from 'vue'
+<script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { useAuthStore } from '../stores/auth'
-import { useRouter } from 'vue-router'
-import { format } from 'date-fns'
-import AppTable from '@/components/AppTable.vue'
 import Modal from '@/components/Modal.vue'
-import Loading from '../components/Loading.vue'
+import AppIcon from '@/components/AppIcon.vue'
+import StatTile from '@/components/ui/StatTile.vue'
+import TrendChart from '@/components/ui/TrendChart.vue'
+import BarList from '@/components/ui/BarList.vue'
+import type { BarItem } from '@/components/ui/BarList.vue'
+import SegmentedControl from '@/components/ui/SegmentedControl.vue'
+import { addDays, change, clockTime, compactMoney, count, dayAndTime, duration, money, moneyExact, percent, shortDay, weekDay } from '@/services/format'
+import { PERIODS, previousRangeFor, rangeFor } from '@/services/periods'
+import type { DateRange, PeriodKey } from '@/services/periods'
+import { NO_TOTALS, fetchCashiers, fetchDays, fetchGames, sumDays } from '@/services/shopStats'
+import type { CashierBreakdown, DayRow, GameRow, Totals } from '@/services/shopStats'
 
 const snackbar = useSnackbar()
 const authStore = useAuthStore()
-const router = useRouter()
 
-const convertNumber = (num) => {
-  if (num === null || num === undefined) return '0'
-  return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-}
+const shopId = Number(authStore.user.shopId)
+const shopCode = String(authStore.user.shopCode ?? '')
 
-const userStats = ref([])
-const userId = ref(Number(authStore.user.shopId))
-const loading = ref(false)
-const loading2 = ref(false)
-const loading3 = ref(false)
-const showModal = ref(false)
-const error = ref(false)
-const error2 = ref(false)
-const amount = ref('')
-const processing = ref(false)
-const totalData = ref(null)
-const totalPages = ref(0)
-const pageSize = ref(10)
-const startDate = ref('')
-const endDate = ref('')
-const shopStats = ref({})
-const walletData = ref({})
-const dailyGames = ref([])
-const dailySales = ref({ totalSales: 0 })
-const dailyGameResults = ref([])
-const shopActivities = ref([])
-const inoperativeTerminals = ref([])
-const loadingActivities = ref(false)
+// ---- The selected period ----
 
-const today = ref(format(new Date(), 'yyyy-MM-dd'))
-const aDayAgo = new Date()
-aDayAgo.setDate(aDayAgo.getDate() - 1)
-const yesterday = ref(format(new Date(aDayAgo), 'yyyy-MM-dd'))
+const period = ref<PeriodKey>('today')
+const range = ref<DateRange>(rangeFor('today'))
 
-const shopStatsList = computed(() => {
-  return [
-    { label: 'Total Sales', value: convertNumber(shopStats.value?.totalSales) || '0', subLabel: 'Today\'s total sales' },
-    { label: 'Cancelled', value: convertNumber(shopStats.value?.totalCanceled) || '0', subLabel: 'Today\'s cancelled tickets' },
-    { label: 'Net Sales', value: convertNumber(shopStats.value?.totalNetSales) || '0', subLabel: 'Today\'s net sales' },
-    { label: 'Claimed', value: convertNumber(shopStats.value?.totalClaimed) || '0', subLabel: `${shopStats.value?.totalClaimedCount ?? 0} ticket${(shopStats.value?.totalClaimedCount ?? 0) !== 1 ? 's' : ''} claimed` },
-    { label: 'Commission', value: convertNumber(shopStats.value?.totalCommission) || '0', subLabel: 'Today\'s earnings' },
-    { label: 'Net Balance', value: convertNumber(shopStats.value?.totalNetBalance) || '0', subLabel: 'Today\'s net balance' },
-    { label: '5/90 Sales', value: convertNumber(shopStats.value?.totalLotto590Sales) || '0', subLabel: '5/90 total sales' },
-    { label: '5/90 Claimed', value: convertNumber(shopStats.value?.totalLotto590Winnings) || '0', subLabel: '5/90 total claimed' },
-    { label: '5/90 Comm.', value: convertNumber(shopStats.value?.totalLotto590Commission) || '0', subLabel: '5/90 total commission' },
-    { label: 'Accum. Sales', value: convertNumber(shopStats.value?.totalAccumulatorSales) || '0', subLabel: 'Accumulator total sales' },
-    { label: 'Accum. Claimed', value: convertNumber(shopStats.value?.totalAccumulatorWinnings) || '0', subLabel: 'Accumulator total claimed' },
-    { label: 'Accum. Comm.', value: convertNumber(shopStats.value?.totalAccumulatorCommission) || '0', subLabel: 'Accumulator total commission' }
-  ]
+const current = ref<Totals>(NO_TOTALS)
+const previous = ref<Totals>(NO_TOTALS)
+/** One row per day of the period */
+const days = ref<DayRow[]>([])
+/** What the chart and the daily table show: the period, or the last 7 days when the period is a single day */
+const trend = ref<DayRow[]>([])
+const trendIsLast7Days = ref(true)
+
+const loading = ref(true)
+const loaded = ref(false)
+const error = ref('')
+const updatedAt = ref<Date | null>(null)
+
+const breakdown = ref<CashierBreakdown | null>(null)
+const cashiersLoading = ref(true)
+const cashiersError = ref('')
+const games = ref<GameRow[]>([])
+const gamesLoading = ref(true)
+const gamesError = ref('')
+
+// The first load failed, so there is nothing true to put in the tiles, the chart or the daily table
+const noFigures = computed(() => !!error.value && !loaded.value)
+
+// Figures from the previous load stay in place, stepped back, while the next ones arrive
+const dimmed = computed(() => (loading.value && loaded.value ? 'opacity-60 transition-opacity' : 'transition-opacity'))
+
+const greeting = computed(() => {
+  const hour = new Date().getHours()
+  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
 })
 
-const tableHeader = [
-  { label: 'Date', key: 'dateFromLong' },
-  { label: 'Stake', key: 'sales' },
-  { label: 'Cancelled', key: 'cancelled' },
-  { label: 'Net Sales', key: 'netSales' },
-  { label: 'Commission', key: 'commission' },
-  { label: 'Claimed', key: 'claimed' },
-  { label: 'Claimed Count', key: 'claimedCount' },
-  { label: '5/90 Sales', key: 'lotto590Sales' },
-  { label: '5/90 Claimed', key: 'lotto590Winnings' },
-  { label: '5/90 Comm.', key: 'lotto590Commission' },
-  { label: 'Accum. Sales', key: 'accumulatorSales' },
-  { label: 'Accum. Claimed', key: 'accumulatorWinnings' },
-  { label: 'Accum. Comm.', key: 'accumulatorCommission' },
-  { label: 'Balance', key: 'balance' }
-]
+const longDate = (date: Date) => date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+const periodText = computed(() => {
+  if (period.value === 'today') return longDate(range.value.from)
+  const from = range.value.from.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+  const to = range.value.to.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  return `${from} to ${to}`
+})
+const comparedWith = computed(() => PERIODS.find((option) => option.key === period.value)?.comparedWith ?? '')
 
+const ratios = computed(() => [
+  { label: 'Payout ratio', value: percent(current.value.paid, current.value.netSales), hint: 'Winnings paid as a share of net sales' },
+  { label: 'Commission rate', value: percent(current.value.commission, current.value.netSales), hint: 'Commission as a share of net sales' },
+  { label: 'Cancellation rate', value: percent(current.value.cancelled, current.value.sales), hint: 'Cancelled stake as a share of gross sales' },
+])
 
-const activityTableHeader = [
-  { label: 'Date', key: 'dateCreated' },
-  { label: 'User', key: 'userName' },
-  { label: 'Action', key: 'action' },
-  { label: 'Details', key: 'details' }
-]
+const productTotal = computed(() => (breakdown.value ? breakdown.value.lotto590Sales + breakdown.value.accumulatorSales : 0))
 
-const fetchUserStats = async () => {
+const topCashiers = computed<BarItem[]>(() =>
+  (breakdown.value?.selling ?? []).slice(0, 5).map((cashier) => ({
+    label: cashier.name,
+    value: cashier.netSales,
+    display: money(cashier.netSales),
+    note: `Commission ${money(cashier.commission)} · winnings paid ${money(cashier.paid)}`,
+  }))
+)
+const idleNames = computed(() => {
+  const names = (breakdown.value?.idle ?? []).map((cashier) => cashier.name)
+  return names.length > 4 ? `${names.slice(0, 4).join(', ')} and ${names.length - 4} more` : names.join(', ')
+})
+
+const topGames = computed<BarItem[]>(() =>
+  games.value.slice(0, 5).map((game) => ({
+    label: game.name,
+    value: game.netSales,
+    display: money(game.netSales),
+    note: `Winnings paid ${money(game.paid)}`,
+  }))
+)
+
+/** Only the answer to the latest request is used, so a slow earlier one cannot overwrite it */
+let requestId = 0
+
+const reasonFor = (err: any, fallback: string): string => {
+  if (err?.response?.status === 403) return 'Your account does not have access to these figures.'
+  if (err?.request && !err?.response) return 'Could not reach the server. Check your internet connection.'
+  return fallback
+}
+
+async function loadPeriod() {
+  const request = ++requestId
+  const selected = rangeFor(period.value)
+  const before = previousRangeFor(period.value, selected)
+  const single = period.value === 'today'
+
+  range.value = selected
+  loading.value = true
+  error.value = ''
+  loadCashiers(request, selected)
+  loadGames(request, selected)
+
   try {
-    loading.value = true
-    const res = await axios.get(
-      `/statistics/shop/ticket/dashboard?FromDate=${yesterday.value}&ToDate=${today.value}&ShopId=${userId.value}&Period=Custom`
-    )
-    userStats.value = res.data
-    error.value = userStats.value.length === 0
-    loading.value = false
+    const [currentDays, previousDays, lastSeven] = await Promise.all([
+      fetchDays(shopId, selected),
+      fetchDays(shopId, before),
+      single ? fetchDays(shopId, { from: addDays(selected.to, -6), to: selected.to }) : Promise.resolve(null),
+    ])
+    if (request !== requestId) return
+
+    days.value = currentDays
+    current.value = sumDays(currentDays)
+    previous.value = sumDays(previousDays)
+    trend.value = lastSeven ?? currentDays
+    trendIsLast7Days.value = single
+    loaded.value = true
+    updatedAt.value = new Date()
   } catch (err) {
-    loading.value = false
-    snackbar.add({ type: 'error', text: `Failed to fetch stats: ${err.message}` })
+    if (request !== requestId) return
+    console.error('Failed to load dashboard figures', err)
+    error.value = reasonFor(err, 'The sales figures could not be loaded.')
+  } finally {
+    if (request === requestId) loading.value = false
   }
 }
 
-const fetchStats = async () => {
+async function loadCashiers(request: number, selected: DateRange) {
+  cashiersLoading.value = true
+  cashiersError.value = ''
   try {
-    const res = await axios.get(
-      `report/shop/dailygame?FromDate=${today.value}&ToDate=${today.value}&ShopId=${userId.value}`
-    )
-    shopStats.value = res.data
+    const result = await fetchCashiers(shopId, selected)
+    if (request !== requestId) return
+    breakdown.value = result
+  } catch (err) {
+    if (request !== requestId) return
+    console.error('Failed to load cashier figures', err)
+    breakdown.value = null
+    cashiersError.value = reasonFor(err, 'Cashier figures could not be loaded.')
+  } finally {
+    if (request === requestId) cashiersLoading.value = false
+  }
+}
+
+async function loadGames(request: number, selected: DateRange) {
+  gamesLoading.value = true
+  gamesError.value = ''
+  try {
+    const result = await fetchGames(shopCode, selected)
+    if (request !== requestId) return
+    games.value = result
+  } catch (err) {
+    if (request !== requestId) return
+    console.error('Failed to load game figures', err)
+    games.value = []
+    gamesError.value = reasonFor(err, 'Game figures could not be loaded.')
+  } finally {
+    if (request === requestId) gamesLoading.value = false
+  }
+}
+
+watch(period, loadPeriod)
+
+// ---- Wallet ----
+
+const walletData = ref<any>({})
+const walletLoaded = ref(false)
+const walletBalance = computed(() => Number(walletData.value?.walletBalance) || 0)
+const accountNumber = computed(() => walletData.value?.virtualAccountNumber || authStore.user.virtualAccountNumber || '')
+const accountBank = computed(() => walletData.value?.virtualAccountBank || authStore.user.virtualAccountBank || '')
+
+const fetchWalletBalance = async () => {
+  try {
+    const res = await axios.get(`Retail/shop/GetShopById?ShopId=${shopId}`)
+    walletData.value = res.data
   } catch (err) {
     console.error(err)
+  } finally {
+    walletLoaded.value = true
   }
+}
+
+const copied = ref(false)
+let copiedTimer: ReturnType<typeof setTimeout> | undefined
+const copyAccount = async () => {
+  try {
+    await navigator.clipboard.writeText(String(accountNumber.value))
+    copied.value = true
+    clearTimeout(copiedTimer)
+    copiedTimer = setTimeout(() => { copied.value = false }, 2000)
+  } catch {
+    snackbar.add({ type: 'error', text: 'Could not copy. Press and hold the number to copy it.' })
+  }
+}
+
+// ---- Payout request ----
+
+const showModal = ref(false)
+const amount = ref<number | ''>('')
+const processing = ref(false)
+const payoutError = ref('')
+
+const closeModal = () => {
+  amount.value = ''
+  payoutError.value = ''
+  showModal.value = false
 }
 
 const submitPayout = async () => {
-  if (!amount.value || amount.value <= 0) return
+  const value = Number(amount.value)
+  if (!value || value <= 0) {
+    payoutError.value = 'Enter the amount you want paid out.'
+    return
+  }
+  if (walletLoaded.value && value > walletBalance.value) {
+    payoutError.value = `That is more than your wallet balance of ${moneyExact(walletBalance.value)}.`
+    return
+  }
+  payoutError.value = ''
   try {
     processing.value = true
-    const res = await axios.post(`/RetailFinance/payment/PayoutRequest`, {
-      amount: Number(amount.value)
-    })
+    const res = await axios.post(`/RetailFinance/payment/PayoutRequest`, { amount: value })
     if (res.status === 200) {
       snackbar.add({ type: 'success', text: `Payout Request Successful` })
-      showModal.value = false
-      amount.value = ''
+      closeModal()
       fetchWalletBalance()
     }
-  } catch (err) {
-    snackbar.add({ type: 'error', text: `Payout request failed: ${err.message}` })
+  } catch (err: any) {
+    // The API answers with either { message } or a plain sentence
+    const fromServer = err.response?.data?.message || (typeof err.response?.data === 'string' ? err.response.data : '')
+    payoutError.value = fromServer || `The request could not be sent: ${err.message}`
   } finally {
     processing.value = false
   }
 }
 
-const fetchWalletBalance = async () => {
-  try {
-    const res = await axios.get(`Retail/shop/GetShopById?ShopId=${userId.value}`)
-    walletData.value = res.data
-  } catch (err) {
-    console.error(err)
-  }
+// ---- Today's games and results ----
+
+type GameState = 'open' | 'upcoming' | 'closed'
+const GAME_PILL: Record<GameState, string> = {
+  open: 'bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-400',
+  upcoming: 'bg-navy-100 text-navy-500 dark:bg-navy-700',
+  closed: 'bg-navy-100 text-navy-400 dark:bg-navy-700',
 }
+
+const dailyGames = ref<any[]>([])
+const gamesTodayLoading = ref(true)
+/** Moves on every half minute so "closes in 12 min" stays true without a reload */
+const now = ref(Date.now())
+let clock: ReturnType<typeof setInterval> | undefined
+
+const todaysGames = computed(() => {
+  const order: Record<GameState, number> = { open: 0, upcoming: 1, closed: 2 }
+  return dailyGames.value
+    .map((game) => {
+      const start = new Date(game.startDateTime).getTime()
+      const end = new Date(game.endDateTime).getTime()
+      const state: GameState = now.value >= end ? 'closed' : now.value < start ? 'upcoming' : 'open'
+      const status = state === 'open' ? `Closes in ${duration(end - now.value)}` : state === 'upcoming' ? `Opens ${clockTime(game.startDateTime)}` : 'Closed'
+      return { ...game, state, status, start, end }
+    })
+    .sort((a, b) => order[a.state as GameState] - order[b.state as GameState] || (a.state === 'closed' ? b.end - a.end : a.end - b.end))
+})
+const openGameCount = computed(() => todaysGames.value.filter((game) => game.state === 'open').length)
 
 const fetchDailyGames = async () => {
   try {
-    loading2.value = true
     const res = await axios.get(`dailygame/get`)
-    dailyGames.value = res.data
+    dailyGames.value = Array.isArray(res.data) ? res.data : []
   } catch (err) {
     console.error(err)
   } finally {
-    loading2.value = false
+    gamesTodayLoading.value = false
   }
 }
 
-const fetchDailySales = async () => {
-  try {
-    const res = await axios.get(
-      `report/customerterminal/dailygame?fromDate=${today.value}&shopCode=${authStore.user.shopCode}`
-    )
-    dailySales.value = res.data
-  } catch (err) {
-    console.error(err)
-  }
-}
+const results = ref<any[]>([])
+const resultsLoading = ref(true)
 
 const fetchGamesResult = async () => {
+  const today = rangeFor('today').from
+  const day = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
   try {
-    loading3.value = true
-    const res = await axios.get(
-      `DailyGameResult/AllGamesPerPeriodPerGame?StartDate=${today.value}&EndDate=${today.value}`
-    )
-    dailyGameResults.value = res.data.data
-    error2.value = !dailyGameResults.value || dailyGameResults.value.length === 0
+    const res = await axios.get(`DailyGameResult/AllGamesPerPeriodPerGame?StartDate=${day}&EndDate=${day}`)
+    results.value = Array.isArray(res.data?.data) ? res.data.data : []
   } catch (err) {
     console.error(err)
   } finally {
-    loading3.value = false
+    resultsLoading.value = false
   }
 }
+
+// ---- Shop activity and terminals ----
+
+const activities = ref<any[]>([])
+const activitiesLoading = ref(true)
 
 const fetchActivities = async () => {
   try {
-    loadingActivities.value = true
-    const res = await axios.get(`Retail/shop/${userId.value}/activities?Page=1&PageSize=10`)
-    if(res.data && res.data.data) {
-      shopActivities.value = res.data.data
-    }
+    const res = await axios.get(`Retail/shop/${shopId}/activities?Page=1&PageSize=10`)
+    activities.value = Array.isArray(res.data?.data) ? res.data.data : []
   } catch (err) {
     console.error(err)
   } finally {
-    loadingActivities.value = false
+    activitiesLoading.value = false
   }
 }
+
+const inoperativeTerminals = ref<any[]>([])
 
 const fetchInoperativeTerminals = async () => {
   try {
-    const res = await axios.get(`report/terminals/inoperative-warning?shopId=${userId.value}&days=7&threshold=5000`)
-    if(res.data) {
-      inoperativeTerminals.value = res.data
-    }
+    const res = await axios.get(`report/terminals/inoperative-warning?shopId=${shopId}&days=7&threshold=5000`)
+    inoperativeTerminals.value = Array.isArray(res.data) ? res.data : []
   } catch (err) {
     console.error(err)
-  }
-}
-
-const isFormValid = computed(() => amount.value > 0)
-
-const walletBalance = computed(() => {
-  const amount = walletData.value?.walletBalance || 0
-  return amount.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-})
-
-const closeModal = () => {
-  amount.value = ''
-  showModal.value = false
-}
-
-const updateDateChanged = (updateDate) => {
-  if (updateDate) {
-    startDate.value = updateDate[0]
-    endDate.value = updateDate[1]
   }
 }
 
 onMounted(() => {
-  fetchUserStats()
-  fetchStats()
+  loadPeriod()
   fetchWalletBalance()
   fetchDailyGames()
-  fetchDailySales()
   fetchGamesResult()
   fetchActivities()
   fetchInoperativeTerminals()
+  clock = setInterval(() => { now.value = Date.now() }, 30000)
 })
 
-watchEffect(() => {
-  fetchUserStats()
-  fetchDailySales()
+onBeforeUnmount(() => {
+  requestId++
+  clearInterval(clock)
+  clearTimeout(copiedTimer)
 })
 </script>
-
-<style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-  height: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-brand-500/10 rounded-full hover:bg-brand-500/20 transition-colors;
-}
-</style>

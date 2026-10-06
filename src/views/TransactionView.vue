@@ -38,22 +38,22 @@
             <span class="font-bold text-navy-700 dark:text-navy-200">
               {{ format(new Date(date), 'dd MMM, yyyy') }}
             </span>
-            <p class="text-[10px] text-navy-300">{{ format(new Date(date), 'hh:mm a') }}</p>
+            <p class="text-[10px] text-navy-400">{{ format(new Date(date), 'hh:mm a') }}</p>
           </div>
         </template>
 
         <template #item-amount="{ amount }">
           <span :class="amount > 0 ? 'text-green-500' : 'text-red-500'" class="font-bold text-base">
-            ₦ {{ amount }}
+            {{ moneyExact(amount) }}
           </span>
         </template>
 
         <template #item-balanceBefore="{ balanceBefore }">
-          <span class="text-navy-400 font-medium">₦ {{ balanceBefore }}</span>
+          <span class="text-navy-400 font-medium">{{ moneyExact(balanceBefore) }}</span>
         </template>
 
         <template #item-balanceAfter="{ balanceAfter }">
-          <span class="text-navy-700 dark:text-white font-bold">₦ {{ balanceAfter }}</span>
+          <span class="text-navy-700 dark:text-white font-bold">{{ moneyExact(balanceAfter) }}</span>
         </template>
 
         <template #item-transactionCategoryName="{ transactionCategoryName }">
@@ -65,7 +65,7 @@
         <template #item-postedByFullName="{ postedByFullName }">
           <div class="flex items-center gap-2">
             <div class="size-8 rounded-full bg-brand-500/10 flex items-center justify-center text-brand-500 text-[10px] font-bold">
-              {{ postedByFullName.charAt(0) }}
+              {{ (postedByFullName || '?').charAt(0) }}
             </div>
             <span class="text-sm font-medium">{{ postedByFullName }}</span>
           </div>
@@ -76,7 +76,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watchEffect } from 'vue'
+import { moneyExact } from '@/services/format'
+import { ref, reactive, watchEffect } from 'vue'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { useAuthStore } from '@/stores/auth'
@@ -119,7 +120,7 @@ let ticketsTableHeader = reactive([
     key: 'postedByFullName'
   },
   {
-    label: 'Transacation type',
+    label: 'Transaction type',
     key: 'transactionCategoryName'
   }
 ])
@@ -143,10 +144,7 @@ const fetchTransactions = async () => {
   }
 }
 
-onMounted(() => {
-  fetchTransactions()
-})
-
+// watchEffect runs once straight away, and again whenever a filter it reads changes
 watchEffect(() => {
   fetchTransactions()
 })

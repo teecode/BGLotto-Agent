@@ -32,14 +32,14 @@
                     <div class="grid grid-cols-1 gap-3 text-sm">
                         <div class="bg-gray-50 dark:bg-navy-900 rounded-xl p-2.5 flex flex-col justify-center">
                             <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Amount</p>
-                            <p class="font-bold text-navy-700 dark:text-white mt-0.5">₦ {{ convertNumber(item.amount) }}</p>
-                            <p class="text-[10px] text-navy-400 mt-0.5">{{ item.lines }} lines × ₦{{ convertNumber(item.stakePerLine) }}</p>
+                            <p class="font-bold text-navy-700 dark:text-white mt-0.5">{{ moneyExact(item.amount) }}</p>
+                            <p class="text-[10px] text-navy-400 mt-0.5">{{ item.lines }} lines × {{ moneyExact(item.stakePerLine) }}</p>
                         </div>
                     </div>
                 </div>
                 
                 <div v-if="!betslips || betslips.length === 0" class="text-center py-8 text-navy-400 font-medium bg-white/50 dark:bg-navy-800/50 rounded-2xl">
-                    <div class="flex justify-center mb-2 text-navy-300">
+                    <div class="flex justify-center mb-2 text-navy-400">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                         </svg>
@@ -84,13 +84,13 @@
                                 <span v-else class="bg-gray-100 dark:bg-navy-900 text-navy-500 dark:text-navy-300 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold">Normal</span>
                             </td>
                             <td class="px-4 py-4 text-right font-medium">{{ item.lines }}</td>
-                            <td class="px-4 py-4 text-right font-medium">₦ {{ convertNumber(item.stakePerLine) }}</td>
-                            <td class="px-4 py-4 text-right font-bold text-navy-700 dark:text-white">₦ {{ convertNumber(item.amount) }}</td>
+                            <td class="px-4 py-4 text-right font-medium">{{ moneyExact(item.stakePerLine) }}</td>
+                            <td class="px-4 py-4 text-right font-bold text-navy-700 dark:text-white">{{ moneyExact(item.amount) }}</td>
                         </tr>
                     </tbody>
                 </table>
                 <div v-if="!betslips || betslips.length === 0" class="text-center py-10 text-navy-400 font-medium bg-white/50 dark:bg-navy-800/50">
-                    <div class="flex justify-center mb-3 text-navy-300">
+                    <div class="flex justify-center mb-3 text-navy-400">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-10">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                         </svg>
@@ -104,10 +104,10 @@
 
 <script setup>
 import Spinner from '@/components/Spinner.vue';
-import { convertNumber } from '@/services/convertNumber.js';
+import { moneyExact } from '@/services/format';
 import { convertArray } from '@/services/convertArray.js';
 
-const props = defineProps({
+defineProps({
     betslips: Array,
     loading: Boolean
 });

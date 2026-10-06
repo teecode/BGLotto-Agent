@@ -48,7 +48,7 @@
         <span v-if="m.attachments?.length" class="shrink-0 text-[11px] font-bold px-2 py-1 rounded-full bg-brand-50 text-brand-600 dark:bg-navy-900 dark:text-brand-400">
           {{ m.attachments.length }} file{{ m.attachments.length > 1 ? 's' : '' }}
         </span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-300 shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-400 shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
       </div>

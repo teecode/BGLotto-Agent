@@ -36,38 +36,17 @@
     </header>
 
     <!-- Summary Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-6 mb-6" v-if="totalData !== null">
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Total Tickets Returned</h3>
-        <p class="text-3xl font-bold text-navy-700 dark:text-white">{{ totalData }}</p>
-      </div>
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Stake (Current Page)</h3>
-        <p class="text-3xl font-bold text-brand-500">₦ {{ totalAmount.toLocaleString() }}</p>
-      </div>     
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Cancelled (Current Page)</h3>
-        <p class="text-3xl font-bold text-gray-500">₦ {{ totalCancelledAmount.toLocaleString() }}</p>
-      </div>
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Undecided (Current Page)</h3>
-        <p class="text-3xl font-bold text-yellow-500">₦ {{ totalUndecidedAmount.toLocaleString() }}</p>
-      </div>
-      <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-center">
-        <h3 class="text-sm font-medium text-navy-400 mb-2">Paid (Current Page)</h3>
-        <p class="text-3xl font-bold text-blue-500">₦ {{ totalPaidAmount.toLocaleString() }}</p>
-        <p class="text-xs text-navy-400 mt-1">{{ totalPaidCount }} ticket{{ totalPaidCount !== 1 ? 's' : '' }} claimed</p>
-      </div>
-    </div>
+    <FigureGrid v-if="totalData !== null" :figures="summary" />
 
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700">
       <AppTable 
         :header="ticketsTableHeader" 
         :fields="tickets" 
-        :loading="loading" 
+        :loading="loading || loadingTickets"
         :paginated="true"
-        @pageChange="updatePage" 
+        :currentPage="page"
+        @pageChange="updatePage"
         :totalPages="totalPages" 
         :pageSize="pageSize" 
         :totalRecords="totalData"
@@ -79,7 +58,7 @@
           <span class="font-bold text-navy-700 dark:text-navy-200">
             {{ format(new Date(gameDate), 'dd MMM, yyyy') }}
           </span>
-          <p class="text-[10px] text-navy-300">{{ format(new Date(gameDate), 'hh:mm a') }}</p>
+          <p class="text-[10px] text-navy-400">{{ format(new Date(gameDate), 'hh:mm a') }}</p>
         </template>
         
         <template #item-game="{ game }">
@@ -90,7 +69,7 @@
         </template>
 
         <template #item-amount="{ amount }">
-          <span class="font-bold">₦ {{ amount }}</span>
+          <span class="font-bold">{{ moneyExact(amount) }}</span>
         </template>
 
 
@@ -133,7 +112,7 @@
             <div class="w-full space-y-4">
               <div class="flex justify-between items-end border-b-2 border-dashed border-gray-200 dark:border-navy-700 pb-4 mb-4">
                  <span class="text-sm font-bold text-navy-500 dark:text-navy-400 uppercase">Total Stake</span>
-                 <span class="text-2xl font-black">₦ {{ ticketDetails.amount }}</span>
+                 <span class="text-2xl font-black">{{ moneyExact(ticketDetails.amount) }}</span>
               </div>
               <div class="w-full">
                  <p class="text-center text-xs font-bold text-navy-400 uppercase tracking-widest mb-4">Bet Slips</p>
@@ -190,7 +169,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watchEffect, computed } from 'vue';
+import { moneyExact } from '@/services/format'
+import FigureGrid from '@/components/ui/FigureGrid.vue'
+import { ref, reactive, onMounted, watch, watchEffect, computed } from 'vue';
 import axios from 'axios';
 import { useSnackbar } from "vue3-snackbar";
 import { useAuthStore } from '@/stores/auth';
@@ -213,6 +194,9 @@ let loading = ref(false);
 let totalData = ref(null);
 let totalPages = ref(0);
 let pageSize = ref(100);
+// The page of tickets on screen; the pager below the list changes it
+const page = ref(1);
+const loadingTickets = ref(false);
 let selectedCashier = ref("");
 let error = ref(false);
 let showModal = ref(false);
@@ -220,12 +204,6 @@ let ticketDetails = ref([]);
 
 const totalAmount = computed(() => {
     return tickets.value.reduce((sum, t) => sum + (t.amount || 0), 0);
-});
-
-const totalWonAmount = computed(() => {
-    return tickets.value
-        .filter(t => t.status?.name === 'Won' || t.status?.name === 'Paid')
-        .reduce((sum, t) => sum + (t.wonAmount || 0), 0);
 });
 
 const totalPaidAmount = computed(() => {
@@ -247,12 +225,6 @@ const totalCancelledAmount = computed(() => {
 const totalUndecidedAmount = computed(() => {
     return tickets.value
         .filter(t => t.status?.name === 'Undecided')
-        .reduce((sum, t) => sum + (t.amount || 0), 0);
-});
-
-const totalLostAmount = computed(() => {
-    return tickets.value
-        .filter(t => t.status?.name === 'Lost')
         .reduce((sum, t) => sum + (t.amount || 0), 0);
 });
 
@@ -288,20 +260,41 @@ let ticketsTableHeader = reactive([
     }
 ]);
 
+
+// The figures above the list. All but the first cover only the tickets on the page being shown.
+const summary = computed(() => [
+    { label: 'Tickets found', value: Number(totalData.value ?? 0).toLocaleString('en-US') },
+    { label: 'Stake (this page)', value: moneyExact(totalAmount.value) },
+    { label: 'Cancelled (this page)', value: moneyExact(totalCancelledAmount.value) },
+    { label: 'Undecided (this page)', value: moneyExact(totalUndecidedAmount.value) },
+    { label: 'Paid (this page)', value: moneyExact(totalPaidAmount.value), note: `${totalPaidCount.value} ticket${totalPaidCount.value !== 1 ? 's' : ''} claimed` },
+]);
+
+/** Only the answer to the latest request is shown, so a slow earlier page cannot overwrite it */
+let requestId = 0;
+
 const fetchTickets = async () => {
+    // Read here, before the first await, so that watchEffect reruns this when any of them changes
+    const query = `Date=${today.value}&CustomerId=${selectedCashier.value}&Page=${page.value}&PageSize=${pageSize.value}`;
+    // Clearing the date leaves nothing to ask for; keep what is on screen
+    if (!today.value) return;
+    const request = ++requestId;
     try {
-        const res = await axios.get(`/Ticket/registered-tickets?Date=${today.value}&CustomerId=${selectedCashier.value}&Page=1&PageSize=${pageSize.value}`);
-        tickets.value = res.data.data
+        loadingTickets.value = true;
+        const res = await axios.get(`/Ticket/registered-tickets?${query}`);
+        if (request !== requestId) return;
+        tickets.value = res.data.data || [];
         totalData.value = res.data.totalCount;
         totalPages.value = res.data.totalPages;
-        if (tickets.value.length == 0) {
-            error.value = true
-        }
+        error.value = tickets.value.length == 0;
     } catch (err) {
+        if (request !== requestId) return;
         snackbar.add({
             type: 'error',
             text: `Please contact support ${err.message}`
         })
+    } finally {
+        if (request === requestId) loadingTickets.value = false;
     }
 };
 
@@ -335,13 +328,19 @@ const closeModal = () => {
     ticketDetails.value = [];
 };
 
-const updatePage = () => {
-
+const updatePage = (next) => {
+    page.value = next;
 };
 
+// Tickets are loaded by the watchEffect below, which also runs once straight away
 onMounted(() => {
-    fetchTickets();
     fetchCasheirs();
+});
+
+// Another day or cashier starts again from the first page. Declared before the watchEffect
+// so the page is already back at 1 when the tickets are asked for.
+watch([today, selectedCashier], () => {
+    page.value = 1;
 });
 
 watchEffect(() => {

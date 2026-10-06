@@ -1,29 +1,32 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import { useAuthStore } from '@/stores/auth';
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue';
+import { clearSession, isSignedIn } from '@/services/session';
+import { useAuthStore } from '@/stores/auth';
+import { locate } from '@/services/navigation';
 
-const authGuard = (to, from, next) => {
-  const authStore = useAuthStore()
-  if (authStore.isLoggedIn) {
-    next()
-  } else {
-    next('/')
-  }
-}
+const APP_NAME = 'MaxiLotto Agent Portal'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  // Back and forward return to where the agent was on the page; a new page starts at the top
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.path === from.path) return undefined
+    return { top: 0 }
+  },
   routes: [
     {
       path: '/',
       name: 'Home',
-      component: LoginView
+      component: LoginView,
+      meta: { title: 'Sign in' }
     },
     {
       path: '/forgot-password',
       name: 'ForgotPassword',
-      component: ForgotPasswordView
+      component: ForgotPasswordView,
+      meta: { title: 'Reset password' }
     },
     {
       path: '/dashboard',
@@ -31,11 +34,11 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/HomeView.vue'),
-      beforeEnter: authGuard,
+      meta: { requiresAuth: true },
       children:[
         {
-          path: '/dashboard',
-          // name: 'Dashboard',
+          path: '',
+          name: 'Dashboard',
           component: () => import('../views/DashboardView.vue'),
         },
         {
@@ -89,11 +92,6 @@ const router = createRouter({
           component: () => import('../views/TransactionView.vue')
         },
         {
-          path: 'reimbursement',
-          name: 'Reimbursement',
-          component: () => import('../views/ReimbursementView.vue')
-        },
-        {
           path: 'payout',
           name: 'Payout',
           component: () => import('../views/PayoutView.vue')
@@ -144,8 +142,40 @@ const router = createRouter({
           component: () => import('../views/MaxiUniversityQuizView.vue')
         }
       ]
+    },
+    // A mistyped or outdated address lands on the dashboard (or sign-in) instead of a blank page
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/dashboard'
     }
   ]
+})
+
+router.beforeEach((to) => {
+  const needsAuth = to.matched.some((record) => record.meta.requiresAuth)
+
+  if (needsAuth && !isSignedIn()) {
+    // An expired token is still "a token": tell the agent why they are back at sign-in
+    const expired = useAuthStore().isLoggedIn
+    clearSession()
+    return {
+      name: 'Home',
+      query: {
+        ...(to.fullPath !== '/dashboard' ? { redirect: to.fullPath } : {}),
+        ...(expired ? { reason: 'expired' } : {}),
+      },
+    }
+  }
+
+  // Already signed in: the sign-in page has nothing to offer
+  if (to.name === 'Home' && isSignedIn()) return '/dashboard'
+
+  return true
+})
+
+router.afterEach((to) => {
+  const title = (to.meta.title as string | undefined) ?? locate(to.path)?.link.title
+  document.title = title ? `${title} · ${APP_NAME}` : APP_NAME
 })
 
 export default router

@@ -1,27 +1,44 @@
 <template>
-    <main class="bg-[#F4F7FE] dark:bg-[#0B1437] w-full h-screen max-h-screen px-4 py-10 lg:p-10 lg:overflow-auto">
-        <div class="dark:text-white ">
-            <div>
-                <img v-if="isDark" src="@/assets/svg/sun.svg" alt="Switch to dark mode"
-                    class="absolute top-10 lg:top-8 right-8 sm:top-6  cursor-pointer" @click="toggleDark()" />
-                <img v-if="!isDark" src="@/assets/svg/moon.svg" alt="Switch to dark mode"
-                    class="absolute top-10 lg:top-8 right-8  cursor-pointer" @click="toggleDark()" />
-            </div>
-            <section class="flex flex-col lg:flex-row w-full gap-4">
-                <SideNavigation/>
-                <RouterView></RouterView>
-            </section>
-        </div>
-    </main>
+    <div class="min-h-screen bg-navy-50 dark:bg-navy-900">
+        <a href="#main" class="sr-only z-50 rounded-xl bg-brand-500 px-4 py-2 font-bold text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to content</a>
 
+        <SideNavigation v-model:open="menuOpen" />
+
+        <div class="lg:pl-64">
+            <TopBar @menu="menuOpen = true" />
+            <!-- min-w-0 keeps a wide table scrolling inside its own card instead of stretching the page -->
+            <main id="main" class="mx-auto w-full min-w-0 max-w-[1500px] px-4 pb-28 pt-5 sm:px-6 lg:px-8 lg:pb-10">
+                <RouterView></RouterView>
+            </main>
+        </div>
+
+        <BottomTabs @menu="menuOpen = true" />
+    </div>
 </template>
 
 <script setup lang="ts">
-import { useDark, useToggle } from "@vueuse/core";
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useNotificationStore } from '@/stores/notifications';
 import SideNavigation from '../components/SideNavigation.vue';
+import TopBar from '../components/TopBar.vue';
+import BottomTabs from '../components/BottomTabs.vue';
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
+const menuOpen = ref(false);
+
+const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
+
+const refreshUnread = () => {
+    if (document.visibilityState === 'visible') {
+        notificationStore.fetchUnreadCount(Number(authStore.user?.shopId ?? 0));
+    }
+};
+
+// The unread badge is checked on arrival and again whenever the agent comes back to this tab
+onMounted(() => {
+    refreshUnread();
+    document.addEventListener('visibilitychange', refreshUnread);
+});
+onBeforeUnmount(() => document.removeEventListener('visibilitychange', refreshUnread));
 </script>
-
-<style></style>

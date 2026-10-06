@@ -37,7 +37,7 @@
           <p class="font-bold text-navy-700 dark:text-white">{{ t.title }}</p>
           <p class="text-sm text-navy-400 font-medium mt-1 line-clamp-2">{{ t.description }}</p>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-300 shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-navy-400 shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
       </div>

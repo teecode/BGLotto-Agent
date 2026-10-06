@@ -42,7 +42,7 @@
                     placeholder="••••••••"
                     class="w-full px-5 py-4 bg-gray-50 dark:bg-navy-800 border-2 border-transparent focus:border-brand-500/20 rounded-3xl outline-none text-navy-700 dark:text-white font-bold transition-all shadow-sm"
                   />
-                  <button type="button" @click="showPassword = !showPassword" class="absolute right-5 top-1/2 -translate-y-1/2 text-navy-300">
+                  <button type="button" @click="showPassword = !showPassword" class="absolute right-5 top-1/2 -translate-y-1/2 text-navy-400">
                     <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.644C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -158,7 +158,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../stores/auth';
 import { useSnackbar } from "vue3-snackbar";
 import OtpPad from '../components/OtpPad.vue';
 import { useDark, useToggle } from "@vueuse/core";
@@ -168,7 +167,6 @@ const snackbar = useSnackbar();
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 const router = useRouter();
-const authStore = useAuthStore();
 
 const showCode = ref(false);
 const showPassword = ref(false);

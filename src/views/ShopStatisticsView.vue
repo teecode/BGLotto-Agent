@@ -25,71 +25,8 @@
       </div>
     </header>
 
-    <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 w-full">
-        <!-- Sales -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Sales</p>
-          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalSales) }}</p>
-        </div>
-        <!-- Canceled -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Canceled</p>
-          <p class="text-xl lg:text-2xl font-bold text-red-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalCanceled) }}</p>
-        </div>
-        <!-- Net Sales -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Net Sales</p>
-          <p class="text-xl lg:text-2xl font-bold text-navy-700 dark:text-white mt-2 truncate">₦ {{ convertNumber(shopStats.totalNetSales) }}</p>
-        </div>
-        <!-- Claimed -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Total Cashout</p>
-          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalClaimed) }}</p>
-          <p class="text-[10px] text-navy-400 font-medium mt-1">{{ shopStats.totalClaimedCount ?? 0 }} ticket{{ (shopStats.totalClaimedCount ?? 0) !== 1 ? 's' : '' }}</p>
-        </div>
-        <!-- Commissions -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Commissions</p>
-          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalCommission) }}</p>
-        </div>
-        <!-- Net Balance -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-          <div class="absolute inset-0 bg-brand-500/5"></div>
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest relative z-10">Net Balance</p>
-          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate relative z-10">₦ {{ convertNumber(shopStats.totalNetBalance) }}</p>
-        </div>
-        <!-- 5/90 Sales -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Sales</p>
-          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Sales) }}</p>
-        </div>
-        <!-- 5/90 Claimed -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Claimed</p>
-          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Winnings) }}</p>
-        </div>
-        <!-- 5/90 Comm -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">5/90 Commission</p>
-          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalLotto590Commission) }}</p>
-        </div>
-        <!-- Accum. Sales -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Sales</p>
-          <p class="text-xl lg:text-2xl font-bold text-brand-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorSales) }}</p>
-        </div>
-        <!-- Accum. Claimed -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Claimed</p>
-          <p class="text-xl lg:text-2xl font-bold text-green-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorWinnings) }}</p>
-        </div>
-        <!-- Accum. Comm -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-navy-700 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <p class="text-[10px] font-bold text-navy-400 uppercase tracking-widest">Accum. Commission</p>
-          <p class="text-xl lg:text-2xl font-bold text-blue-500 mt-2 truncate">₦ {{ convertNumber(shopStats.totalAccumulatorCommission) }}</p>
-        </div>
-    </div>
+    <!-- Headline figures -->
+    <FigureGrid :figures="figures" />
 
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
@@ -106,21 +43,21 @@
         :loading="loading"
         :empty="error"
       >
-        <template #item-sales="{ sales }">₦ {{ convertNumber(sales) }}</template>
-        <template #item-cancelled="{ cancelled }">₦ {{ convertNumber(cancelled) }}</template>
-        <template #item-netSales="{ sales, cancelled }">₦ {{ convertNumber(sales - cancelled) }}</template>
-        <template #item-commission="{ commission }">₦ {{ convertNumber(commission) }}</template>
-        <template #item-claimed="{ claimed }">₦ {{ convertNumber(claimed) }}</template>
+        <template #item-sales="{ sales }">{{ moneyExact(sales) }}</template>
+        <template #item-cancelled="{ cancelled }">{{ moneyExact(cancelled) }}</template>
+        <template #item-netSales="{ sales, cancelled }">{{ moneyExact(sales - cancelled) }}</template>
+        <template #item-commission="{ commission }">{{ moneyExact(commission) }}</template>
+        <template #item-winnings="{ winnings }">{{ moneyExact(winnings) }}</template>
         <template #item-claimedCount="{ claimedCount }">{{ claimedCount ?? 0 }}</template>
-        <template #item-lotto590Sales="{ lotto590Sales }">₦ {{ convertNumber(lotto590Sales) }}</template>
-        <template #item-lotto590Commission="{ lotto590Commission }">₦ {{ convertNumber(lotto590Commission) }}</template>
-        <template #item-lotto590Winnings="{ lotto590Winnings }">₦ {{ convertNumber(lotto590Winnings) }}</template>
-        <template #item-accumulatorSales="{ accumulatorSales }">₦ {{ convertNumber(accumulatorSales) }}</template>
-        <template #item-accumulatorCommission="{ accumulatorCommission }">₦ {{ convertNumber(accumulatorCommission) }}</template>
-        <template #item-accumulatorWinnings="{ accumulatorWinnings }">₦ {{ convertNumber(accumulatorWinnings) }}</template>
+        <template #item-lotto590Sales="{ lotto590Sales }">{{ moneyExact(lotto590Sales) }}</template>
+        <template #item-lotto590Commission="{ lotto590Commission }">{{ moneyExact(lotto590Commission) }}</template>
+        <template #item-lotto590Winnings="{ lotto590Winnings }">{{ moneyExact(lotto590Winnings) }}</template>
+        <template #item-accumulatorSales="{ accumulatorSales }">{{ moneyExact(accumulatorSales) }}</template>
+        <template #item-accumulatorCommission="{ accumulatorCommission }">{{ moneyExact(accumulatorCommission) }}</template>
+        <template #item-accumulatorWinnings="{ accumulatorWinnings }">{{ moneyExact(accumulatorWinnings) }}</template>
         <template #item-net_Balance="{ net_Balance }">
           <span :class="net_Balance < 0 ? 'text-red-500' : 'text-green-500'" class="font-bold">
-            ₦ {{ convertNumber(net_Balance) }}
+            {{ moneyExact(net_Balance) }}
           </span>
         </template>
       </AppTable>
@@ -129,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watchEffect } from 'vue'
+import { ref, reactive, computed, watchEffect } from 'vue'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { useAuthStore } from '@/stores/auth'
@@ -137,7 +74,8 @@ import { format } from 'date-fns'
 import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
 import AppTable from '@/components/AppTable.vue'
-import { convertNumber } from '../services/convertNumber'
+import FigureGrid from '@/components/ui/FigureGrid.vue'
+import { moneyExact } from '@/services/format'
 
 const authStore = useAuthStore()
 const snackbar = useSnackbar()
@@ -154,6 +92,26 @@ let setNewDate = ref([format(new Date(aDayAgo), 'yyyy-MM-dd'), format(new Date()
 let error = ref(false)
 
 const shopStats = ref([])
+
+// The headline figures above the table, in the order they are read
+const figures = computed(() => {
+  const s = shopStats.value || {}
+  const tickets = s.totalClaimedCount ?? 0
+  return [
+    { label: 'Total sales', value: moneyExact(s.totalSales) },
+    { label: 'Cancelled', value: moneyExact(s.totalCanceled) },
+    { label: 'Net sales', value: moneyExact(s.totalNetSales) },
+    { label: 'Total cashout', value: moneyExact(s.totalClaimed), note: `${tickets} ticket${tickets !== 1 ? 's' : ''}` },
+    { label: 'Commission', value: moneyExact(s.totalCommission) },
+    { label: 'Net balance', value: moneyExact(s.totalNetBalance), negative: Number(s.totalNetBalance) < 0 },
+    { label: '5/90 sales', value: moneyExact(s.totalLotto590Sales) },
+    { label: '5/90 claimed', value: moneyExact(s.totalLotto590Winnings) },
+    { label: '5/90 commission', value: moneyExact(s.totalLotto590Commission) },
+    { label: 'Accum. sales', value: moneyExact(s.totalAccumulatorSales) },
+    { label: 'Accum. claimed', value: moneyExact(s.totalAccumulatorWinnings) },
+    { label: 'Accum. commission', value: moneyExact(s.totalAccumulatorCommission) },
+  ]
+})
 const shopTableStats = ref([])
 
 let tableHeader = reactive([
@@ -246,10 +204,7 @@ const fetchStats = async () => {
   }
 }
 
-onMounted(() => {
-  fetchStats()
-})
-
+// watchEffect runs once straight away, and again whenever a filter it reads changes
 watchEffect(() => {
   fetchStats()
 })

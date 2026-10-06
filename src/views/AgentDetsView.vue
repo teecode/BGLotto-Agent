@@ -41,19 +41,19 @@
         
         <div class="space-y-4 flex-1">
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Full Name</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Full Name</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.accountName || '-' }}</p>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Email Address</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Email Address</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.agentEmail || '-' }}</p>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Phone Number</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Phone Number</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.agentPhone || '-' }}</p>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Address</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Address</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.address || '-' }}</p>
           </div>
         </div>
@@ -72,25 +72,25 @@
         
         <div class="space-y-4 flex-1">
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Shop Name</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Shop Name</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.shopName || '-' }}</p>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Shop Code</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Shop Code</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.shopCode || '-' }}</p>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1">
-              <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">State</label>
+              <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">State</label>
               <p class="font-bold text-navy-700 dark:text-white">{{ user.stateName || '-' }}</p>
             </div>
             <div class="flex flex-col gap-1">
-              <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Branch</label>
+              <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Branch</label>
               <p class="font-bold text-navy-700 dark:text-white">{{ user.branchName || '-' }}</p>
             </div>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Area Name</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Area Name</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.areaName || '-' }}</p>
           </div>
         </div>
@@ -116,14 +116,14 @@
 
         <div class="space-y-4 flex-1">
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Low-Credit SMS Alerts</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Low-Credit SMS Alerts</label>
             <p class="font-bold" :class="user.creditLimitAlertsEnabled === false ? 'text-red-500' : 'text-green-500'">
               {{ user.creditLimitAlertsEnabled === false ? 'Disabled' : 'Enabled' }}
             </p>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Notification Threshold</label>
-            <p class="font-bold text-navy-700 dark:text-white">₦{{ user.creditNotificationLimit ?? 5000 }}</p>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Notification Threshold</label>
+            <p class="font-bold text-navy-700 dark:text-white">{{ money(user.creditNotificationLimit ?? 5000) }}</p>
           </div>
         </div>
       </div>
@@ -141,22 +141,22 @@
         
         <div class="space-y-4 flex-1">
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Primary Bank</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Primary Bank</label>
             <p class="font-bold text-navy-700 dark:text-white">{{ user.bankName || '-' }}</p>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Account Number</label>
+            <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Account Number</label>
             <div class="flex items-center gap-2">
                 <p class="font-bold text-navy-700 dark:text-white text-xl font-mono tracking-wider">{{ user.accountNumber || '-' }}</p>
             </div>
           </div>
           <div class="mt-4 pt-4 border-t border-gray-100 dark:border-navy-700 border-dashed space-y-4">
             <div class="flex flex-col gap-1">
-                <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Virtual Bank</label>
+                <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Virtual Bank</label>
                 <p class="font-bold text-navy-700 dark:text-white">{{ user.virtualAccountBank || '-' }}</p>
             </div>
             <div class="flex flex-col gap-1">
-                <label class="text-[11px] font-bold text-navy-300 uppercase tracking-widest">Virtual Account</label>
+                <label class="text-[11px] font-bold text-navy-400 uppercase tracking-widest">Virtual Account</label>
                 <div class="flex items-center gap-2">
                     <p class="font-bold text-emerald-500 text-xl font-mono tracking-wider">{{ user.virtualAccountNumber || '-' }}</p>
                 </div>
@@ -244,14 +244,13 @@ import { ref, reactive, onMounted } from 'vue';
 import axios from 'axios';
 import { useSnackbar } from "vue3-snackbar";
 import { useAuthStore } from '../stores/auth';
-import { useRouter } from 'vue-router';
 import logOut from '../services/logout';
 import Spinner from '../components/Spinner.vue';
 import AppTable from '@/components/AppTable.vue';
 import Modal from '@/components/Modal.vue';
+import { money } from '@/services/format';
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
-const router = useRouter();
 
 // let user = reactive({}) as Record<string, any>;
 

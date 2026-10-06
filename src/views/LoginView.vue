@@ -1,143 +1,105 @@
 <template>
-  <main class="bg-white dark:bg-navy-900 w-full min-h-screen flex overflow-hidden">
+  <main class="flex min-h-screen w-full bg-white dark:bg-navy-900">
     <!-- Left Section: Login Form -->
-    <section class="flex-1 flex items-center justify-center p-6 lg:p-12 animate-in fade-in slide-in-from-left-4 duration-1000">
-      <div class="w-full max-w-md space-y-12">
-        <!-- Logo for Mobile -->
-        <div class="lg:hidden flex justify-center mb-8">
-          <img class="h-12 w-auto" src="@/assets/images/maxilotto.png" alt="MaxiLotto Logo">
+    <section class="relative flex flex-1 items-center justify-center p-6 lg:p-12">
+      <!-- Theme toggle -->
+      <button
+        type="button"
+        class="absolute right-5 top-5 rounded-xl p-2.5 text-navy-500 hover:bg-navy-50 dark:hover:bg-navy-800"
+        :aria-label="isDark ? 'Switch to light theme' : 'Switch to dark theme'"
+        @click="toggleDark()"
+      >
+        <AppIcon :name="isDark ? 'sun' : 'moon'" class="size-6" />
+      </button>
+
+      <div class="w-full max-w-sm">
+        <img class="mb-10 h-9 w-auto" src="@/assets/images/maxilotto.png" alt="MaxiLotto">
+
+        <h1 class="text-3xl font-extrabold tracking-tight text-navy-700 dark:text-white">Agent sign in</h1>
+        <p class="mt-2 font-medium text-navy-400">Sign in to manage your shop.</p>
+
+        <!-- Why the agent is here, when it was not their own choice -->
+        <div v-if="notice" class="mt-6 flex items-start gap-3 rounded-2xl border border-brand-100 bg-brand-50 p-4 text-sm font-medium text-navy-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-white" role="status">
+          <AppIcon name="info" class="mt-0.5 size-5 text-brand-500" />
+          <span>{{ notice }}</span>
         </div>
 
-        <!-- Dark Mode Toggle Mobile -->
-        <div class="lg:hidden absolute top-8 right-8">
-          <button @click="toggleDark()" class="p-3 bg-gray-100 dark:bg-navy-800 rounded-2xl text-navy-700 dark:text-white transition-all active:scale-95 shadow-sm">
-            <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M3 12h2.25m.386-6.364l1.591 1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M3 12h2.25m.386-6.364l1.591 1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M3 12h2.25m.386-6.364l1.591 1.591" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-            </svg>
-          </button>
-        </div>
+        <form class="mt-8 space-y-5" novalidate @submit.prevent="handleLogin">
+          <div class="space-y-1.5">
+            <label for="email" class="text-sm font-bold text-navy-700 dark:text-navy-200">Email or username</label>
+            <input
+              id="email"
+              v-model.trim="form.email"
+              type="text"
+              autocomplete="username"
+              autocapitalize="none"
+              spellcheck="false"
+              autofocus
+              placeholder="name@agency.com"
+              class="w-full rounded-2xl border border-navy-200 bg-white px-4 py-3.5 font-semibold text-navy-700 outline-none transition-colors placeholder:font-medium placeholder:text-navy-300 focus:border-brand-500 dark:border-navy-600 dark:bg-navy-800 dark:text-white"
+              required
+            />
+          </div>
 
-        <div class="space-y-4">
-          <h1 class="text-4xl lg:text-5xl font-extrabold text-navy-700 dark:text-white tracking-tight">Agent Sign In</h1>
-          <p class="text-navy-400 text-lg font-medium">Powering the future of retail lottery.</p>
-        </div>
-
-        <form @submit.prevent="handleLogin" class="space-y-8">
-          <div class="space-y-6">
-            <div class="space-y-2">
-              <label for="email" class="text-sm font-bold text-navy-700 dark:text-navy-300 ml-1">Email / Username</label>
-              <div class="relative group">
-                <input 
-                  type="text" 
-                  id="email"
-                  v-model="form.email" 
-                  placeholder="name@agency.com"
-                  class="w-full px-5 py-4 bg-gray-50 dark:bg-navy-800 border-2 border-transparent focus:border-brand-500/20 focus:bg-white dark:focus:bg-navy-900 rounded-3xl outline-none text-navy-700 dark:text-white font-bold transition-all shadow-sm"
-                  required
-                />
-              </div>
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label for="password" class="text-sm font-bold text-navy-700 dark:text-navy-200">Password</label>
+              <router-link to="/forgot-password" class="text-sm font-bold text-brand-500 hover:text-brand-600 dark:text-brand-400">Forgot password?</router-link>
             </div>
-
-            <div class="space-y-2">
-              <div class="flex items-center justify-between ml-1">
-                <label for="password" class="text-sm font-bold text-navy-700 dark:text-navy-300">Password</label>
-                <router-link to="/forgot-password" class="text-sm font-bold text-brand-500 hover:text-brand-600 transition-colors">Forgot Password?</router-link>
-              </div>
-              <div class="relative group">
-                <input 
-                  :type="showPassword ? 'text' : 'password'" 
-                  id="password"
-                  v-model="form.password" 
-                  placeholder="••••••••"
-                  class="w-full px-5 py-4 bg-gray-50 dark:bg-navy-800 border-2 border-transparent focus:border-brand-500/20 focus:bg-white dark:focus:bg-navy-900 rounded-3xl outline-none text-navy-700 dark:text-white font-bold transition-all shadow-sm"
-                  required
-                />
-                <button 
-                  type="button"
-                  @click="showPassword = !showPassword"
-                  class="absolute right-5 top-1/2 -translate-y-1/2 text-navy-300 hover:text-navy-500 transition-colors"
-                >
-                  <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.644C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                  </svg>
-                </button>
-              </div>
+            <div class="relative">
+              <input
+                id="password"
+                v-model="form.password"
+                :type="showPassword ? 'text' : 'password'"
+                autocomplete="current-password"
+                placeholder="Your password"
+                class="w-full rounded-2xl border border-navy-200 bg-white py-3.5 pl-4 pr-12 font-semibold text-navy-700 outline-none transition-colors placeholder:font-medium placeholder:text-navy-300 focus:border-brand-500 dark:border-navy-600 dark:bg-navy-800 dark:text-white"
+                required
+              />
+              <button
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1.5 text-xs font-bold text-navy-400 hover:text-navy-700 dark:hover:text-white"
+                :aria-pressed="showPassword"
+                @click="showPassword = !showPassword"
+              >{{ showPassword ? 'Hide' : 'Show' }}</button>
             </div>
           </div>
 
-          <button 
-            type="submit" 
-            :disabled="!isFormValid || processing"
-            class="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-extrabold py-5 rounded-3xl shadow-xl shadow-brand-500/30 transition-all active:scale-[0.98] flex items-center justify-center gap-3 group"
+          <p v-if="errorMessage" class="rounded-2xl bg-red-50 p-3.5 text-sm font-semibold text-red-600 dark:bg-red-500/10 dark:text-red-400" role="alert">{{ errorMessage }}</p>
+
+          <button
+            type="submit"
+            :disabled="processing"
+            class="btn-primary w-full rounded-2xl py-4 text-base"
           >
-            <span v-if="processing" class="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            {{ processing ? 'Authenticating...' : 'Sign In Now' }}
-            <svg v-if="!processing" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 group-hover:translate-x-1 transition-transform">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
+            <span v-if="processing" class="size-5 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+            {{ processing ? 'Signing in...' : 'Sign in' }}
           </button>
         </form>
 
-        <p class="text-center text-navy-400 font-medium pt-8">
+        <p class="mt-10 text-sm font-medium text-navy-400">
           © {{ new Date().getFullYear() }} MaxiLotto. All rights reserved.
         </p>
       </div>
     </section>
 
-    <!-- Right Section: Visual Banner -->
-    <section class="hidden lg:flex flex-1 relative bg-navy-800 animate-in fade-in slide-in-from-right-4 duration-1000 overflow-hidden">
-      <!-- Background SVG with improved styling -->
-      <img class="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay rotate-12 scale-150" src="@/assets/svg/bg.svg" alt="">
-      
-      <!-- Content Overlay -->
-      <div class="relative z-10 w-full h-full flex flex-col items-center justify-center p-20 text-center">
-        <div class="mb-12 flex flex-col items-center gap-6">
-           <img class="h-24 w-auto drop-shadow-2xl" src="@/assets/images/maxilotto.png" alt="MaxiLotto Logo">
-           <div class="h-1.5 w-24 bg-brand-500 rounded-full"></div>
-        </div>
+    <!-- Right Section: what the portal is for -->
+    <section class="relative hidden flex-1 overflow-hidden bg-navy-800 lg:flex">
+      <img class="absolute inset-0 h-full w-full rotate-12 scale-150 object-cover opacity-40 mix-blend-overlay" src="@/assets/svg/bg.svg" alt="">
 
-        <div class="max-w-md space-y-6">
-          <h2 class="text-5xl font-black text-white leading-tight">Empowering Global Retail Agents</h2>
-          <p class="text-navy-200 text-xl font-medium leading-relaxed">Access your dashboard, manage sales, and monitor transactions with our premium agent administration portal.</p>
-        </div>
-
-        <!-- Float Stats Mockup -->
-        <div class="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-sm">
-           <div class="bg-white/10 backdrop-blur-3xl p-8 rounded-[40px] border border-white/20 shadow-2xl flex items-center justify-between gap-8">
-              <div class="text-left">
-                 <p class="text-navy-200 text-xs font-bold uppercase tracking-widest mb-1">Total Network Sales</p>
-                 <p class="text-white text-3xl font-black tracking-tight">₦ 45M+</p>
-              </div>
-              <div class="size-16 bg-brand-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-500/40">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-8">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307L19.062 9" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M18 12V9h-3" />
-                </svg>
-              </div>
-           </div>
-        </div>
-      </div>
-
-      <!-- Theme Toggle Desktop -->
-      <div class="absolute top-12 right-12 z-20">
-        <button 
-          @click="toggleDark()" 
-          class="p-4 bg-white/10 backdrop-blur-xl hover:bg-white/20 border border-white/20 rounded-3xl text-white transition-all active:scale-95 group shadow-2xl"
-        >
-          <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 transition-transform group-hover:rotate-45">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M3 12h2.25m.386-6.364l1.591 1.591" />
-          </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 transition-transform group-hover:-rotate-12">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-          </svg>
-        </button>
+      <div class="relative z-10 flex h-full w-full flex-col justify-center p-16 xl:p-24">
+        <h2 class="max-w-md text-4xl font-extrabold leading-tight text-white">Your shop, in one place.</h2>
+        <ul class="mt-10 max-w-md space-y-6">
+          <li v-for="point in points" :key="point.title" class="flex items-start gap-4">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white">
+              <AppIcon :name="point.icon" class="size-6" />
+            </span>
+            <span>
+              <span class="block font-bold text-white">{{ point.title }}</span>
+              <span class="mt-0.5 block text-navy-200">{{ point.text }}</span>
+            </span>
+          </li>
+        </ul>
       </div>
     </section>
   </main>
@@ -147,24 +109,45 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { useSnackbar } from "vue3-snackbar";
 import { useDark, useToggle } from "@vueuse/core";
 import axios from 'axios';
+import AppIcon from '@/components/AppIcon.vue';
+import type { IconName } from '@/components/AppIcon.vue';
+import { safeRedirect } from '@/services/session';
 
 const snackbar = useSnackbar();
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 
 const showPassword = ref(false);
 const processing = ref(false);
+const errorMessage = ref('');
 
 const form = reactive({
   email: "",
   password: ""
+});
+
+const points: { icon: IconName; title: string; text: string }[] = [
+  { icon: 'trend', title: 'Sales and commission as they happen', text: 'See what your shop has sold and earned, by day, cashier and game.' },
+  { icon: 'cash', title: 'Cash out winning tickets', text: 'Check a ticket and pay the winner in a few taps.' },
+  { icon: 'users', title: 'Keep an eye on cashiers and terminals', text: 'Reports for every cashier and every terminal in your shop.' },
+];
+
+// Where to go once signed in, when the agent was sent here from another page
+const redirect = computed(() => safeRedirect(route.query.redirect));
+
+const notice = computed(() => {
+  if (route.query.reason !== 'expired') return '';
+  return redirect.value
+    ? 'Your session expired. Sign in again to pick up where you left off.'
+    : 'Your session expired. Please sign in again.';
 });
 
 const isFormValid = computed(() => {
@@ -172,7 +155,11 @@ const isFormValid = computed(() => {
 });
 
 const handleLogin = async () => {
-  if (!isFormValid.value) return;
+  errorMessage.value = '';
+  if (!isFormValid.value) {
+    errorMessage.value = 'Enter your email or username and your password.';
+    return;
+  }
   try {
     processing.value = true;
     const res = await axios.post('authenticate/agentAdmin', {
@@ -183,13 +170,14 @@ const handleLogin = async () => {
       authStore.token = res.data.token;
       authStore.user = res.data;
       snackbar.add({ type: 'success', text: 'Successfully logged in' });
-      router.push('/dashboard');
+      router.push(redirect.value || '/dashboard');
     }
   } catch (err: any) {
-    snackbar.add({
-      type: 'error',
-      text: err.response?.data?.message || `Authentication failed: ${err.message}`
-    });
+    // The API answers with either { message } or a plain sentence
+    const fromServer = err.response?.data?.message || (typeof err.response?.data === 'string' ? err.response.data : '');
+    errorMessage.value = !err.response
+      ? 'Could not reach the server. Check your internet connection and try again.'
+      : fromServer || 'Sign in failed. Check your details and try again.';
   } finally {
     processing.value = false;
   }

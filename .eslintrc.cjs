@@ -11,5 +11,9 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
+  },
+  rules: {
+    // Two long-standing components have one-word names; anything new should use two words
+    'vue/multi-word-component-names': ['error', { ignores: ['Modal', 'Spinner'] }]
   }
 }

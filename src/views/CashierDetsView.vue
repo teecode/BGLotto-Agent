@@ -11,7 +11,7 @@
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
         <AppTable :header="cashierTableHeader" :fields="cashierDets" :loading="loading" :paginated="true"
-            @pageChange="updatePage" :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData"
+            :currentPage="page" @pageChange="updatePage" :totalPages="totalPages" :pageSize="pageSize" :totalRecords="totalData"
             :dataCount="cashierDets.length" :empty="error">
 
             <template #item-action="item">
@@ -171,14 +171,12 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useSnackbar } from "vue3-snackbar";
 import { useAuthStore } from '../stores/auth';
-import { useRouter } from 'vue-router';
 import logOut from '../services/logout';
 import AppTable from '@/components/AppTable.vue';
 import Modal from '@/components/Modal.vue'
 
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
-const router = useRouter();
 
 let cashierDets = reactive([]);
 
@@ -214,7 +212,9 @@ let cashierTableHeader = reactive([
 let loading = ref(false);
 let totalData = ref(null);
 let totalPages = ref(0);
-let pageSize = ref(10);
+// A shop's cashiers are shown as one list; the pager only appears past a hundred of them
+let pageSize = ref(100);
+const page = ref(1);
 let showModal = ref(false);
 let editCashDets = reactive({});
 let error = ref(false);
@@ -230,7 +230,7 @@ let passwordLoading = ref(false);
 const fetchCasheirs = async () => {
     try {
         loading.value = true;
-        const res = await axios.get(`Retail/cashiers?ShopId=${userId.value}`);
+        const res = await axios.get(`Retail/cashiers?ShopId=${userId.value}&Page=${page.value}&PageSize=${pageSize.value}`);
         cashierDets = res.data.data;
         totalData.value = res.data.totalCount;
         totalPages.value = res.data.totalPages;
@@ -239,8 +239,9 @@ const fetchCasheirs = async () => {
             error.value = true
         }
     } catch (err) {
+        // Without this the page stays on "loading" for good when the request fails
+        loading.value = false;
         if (err?.response?.status == 401) {
-            console.log(`this ran`)
             logOut()
         }
         snackbar.add({
@@ -251,7 +252,8 @@ const fetchCasheirs = async () => {
 };
 
 const updatePage = (pageNumber) => {
-    currentPage.value = pageNumber;
+    page.value = pageNumber;
+    fetchCasheirs();
 };
 
 const editCashier = (item) => {

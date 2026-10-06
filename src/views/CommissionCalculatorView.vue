@@ -12,7 +12,7 @@
           to="/dashboard/cashier-summary-report"
           class="flex items-center gap-2 text-sm font-semibold text-navy-400 hover:text-brand-500 transition-colors whitespace-nowrap"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
           </svg>
           Cashier Summary
@@ -22,71 +22,77 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <!-- Date -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Date</label>
+          <label for="calc-date" class="eyebrow block">Date</label>
           <date-picker
             v-model:value="calcDate"
             type="date"
             placeholder="Select date"
             value-type="format"
             format="YYYY-MM-DD"
+            :input-attr="{ id: 'calc-date' }"
             class="custom-datepicker w-full"
           />
         </div>
 
         <!-- 5/90 cashier commission -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">5/90 Cashier Commission</label>
+          <label for="rate-590" class="eyebrow block">5/90 Cashier Commission</label>
           <div class="relative">
             <input
+              id="rate-590"
               v-model.number="rate590Cashier"
               type="number"
+              inputmode="decimal"
               min="0"
               max="35"
               step="0.5"
               class="w-full px-4 py-2.5 pr-10 bg-gray-50 dark:bg-navy-900/50 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             />
-            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 font-bold text-sm">%</span>
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 font-bold text-sm" aria-hidden="true">%</span>
           </div>
           <p class="text-xs text-navy-400">
             Principal agent:
-            <span class="font-bold text-brand-500">{{ clamp(35 - rate590Cashier, 0, 35).toFixed(1) }}%</span>
-            <span class="text-navy-300 dark:text-navy-600"> (of 35% total)</span>
+            <span class="font-bold text-navy-700 dark:text-white">{{ pct(clamp(35 - rate590Cashier, 0, 35)) }}</span>
+            (of 35% total)
           </p>
         </div>
 
         <!-- Accumulator cashier commission -->
         <div class="space-y-1.5">
-          <label class="text-xs font-bold text-navy-500 dark:text-navy-300 uppercase tracking-wider">Accumulator Cashier Commission</label>
+          <label for="rate-accumulator" class="eyebrow block">Accumulator Cashier Commission</label>
           <div class="relative">
             <input
+              id="rate-accumulator"
               v-model.number="rateAccumCashier"
               type="number"
+              inputmode="decimal"
               min="0"
               max="10"
               step="0.5"
               class="w-full px-4 py-2.5 pr-10 bg-gray-50 dark:bg-navy-900/50 border border-gray-200 dark:border-navy-600 rounded-xl text-navy-700 dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
             />
-            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 font-bold text-sm">%</span>
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-navy-400 font-bold text-sm" aria-hidden="true">%</span>
           </div>
           <p class="text-xs text-navy-400">
             Principal agent:
-            <span class="font-bold text-purple-500">{{ clamp(10 - rateAccumCashier, 0, 10).toFixed(1) }}%</span>
-            <span class="text-navy-300 dark:text-navy-600"> (of 10% total)</span>
+            <span class="font-bold text-navy-700 dark:text-white">{{ pct(clamp(10 - rateAccumCashier, 0, 10)) }}</span>
+            (of 10% total)
           </p>
         </div>
       </div>
 
       <div class="mt-5">
         <button
+          type="button"
           @click="calculate"
           :disabled="calcLoading || !calcDate"
-          class="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-colors flex items-center gap-2"
+          class="btn-primary w-full px-6 sm:w-auto"
         >
-          <svg v-if="calcLoading" class="animate-spin size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg v-if="calcLoading" class="animate-spin size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
           </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+          <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.684 4.5 4.819V21a.75.75 0 0 0 .75.75h13.5a.75.75 0 0 0 .75-.75V4.82c0-1.136-.806-2.12-1.907-2.248A48.494 48.494 0 0 0 12 2.25Z" />
           </svg>
           {{ calcLoading ? 'Calculating...' : 'Calculate' }}
@@ -94,230 +100,156 @@
       </div>
     </header>
 
-    <!-- Loading -->
-    <div v-if="calcLoading" class="flex items-center justify-center py-20">
-      <div class="animate-spin size-10 border-4 border-brand-500 border-t-transparent rounded-full"></div>
+    <!-- First calculation: placeholders in the shape of what is coming -->
+    <div v-if="calcLoading && !calcLoaded" class="card space-y-4 p-5" role="status" aria-label="Calculating">
+      <span v-for="n in 6" :key="n" class="skeleton h-9 w-full" :style="{ opacity: 1 - n * 0.12 }"></span>
     </div>
 
-    <template v-else-if="calcLoaded">
-      <!-- Aggregate summary -->
-      <div class="space-y-3">
-        <p class="text-xs font-bold text-navy-400 uppercase tracking-wider px-1">For {{ calcDate }}</p>
+    <!-- Calculating again keeps the last answer on screen, dimmed, until the new one arrives -->
+    <div v-else-if="calcLoaded" class="space-y-6 transition-opacity" :class="calcLoading ? 'opacity-50' : ''" :aria-busy="calcLoading">
+      <div class="space-y-4">
+        <!-- The date and rates this answer was worked out with; the fields above may have changed since -->
+        <p class="eyebrow px-1">For {{ ran.date }}</p>
 
-        <!-- 5/90 commission summary -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 shadow-sm border border-brand-100 dark:border-brand-500/20">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="px-2 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-xs font-bold rounded-lg uppercase">5/90</span>
-            <span class="text-sm font-bold text-navy-700 dark:text-white">Commission Split</span>
-            <span class="text-xs text-navy-400">(35% total rate)</span>
+        <!-- What each side takes -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="rounded-3xl bg-brand-600 p-5 text-white shadow-sm">
+            <p class="text-sm font-semibold text-white/85">Principal agent takes</p>
+            <p class="tabular mt-1 whitespace-nowrap text-2xl font-bold sm:text-3xl">{{ moneyExact(totals.grandPrincipalComm) }}</p>
+            <p class="mt-1 text-sm text-white/85">5/90 and Accumulator commission together</p>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div>
-              <p class="text-xs text-navy-400 font-semibold uppercase tracking-wider">Total 5/90 Sales</p>
-              <p class="text-lg font-bold text-navy-700 dark:text-white mt-0.5">₦ {{ fmt(totals.lotto590Sales) }}</p>
-            </div>
-            <div>
-              <p class="text-xs text-navy-400 font-semibold uppercase tracking-wider">Commission Generated</p>
-              <p class="text-lg font-bold text-navy-700 dark:text-white mt-0.5">₦ {{ fmt(totals.lotto590TotalComm) }}</p>
-            </div>
-            <div class="col-span-2 sm:col-span-1 grid grid-cols-2 sm:grid-cols-1 gap-2">
-              <div class="bg-green-50 dark:bg-green-900/10 rounded-xl p-3">
-                <p class="text-[10px] text-green-600 dark:text-green-400 font-bold uppercase">Cashiers ({{ rate590Cashier }}%)</p>
-                <p class="text-base font-bold text-green-700 dark:text-green-400 mt-0.5">₦ {{ fmt(totals.lotto590CashierComm) }}</p>
-              </div>
-              <div class="bg-brand-50 dark:bg-brand-900/10 rounded-xl p-3">
-                <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase">Principal ({{ clamp(35 - rate590Cashier, 0, 35).toFixed(1) }}%)</p>
-                <p class="text-base font-bold text-brand-600 dark:text-brand-400 mt-0.5">₦ {{ fmt(totals.lotto590PrincipalComm) }}</p>
-              </div>
-            </div>
+          <div class="card p-5">
+            <p class="text-sm font-semibold text-navy-400">All cashiers take</p>
+            <p class="tabular mt-1 whitespace-nowrap text-2xl font-bold text-navy-700 dark:text-white sm:text-3xl">{{ moneyExact(totals.grandCashierComm) }}</p>
+            <p class="mt-1 text-sm text-navy-400">Shared between {{ cashierCount }}</p>
           </div>
         </div>
 
-        <!-- Accumulator commission summary -->
-        <div class="bg-white dark:bg-navy-800 rounded-2xl p-5 shadow-sm border border-purple-100 dark:border-purple-500/20">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs font-bold rounded-lg uppercase">Accum</span>
-            <span class="text-sm font-bold text-navy-700 dark:text-white">Commission Split</span>
-            <span class="text-xs text-navy-400">(10% total rate)</span>
+        <!-- How each game type's commission is shared -->
+        <section v-for="game in games" :key="game.key" class="card p-5">
+          <div class="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h3 class="font-bold text-navy-700 dark:text-white">{{ game.name }} commission split</h3>
+            <span class="text-sm text-navy-400">{{ pct(game.totalRate) }} of net sales in all</span>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div>
-              <p class="text-xs text-navy-400 font-semibold uppercase tracking-wider">Total Accum Sales</p>
-              <p class="text-lg font-bold text-navy-700 dark:text-white mt-0.5">₦ {{ fmt(totals.accumulatorSales) }}</p>
+          <dl class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div v-for="figure in splitFigures(totals, game, true)" :key="figure.label" class="min-w-0">
+              <dt class="eyebrow">{{ figure.label }}</dt>
+              <dd class="tabular mt-0.5 whitespace-nowrap text-lg font-bold text-navy-700 dark:text-white">{{ figure.value }}</dd>
             </div>
-            <div>
-              <p class="text-xs text-navy-400 font-semibold uppercase tracking-wider">Commission Generated</p>
-              <p class="text-lg font-bold text-navy-700 dark:text-white mt-0.5">₦ {{ fmt(totals.accumulatorTotalComm) }}</p>
-            </div>
-            <div class="col-span-2 sm:col-span-1 grid grid-cols-2 sm:grid-cols-1 gap-2">
-              <div class="bg-green-50 dark:bg-green-900/10 rounded-xl p-3">
-                <p class="text-[10px] text-green-600 dark:text-green-400 font-bold uppercase">Cashiers ({{ rateAccumCashier }}%)</p>
-                <p class="text-base font-bold text-green-700 dark:text-green-400 mt-0.5">₦ {{ fmt(totals.accumulatorCashierComm) }}</p>
-              </div>
-              <div class="bg-purple-50 dark:bg-purple-900/10 rounded-xl p-3">
-                <p class="text-[10px] text-purple-600 dark:text-purple-400 font-bold uppercase">Principal ({{ clamp(10 - rateAccumCashier, 0, 10).toFixed(1) }}%)</p>
-                <p class="text-base font-bold text-purple-600 dark:text-purple-400 mt-0.5">₦ {{ fmt(totals.accumulatorPrincipalComm) }}</p>
-              </div>
-            </div>
+          </dl>
+          <div
+            class="mt-4 flex h-2.5 gap-0.5 overflow-hidden rounded-full"
+            role="img"
+            :aria-label="`Cashiers get ${pct(game.cashierShare)} of the ${game.name} commission, the principal agent ${pct(game.principalShare)}`"
+          >
+            <div v-if="game.cashierShare > 0" class="bg-chart-1" :style="{ width: `${game.cashierShare}%` }"></div>
+            <div v-if="game.principalShare > 0" class="bg-chart-2" :style="{ width: `${game.principalShare}%` }"></div>
           </div>
+          <div class="mt-2 flex flex-wrap justify-between gap-x-4 gap-y-1 text-xs font-medium text-navy-400">
+            <span class="flex items-center gap-1.5"><span class="size-2 rounded-sm bg-chart-1" aria-hidden="true"></span>Cashiers {{ pct(game.cashierShare) }} of the commission</span>
+            <span class="flex items-center gap-1.5"><span class="size-2 rounded-sm bg-chart-2" aria-hidden="true"></span>Principal agent {{ pct(game.principalShare) }}</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- Per-cashier breakdown -->
+      <div class="flex items-center justify-between gap-4 px-1">
+        <h3 class="font-bold text-navy-700 dark:text-white">Per-cashier breakdown</h3>
+        <span class="text-sm text-navy-400">{{ cashierCount }}</span>
+      </div>
+
+      <div v-if="!calcItems.length" class="card px-6 py-14 text-center font-medium text-navy-400">
+        No cashier had sales on {{ ran.date }}.
+      </div>
+
+      <template v-else>
+        <!-- Up to a small laptop: one card per cashier -->
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:hidden">
+          <article v-for="row in calcItems" :key="row.cashierId" class="card overflow-hidden">
+            <div class="flex items-start justify-between gap-3 border-b border-gray-100 px-4 pt-4 pb-3 dark:border-navy-700">
+              <div class="min-w-0">
+                <p class="break-words font-bold text-navy-700 dark:text-white">{{ row.cashierUsername }}</p>
+                <p class="text-xs text-navy-400 mt-0.5">{{ row.cashierName }}</p>
+              </div>
+              <div class="shrink-0 text-right">
+                <p class="eyebrow">Cashier payout</p>
+                <p class="tabular whitespace-nowrap text-base font-bold text-navy-700 dark:text-white">{{ moneyExact(row.totalCashierPayout) }}</p>
+                <p class="text-[11px] text-navy-400 mt-0.5">{{ claimed(row.claimedCount) }}</p>
+              </div>
+            </div>
+            <div v-for="game in games" :key="game.key" class="border-b border-gray-100 px-4 py-3 last:border-b-0 dark:border-navy-700">
+              <span class="rounded-md bg-navy-100 px-2 py-0.5 text-xs font-bold text-navy-700 dark:bg-navy-700 dark:text-white">{{ game.name }}</span>
+              <dl class="mt-2 grid grid-cols-2 gap-x-3 gap-y-2">
+                <div v-for="figure in splitFigures(row, game, false)" :key="figure.label" class="min-w-0">
+                  <dt class="text-[11px] font-medium text-navy-400">{{ figure.label }}</dt>
+                  <dd class="tabular whitespace-nowrap text-sm font-semibold text-navy-700 dark:text-white">{{ figure.value }}</dd>
+                </div>
+              </dl>
+            </div>
+          </article>
         </div>
 
-        <!-- Grand total -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-green-500 rounded-2xl p-5 text-white">
-            <p class="text-xs font-bold uppercase tracking-wider opacity-80">Grand Total — All Cashiers</p>
-            <p class="text-2xl font-bold mt-1">₦ {{ fmt(totals.grandCashierComm) }}</p>
-            <p class="text-xs opacity-70 mt-1">5/90 + Accumulator commissions</p>
-          </div>
-          <div class="bg-brand-500 rounded-2xl p-5 text-white">
-            <p class="text-xs font-bold uppercase tracking-wider opacity-80">Grand Total — Principal Agent</p>
-            <p class="text-2xl font-bold mt-1">₦ {{ fmt(totals.grandPrincipalComm) }}</p>
-            <p class="text-xs opacity-70 mt-1">5/90 + Accumulator commissions</p>
-          </div>
+        <!-- Wide screens: the table. The cashier and what they are paid come first and the name stays put
+             if the rest has to scroll sideways. -->
+        <div class="card hidden overflow-x-auto xl:block">
+          <table class="w-full text-[13px]">
+            <thead class="text-[11px] font-bold uppercase tracking-wide text-navy-400">
+              <tr class="bg-gray-50 dark:bg-navy-900">
+                <th scope="col" rowspan="2" class="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-left align-bottom whitespace-nowrap dark:bg-navy-900">Cashier</th>
+                <th scope="col" rowspan="2" class="px-3 py-3 text-right align-bottom whitespace-nowrap">Cashier payout</th>
+                <th v-for="game in games" :key="game.key" scope="colgroup" colspan="4" class="border-l border-gray-200 px-3 pt-3 pb-1 text-left whitespace-nowrap dark:border-navy-600">{{ game.name }}</th>
+              </tr>
+              <tr class="bg-gray-50 dark:bg-navy-900">
+                <template v-for="game in games" :key="game.key">
+                  <th scope="col" class="border-l border-gray-200 px-3 pt-1 pb-3 text-right whitespace-nowrap dark:border-navy-600">Net sales</th>
+                  <th scope="col" class="px-3 pt-1 pb-3 text-right whitespace-nowrap">Comm. {{ pct(game.totalRate) }}</th>
+                  <th scope="col" class="px-3 pt-1 pb-3 text-right whitespace-nowrap">Cashier {{ pct(game.cashierRate) }}</th>
+                  <th scope="col" class="px-3 pt-1 pb-3 text-right whitespace-nowrap">Principal {{ pct(game.principalRate) }}</th>
+                </template>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-navy-700">
+              <tr v-for="row in calcItems" :key="row.cashierId">
+                <td class="sticky left-0 z-10 bg-white px-4 py-3 whitespace-nowrap dark:bg-navy-800">
+                  <p class="text-sm font-bold text-navy-700 dark:text-white">{{ row.cashierUsername }}</p>
+                  <p class="text-xs text-navy-400">{{ row.cashierName }}</p>
+                </td>
+                <td class="px-3 py-3 text-right text-sm font-bold text-navy-700 whitespace-nowrap dark:text-white">
+                  {{ moneyExact(row.totalCashierPayout) }}
+                  <span class="block text-[11px] font-medium text-navy-400">{{ claimed(row.claimedCount) }}</span>
+                </td>
+                <template v-for="game in games" :key="game.key">
+                  <td class="border-l border-gray-100 px-3 py-3 text-right text-navy-700 whitespace-nowrap dark:border-navy-700 dark:text-navy-200">{{ moneyExact(row[`${game.key}Sales`]) }}</td>
+                  <td class="px-3 py-3 text-right text-navy-500 whitespace-nowrap">{{ moneyExact(row[`${game.key}TotalComm`]) }}</td>
+                  <td class="px-3 py-3 text-right font-semibold text-navy-700 whitespace-nowrap dark:text-navy-200">{{ moneyExact(row[`${game.key}CashierComm`]) }}</td>
+                  <td class="px-3 py-3 text-right text-navy-500 whitespace-nowrap">{{ moneyExact(row[`${game.key}PrincipalComm`]) }}</td>
+                </template>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="border-t-2 border-gray-200 bg-gray-50 font-bold text-navy-700 dark:border-navy-600 dark:bg-navy-900 dark:text-white">
+                <td class="sticky left-0 z-10 bg-gray-50 px-4 py-3 text-sm dark:bg-navy-900">Total</td>
+                <td class="px-3 py-3 text-right text-sm whitespace-nowrap">
+                  {{ moneyExact(totals.grandCashierComm) }}
+                  <span class="block text-[11px] font-medium text-navy-400">{{ claimed(totals.totalClaimedCount) }}</span>
+                </td>
+                <template v-for="game in games" :key="game.key">
+                  <td class="border-l border-gray-200 px-3 py-3 text-right whitespace-nowrap dark:border-navy-600">{{ moneyExact(totals[`${game.key}Sales`]) }}</td>
+                  <td class="px-3 py-3 text-right whitespace-nowrap">{{ moneyExact(totals[`${game.key}TotalComm`]) }}</td>
+                  <td class="px-3 py-3 text-right whitespace-nowrap">{{ moneyExact(totals[`${game.key}CashierComm`]) }}</td>
+                  <td class="px-3 py-3 text-right whitespace-nowrap">{{ moneyExact(totals[`${game.key}PrincipalComm`]) }}</td>
+                </template>
+              </tr>
+            </tfoot>
+          </table>
         </div>
-      </div>
+      </template>
+    </div>
 
-      <!-- Per-cashier breakdown header -->
-      <div class="flex items-center justify-between">
-        <h3 class="font-bold text-navy-700 dark:text-white">Per-Cashier Breakdown</h3>
-        <span class="text-sm text-navy-400">{{ calcItems.length }} cashier{{ calcItems.length !== 1 ? 's' : '' }}</span>
-      </div>
-
-      <!-- Mobile cards -->
-      <div class="md:hidden space-y-4">
-        <div
-          v-for="row in calcItems"
-          :key="row.cashierId"
-          class="bg-white dark:bg-navy-800 rounded-2xl shadow-sm border border-gray-100 dark:border-navy-700 overflow-hidden"
-        >
-          <div class="px-4 pt-4 pb-3 flex items-start justify-between border-b border-gray-100 dark:border-navy-700">
-            <div>
-              <p class="font-bold text-navy-700 dark:text-white">{{ row.cashierUsername }}</p>
-              <p class="text-xs text-navy-400 mt-0.5">{{ row.cashierName }}</p>
-            </div>
-            <div class="text-right">
-              <p class="text-[10px] text-navy-400 uppercase font-semibold">Total Cashier Payout</p>
-              <p class="text-sm font-bold text-green-600 dark:text-green-400">₦ {{ fmt(row.totalCashierPayout) }}</p>
-              <p class="text-[10px] text-navy-400 mt-0.5">{{ row.claimedCount }} claimed ticket{{ row.claimedCount !== 1 ? 's' : '' }}</p>
-            </div>
-          </div>
-
-          <!-- 5/90 breakdown -->
-          <div class="px-4 py-3 border-b border-gray-100 dark:border-navy-700">
-            <span class="text-[10px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20 px-2 py-0.5 rounded-md uppercase mb-2 inline-block">5/90</span>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-              <div>
-                <p class="text-[10px] text-navy-400 uppercase font-semibold">Sales</p>
-                <p class="text-sm font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.lotto590Sales) }}</p>
-              </div>
-              <div>
-                <p class="text-[10px] text-navy-400 uppercase font-semibold">Total Comm (35%)</p>
-                <p class="text-sm font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.lotto590TotalComm) }}</p>
-              </div>
-              <div class="bg-green-50 dark:bg-green-900/10 rounded-lg p-2">
-                <p class="text-[10px] text-green-600 dark:text-green-400 font-bold uppercase">Cashier ({{ rate590Cashier }}%)</p>
-                <p class="text-sm font-bold text-green-700 dark:text-green-400">₦ {{ fmt(row.lotto590CashierComm) }}</p>
-              </div>
-              <div class="bg-brand-50 dark:bg-brand-900/10 rounded-lg p-2">
-                <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase">Principal ({{ clamp(35 - rate590Cashier, 0, 35).toFixed(1) }}%)</p>
-                <p class="text-sm font-bold text-brand-600 dark:text-brand-400">₦ {{ fmt(row.lotto590PrincipalComm) }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Accumulator breakdown -->
-          <div class="px-4 py-3">
-            <span class="text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 px-2 py-0.5 rounded-md uppercase mb-2 inline-block">Accum</span>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-              <div>
-                <p class="text-[10px] text-navy-400 uppercase font-semibold">Sales</p>
-                <p class="text-sm font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.accumulatorSales) }}</p>
-              </div>
-              <div>
-                <p class="text-[10px] text-navy-400 uppercase font-semibold">Total Comm (10%)</p>
-                <p class="text-sm font-semibold text-navy-700 dark:text-white">₦ {{ fmt(row.accumulatorTotalComm) }}</p>
-              </div>
-              <div class="bg-green-50 dark:bg-green-900/10 rounded-lg p-2">
-                <p class="text-[10px] text-green-600 dark:text-green-400 font-bold uppercase">Cashier ({{ rateAccumCashier }}%)</p>
-                <p class="text-sm font-bold text-green-700 dark:text-green-400">₦ {{ fmt(row.accumulatorCashierComm) }}</p>
-              </div>
-              <div class="bg-purple-50 dark:bg-purple-900/10 rounded-lg p-2">
-                <p class="text-[10px] text-purple-600 dark:text-purple-400 font-bold uppercase">Principal ({{ clamp(10 - rateAccumCashier, 0, 10).toFixed(1) }}%)</p>
-                <p class="text-sm font-bold text-purple-600 dark:text-purple-400">₦ {{ fmt(row.accumulatorPrincipalComm) }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Desktop table -->
-      <div class="hidden md:block bg-white dark:bg-navy-800 rounded-3xl shadow-sm border border-gray-100 dark:border-navy-700 overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="bg-gray-50 dark:bg-navy-900/50 text-left">
-              <th class="px-4 py-3 font-bold text-navy-500 dark:text-navy-300 whitespace-nowrap">Cashier</th>
-              <!-- 5/90 columns -->
-              <th class="px-4 py-3 font-bold text-brand-500 whitespace-nowrap text-right border-l border-brand-100 dark:border-brand-500/20">5/90 Sales</th>
-              <th class="px-4 py-3 font-bold text-brand-500 whitespace-nowrap text-right">5/90 Comm (35%)</th>
-              <th class="px-4 py-3 font-bold text-green-600 whitespace-nowrap text-right">Cashier ({{ rate590Cashier }}%)</th>
-              <th class="px-4 py-3 font-bold text-brand-400 whitespace-nowrap text-right">Principal ({{ clamp(35 - rate590Cashier, 0, 35).toFixed(1) }}%)</th>
-              <!-- Accum columns -->
-              <th class="px-4 py-3 font-bold text-purple-500 whitespace-nowrap text-right border-l border-purple-100 dark:border-purple-500/20">Accum Sales</th>
-              <th class="px-4 py-3 font-bold text-purple-500 whitespace-nowrap text-right">Accum Comm (10%)</th>
-              <th class="px-4 py-3 font-bold text-green-600 whitespace-nowrap text-right">Cashier ({{ rateAccumCashier }}%)</th>
-              <th class="px-4 py-3 font-bold text-purple-400 whitespace-nowrap text-right">Principal ({{ clamp(10 - rateAccumCashier, 0, 10).toFixed(1) }}%)</th>
-              <!-- Total -->
-              <th class="px-4 py-3 font-bold text-navy-500 dark:text-navy-300 whitespace-nowrap text-right border-l border-gray-200 dark:border-navy-600">Total Payout</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 dark:divide-navy-700">
-            <tr v-for="row in calcItems" :key="row.cashierId" class="hover:bg-gray-50 dark:hover:bg-navy-700/50 transition-colors">
-              <td class="px-4 py-3">
-                <p class="font-bold text-navy-700 dark:text-white">{{ row.cashierUsername }}</p>
-                <p class="text-xs text-navy-400">{{ row.cashierName }}</p>
-              </td>
-              <!-- 5/90 -->
-              <td class="px-4 py-3 text-right text-navy-600 dark:text-navy-300 border-l border-brand-50 dark:border-brand-500/10">₦ {{ fmt(row.lotto590Sales) }}</td>
-              <td class="px-4 py-3 text-right text-navy-500 dark:text-navy-400">₦ {{ fmt(row.lotto590TotalComm) }}</td>
-              <td class="px-4 py-3 text-right font-semibold text-green-600 dark:text-green-400">₦ {{ fmt(row.lotto590CashierComm) }}</td>
-              <td class="px-4 py-3 text-right text-brand-500">₦ {{ fmt(row.lotto590PrincipalComm) }}</td>
-              <!-- Accum -->
-              <td class="px-4 py-3 text-right text-navy-600 dark:text-navy-300 border-l border-purple-50 dark:border-purple-500/10">₦ {{ fmt(row.accumulatorSales) }}</td>
-              <td class="px-4 py-3 text-right text-navy-500 dark:text-navy-400">₦ {{ fmt(row.accumulatorTotalComm) }}</td>
-              <td class="px-4 py-3 text-right font-semibold text-green-600 dark:text-green-400">₦ {{ fmt(row.accumulatorCashierComm) }}</td>
-              <td class="px-4 py-3 text-right text-purple-500">₦ {{ fmt(row.accumulatorPrincipalComm) }}</td>
-              <!-- Total -->
-              <td class="px-4 py-3 text-right font-bold text-green-600 dark:text-green-400 border-l border-gray-100 dark:border-navy-700">
-                ₦ {{ fmt(row.totalCashierPayout) }}
-                <span class="block text-[10px] font-medium text-navy-400">{{ row.claimedCount }} ticket{{ row.claimedCount !== 1 ? 's' : '' }}</span>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr class="bg-brand-50 dark:bg-navy-900/60 border-t-2 border-brand-100 dark:border-brand-500/20 font-bold">
-              <td class="px-4 py-3 text-navy-700 dark:text-white">TOTAL</td>
-              <td class="px-4 py-3 text-right text-navy-700 dark:text-white border-l border-brand-100 dark:border-brand-500/20">₦ {{ fmt(totals.lotto590Sales) }}</td>
-              <td class="px-4 py-3 text-right text-navy-700 dark:text-white">₦ {{ fmt(totals.lotto590TotalComm) }}</td>
-              <td class="px-4 py-3 text-right text-green-600 dark:text-green-400">₦ {{ fmt(totals.lotto590CashierComm) }}</td>
-              <td class="px-4 py-3 text-right text-brand-500">₦ {{ fmt(totals.lotto590PrincipalComm) }}</td>
-              <td class="px-4 py-3 text-right text-navy-700 dark:text-white border-l border-purple-100 dark:border-purple-500/20">₦ {{ fmt(totals.accumulatorSales) }}</td>
-              <td class="px-4 py-3 text-right text-navy-700 dark:text-white">₦ {{ fmt(totals.accumulatorTotalComm) }}</td>
-              <td class="px-4 py-3 text-right text-green-600 dark:text-green-400">₦ {{ fmt(totals.accumulatorCashierComm) }}</td>
-              <td class="px-4 py-3 text-right text-purple-500">₦ {{ fmt(totals.accumulatorPrincipalComm) }}</td>
-              <td class="px-4 py-3 text-right text-green-600 dark:text-green-400 border-l border-gray-100 dark:border-navy-700">
-                ₦ {{ fmt(totals.grandCashierComm) }}
-                <span class="block text-[10px] font-medium text-navy-400">{{ totals.totalClaimedCount }} ticket{{ totals.totalClaimedCount !== 1 ? 's' : '' }}</span>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </template>
-
-    <!-- Empty state -->
-    <div v-else-if="!calcLoading" class="bg-white dark:bg-navy-800 rounded-3xl p-16 shadow-sm border border-gray-100 dark:border-navy-700 text-center">
-      <div class="size-16 bg-green-50 dark:bg-navy-900 rounded-2xl flex items-center justify-center mx-auto mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-green-400">
+    <!-- Nothing calculated yet -->
+    <div v-else class="card p-10 text-center sm:p-16">
+      <div class="size-16 bg-brand-50 dark:bg-navy-900 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-brand-500" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.684 4.5 4.819V21a.75.75 0 0 0 .75.75h13.5a.75.75 0 0 0 .75-.75V4.82c0-1.136-.806-2.12-1.907-2.248A48.494 48.494 0 0 0 12 2.25Z" />
         </svg>
       </div>
@@ -329,14 +261,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { useAuthStore } from '@/stores/auth'
 import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
 import { format } from 'date-fns'
-import { convertNumber } from '@/services/convertNumber'
+import { moneyExact, count } from '@/services/format'
 
 const snackbar = useSnackbar()
 const authStore = useAuthStore()
@@ -353,6 +285,10 @@ const calcLoading = ref(false)
 const calcLoaded = ref(false)
 const calcItems = ref([])
 
+// What the answer on screen was worked out with. The fields can be edited afterwards
+// without the figures claiming a date or a split they were not calculated for.
+const ran = reactive({ date: '', cashier590: 30, cashierAccum: 7 })
+
 const totals = reactive({
   lotto590Sales: 0,
   lotto590TotalComm: 0,
@@ -367,16 +303,46 @@ const totals = reactive({
   totalClaimedCount: 0,
 })
 
-const fmt = (val) => convertNumber(val ?? 0)
-const clamp = (val, min, max) => Math.min(Math.max(val, min), max)
-
+const clamp = (val, min, max) => Math.min(Math.max(Number(val) || 0, min), max)
 const round2 = (n) => Math.round(n * 100) / 100
+const round1 = (n) => Math.round(n * 10) / 10
+/** 30 reads "30%", 4.5 reads "4.5%" */
+const pct = (n) => `${round1(Number(n) || 0)}%`
+const claimed = (n) => `${count(n)} ticket${Number(n) === 1 ? '' : 's'} claimed`
+
+// The two game types, with the rates of the last calculation. `key` is the prefix of their fields.
+const games = computed(() =>
+  [
+    { key: 'lotto590', name: '5/90', totalRate: RATE_590_TOTAL, cashierRate: ran.cashier590 },
+    { key: 'accumulator', name: 'Accumulator', totalRate: RATE_ACCUM_TOTAL, cashierRate: ran.cashierAccum },
+  ].map((game) => {
+    const cashierShare = round1((game.cashierRate / game.totalRate) * 100)
+    return {
+      ...game,
+      principalRate: round1(game.totalRate - game.cashierRate),
+      // Of the commission the game generated, how much goes to each side
+      cashierShare,
+      principalShare: round1(100 - cashierShare),
+    }
+  })
+)
+
+const cashierCount = computed(() => `${count(calcItems.value.length)} cashier${calcItems.value.length === 1 ? '' : 's'}`)
+
+/** One game type's four figures, for the whole shop (the totals) or for one cashier (a row) */
+const splitFigures = (source, game, wholeShop) => [
+  { label: 'Net sales', value: moneyExact(source[`${game.key}Sales`]) },
+  { label: wholeShop ? 'Commission generated' : `Commission (${pct(game.totalRate)})`, value: moneyExact(source[`${game.key}TotalComm`]) },
+  { label: `${wholeShop ? 'Cashiers' : 'Cashier'} (${pct(game.cashierRate)})`, value: moneyExact(source[`${game.key}CashierComm`]) },
+  { label: `${wholeShop ? 'Principal agent' : 'Principal'} (${pct(game.principalRate)})`, value: moneyExact(source[`${game.key}PrincipalComm`]) },
+]
 
 const calculate = async () => {
   if (!calcDate.value) {
     snackbar.add({ type: 'warning', text: 'Please select a date' })
     return
   }
+  const date = calcDate.value
   const cashier590 = clamp(rate590Cashier.value, 0, RATE_590_TOTAL)
   const cashierAccum = clamp(rateAccumCashier.value, 0, RATE_ACCUM_TOTAL)
   const principal590 = RATE_590_TOTAL - cashier590
@@ -385,19 +351,23 @@ const calculate = async () => {
   try {
     calcLoading.value = true
     const res = await axios.get(
-      `report/cashier/summary?shopId=${shopId}&fromDate=${calcDate.value}&toDate=${calcDate.value}`
+      `report/cashier/summary?shopId=${shopId}&fromDate=${date}&toDate=${date}`
     )
     const data = res.data
     const rawItems = data.items ?? []
 
     calcItems.value = rawItems.map((row) => {
-      const lotto590TotalComm = round2(row.lotto590Sales * RATE_590_TOTAL / 100)
-      const lotto590CashierComm = round2(row.lotto590Sales * cashier590 / 100)
-      const lotto590PrincipalComm = round2(row.lotto590Sales * principal590 / 100)
+      // The API sends each game type's sales already less cancelled tickets
+      const lotto590Sales = Number(row.lotto590Sales) || 0
+      const accumulatorSales = Number(row.accumulatorSales) || 0
 
-      const accumulatorTotalComm = round2(row.accumulatorSales * RATE_ACCUM_TOTAL / 100)
-      const accumulatorCashierComm = round2(row.accumulatorSales * cashierAccum / 100)
-      const accumulatorPrincipalComm = round2(row.accumulatorSales * principalAccum / 100)
+      const lotto590TotalComm = round2(lotto590Sales * RATE_590_TOTAL / 100)
+      const lotto590CashierComm = round2(lotto590Sales * cashier590 / 100)
+      const lotto590PrincipalComm = round2(lotto590Sales * principal590 / 100)
+
+      const accumulatorTotalComm = round2(accumulatorSales * RATE_ACCUM_TOTAL / 100)
+      const accumulatorCashierComm = round2(accumulatorSales * cashierAccum / 100)
+      const accumulatorPrincipalComm = round2(accumulatorSales * principalAccum / 100)
 
       const totalCashierPayout = round2(lotto590CashierComm + accumulatorCashierComm)
 
@@ -406,11 +376,11 @@ const calculate = async () => {
         cashierUsername: row.cashierUsername,
         cashierName: row.cashierName,
         claimedCount: row.claimedCount ?? 0,
-        lotto590Sales: row.lotto590Sales,
+        lotto590Sales,
         lotto590TotalComm,
         lotto590CashierComm,
         lotto590PrincipalComm,
-        accumulatorSales: row.accumulatorSales,
+        accumulatorSales,
         accumulatorTotalComm,
         accumulatorCashierComm,
         accumulatorPrincipalComm,
@@ -434,6 +404,9 @@ const calculate = async () => {
       totalClaimedCount: sum('claimedCount'),
     })
 
+    ran.date = date
+    ran.cashier590 = cashier590
+    ran.cashierAccum = cashierAccum
     calcLoaded.value = true
   } catch (err) {
     snackbar.add({ type: 'error', text: 'Failed to fetch data' })

@@ -11,11 +11,9 @@
         
         <!-- Cashier Dropdown -->
         <div class="w-full sm:w-[200px]">
-          <div class="flex justify-center" v-if="loading">
-            <Spinner />
-          </div>
-          <select v-else v-model="cashierName" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-900 border border-gray-200 dark:border-navy-700 rounded-xl text-sm text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 transition-all outline-none cursor-pointer">
-            <option value="">All Cashiers</option>
+          <!-- Always a picker: while the names load it says so, instead of the header jumping around a spinner -->
+          <select v-model="cashierName" :disabled="loading" aria-label="Cashier" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-navy-900 border border-gray-200 dark:border-navy-700 rounded-xl text-sm text-navy-700 dark:text-white focus:ring-2 focus:ring-brand-500/20 transition-all outline-none cursor-pointer disabled:opacity-60">
+            <option value="">{{ loading ? 'Loading cashiers...' : 'All cashiers' }}</option>
             <option v-for="cashier in cashierDets" :key="cashier.id" :value="cashier.username">
               {{ cashier.username }}
             </option>
@@ -45,6 +43,9 @@
       </div>
     </div>
 
+    <!-- Headline figures: the totals of the rows below -->
+    <FigureGrid :figures="figures" :loading="loading2 && !loadedOnce" />
+
     <!-- Content Card -->
     <div class="bg-white dark:bg-navy-800 rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100 dark:border-navy-700 w-full overflow-hidden">
         <div class="flex items-center justify-between mb-4">
@@ -62,9 +63,9 @@
       >
         <template #item-dateTo="{ dateTo }">{{ formatDateTime(dateTo) }}</template>
         <template #item-percentage="{ percentage }">{{ percentage }}%</template>
-        <template #item-amount="{ amount }">₦ {{ convertNumber(amount) }}</template>
-        <template #item-stake="{ stake }">₦ {{ convertNumber(stake) }}</template>
-        <template #item-totalSales="{ totalSales }">₦ {{ convertNumber(totalSales) }}</template>
+        <template #item-amount="{ amount }">{{ moneyExact(amount) }}</template>
+        <template #item-stake="{ stake }">{{ moneyExact(stake) }}</template>
+        <template #item-totalSales="{ totalSales }">{{ moneyExact(totalSales) }}</template>
       </AppTable>
     </div>
   </div>
@@ -75,17 +76,15 @@ import { ref, reactive, onMounted, watchEffect, computed } from 'vue'
 import axios from 'axios'
 import { useSnackbar } from 'vue3-snackbar'
 import { useAuthStore } from '../stores/auth'
-import { useRouter } from 'vue-router'
 import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
-import Spinner from '@/components/Spinner.vue'
 import AppTable from '@/components/AppTable.vue'
 import { format, startOfMonth, endOfMonth, subMonths } from 'date-fns'
-import { convertNumber } from '../services/convertNumber'
+import FigureGrid from '@/components/ui/FigureGrid.vue'
+import { moneyExact } from '@/services/format'
 
 const snackbar = useSnackbar()
 const authStore = useAuthStore()
-const router = useRouter()
 
 let cashierDets = ref([])
 
@@ -123,8 +122,23 @@ const filteredBonuses = computed(() => {
     return result;
 })
 
+// Stays false until the first answer, so the figures show placeholders only on arrival
+const loadedOnce = ref(false)
+
+const figures = computed(() => {
+    const rows = filteredBonuses.value
+    const sum = (key) => rows.reduce((total, row) => total + (Number(row[key]) || 0), 0)
+    const cashiers = new Set(rows.map((row) => row.cashierName).filter(Boolean)).size
+    return [
+        { label: 'Bonus earned', value: moneyExact(sum('amount')) },
+        { label: 'Sales counted', value: moneyExact(sum('totalSales')) },
+        { label: 'Bonus entries', value: rows.length.toLocaleString('en-US') },
+        { label: 'Cashiers', value: cashiers.toLocaleString('en-US') }
+    ]
+})
+
 const updateDateFilter = () => {
-  if (date.value && date.value.length === 2) {
+  if (date.value && date.value[0] && date.value[1]) {
     startDate.value = date.value[0]
     endDate.value = date.value[1]
   }
@@ -157,9 +171,12 @@ const getBonusLog = async () => {
       error.value = true
     }
     loading2.value = false
+    loadedOnce.value = true
   } catch (err) {
     console.log(err)
+    allBonuses.value = []
     loading2.value = false
+    loadedOnce.value = true
     error.value = true
   }
 }

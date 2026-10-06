@@ -4,6 +4,9 @@
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
+    // Many views are plain JavaScript: let the TypeScript files import them, without type-checking their insides
+    "allowJs": true,
+    "checkJs": false,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 
     "baseUrl": ".",

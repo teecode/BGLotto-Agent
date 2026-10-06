@@ -64,7 +64,7 @@
         </div>
         <div class="space-y-1">
           <p class="text-sm font-bold text-white dark:text-brand-400">Security Requirement</p>
-          <p class="text-xs text-navy-300 dark:text-navy-400">Ensure the winning ticket is physically present and valid before processing. Cashouts above shop limit will require admin approval.</p>
+          <p class="text-xs text-navy-400 dark:text-navy-400">Ensure the winning ticket is physically present and valid before processing. Cashouts above shop limit will require admin approval.</p>
         </div>
       </div>
     </div>
@@ -103,7 +103,7 @@
                 </div>
                 <div class="space-y-1 text-right">
                    <p class="text-[10px] uppercase tracking-widest font-bold text-green-600/60 dark:text-green-400/60">Winnings</p>
-                   <p class="text-2xl font-black text-green-600 dark:text-green-400 drop-shadow-sm">₦ {{ winningAmount.toLocaleString() }}</p>
+                   <p class="text-2xl font-black text-green-600 dark:text-green-400 drop-shadow-sm">{{ moneyExact(winningAmount) }}</p>
                 </div>
              </div>
              
@@ -156,9 +156,9 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useSnackbar } from "vue3-snackbar";
 import { useAuthStore } from '../stores/auth';
-import { onClickOutside } from '@vueuse/core'
 import Spinner from '@/components/Spinner.vue';
 import Modal from '@/components/Modal.vue';
+import { moneyExact } from '@/services/format';
 
 const snackbar = useSnackbar();
 const authStore = useAuthStore();

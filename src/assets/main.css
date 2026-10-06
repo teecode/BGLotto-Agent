@@ -3,12 +3,75 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Secondary text tones (tailwind navy-300/400/500) */
+    --ink-faint: 118 132 154;
+    --ink-muted: 95 111 133;
+    --ink-soft: 71 86 107;
+    /* Chart series: a blue and an orange that stay apart for colour-blind readers */
+    --chart-1: 42 120 214;
+    --chart-2: 235 104 52;
+  }
+
+  .dark {
+    --ink-faint: 137 151 172;
+    --ink-muted: 154 167 186;
+    --ink-soft: 177 188 203;
+    --chart-1: 57 135 229;
+    --chart-2: 224 98 47;
+  }
+
+  html {
+    /* Room for the sticky top bar when the browser scrolls to an anchor */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-navy-900 text-navy-700 dark:text-white transition-colors duration-300;
+    @apply bg-navy-50 text-navy-700 antialiased dark:bg-navy-900 dark:text-white;
+  }
+
+  /* A visible keyboard focus everywhere, without a ring on mouse clicks */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500/60 ring-offset-2 ring-offset-white dark:ring-offset-navy-900;
+  }
+
+  button, a, [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Money and counts line up in columns and do not jiggle as they change */
+  table, .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom Scrollbar */
+@layer components {
+  .card {
+    @apply rounded-3xl border border-gray-100 bg-white shadow-sm dark:border-navy-700 dark:bg-navy-800;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700;
+  }
+  .btn-quiet {
+    @apply btn bg-navy-100 text-navy-700 hover:bg-navy-200 dark:bg-navy-700 dark:text-white dark:hover:bg-navy-600;
+  }
+
+  /* Tiny uppercase caption above a figure */
+  .eyebrow {
+    @apply text-[11px] font-bold uppercase tracking-wider text-navy-400;
+  }
+
+  .skeleton {
+    @apply block animate-pulse rounded-lg bg-navy-100 dark:bg-navy-700;
+  }
+}
+
+/* Slim scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -17,10 +80,19 @@
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    @apply bg-brand-500/20 rounded-full hover:bg-brand-500/40;
+    @apply rounded-full bg-navy-200 hover:bg-navy-300 dark:bg-navy-700 dark:hover:bg-navy-600;
 }
 
-/* Global Transitions */
-* {
-    @apply transition-all duration-200 ease-in-out;
+/* Bottom safe area on phones with a home indicator */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
