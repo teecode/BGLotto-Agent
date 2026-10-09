@@ -15,6 +15,7 @@
                                 {{ item.betType?.name || 'N/A' }}
                             </span>
                             <span v-if="item.winningType === 2" class="bg-brand-50 text-brand-500 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Machine</span>
+                            <span v-else-if="item.winningType === 3" class="bg-brand-50 text-brand-500 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Double Chance</span>
                             <span v-else class="bg-gray-100 dark:bg-navy-900 text-navy-500 dark:text-navy-300 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold">Normal</span>
                         </div>
                     </div>
@@ -81,6 +82,7 @@
                             </td>
                             <td class="px-4 py-4 font-bold">
                                 <span v-if="item.winningType === 2" class="bg-brand-50 text-brand-500 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold">Machine</span>
+                                <span v-else-if="item.winningType === 3" class="bg-brand-50 text-brand-500 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold">Double Chance</span>
                                 <span v-else class="bg-gray-100 dark:bg-navy-900 text-navy-500 dark:text-navy-300 px-2.5 py-1 rounded-md text-[10px] uppercase tracking-wider font-bold">Normal</span>
                             </td>
                             <td class="px-4 py-4 text-right font-medium">{{ item.lines }}</td>
