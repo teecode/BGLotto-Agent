@@ -13,6 +13,29 @@
       </div>
     </header>
 
+    <!-- Terminals at risk of repossession banner -->
+    <div v-if="inoperativeTerminals.length > 0" class="rounded-3xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-500/40 dark:bg-amber-500/10 sm:p-5">
+      <div class="flex items-start gap-3">
+        <svg class="mt-0.5 size-6 text-amber-600 dark:text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="min-w-0 flex-1">
+          <h3 class="font-bold text-amber-900 dark:text-amber-200">
+            {{ inoperativeTerminals.length === 1 ? '1 Inactive Terminal Flagged' : `${inoperativeTerminals.length} Inactive Terminals Flagged` }}
+          </h3>
+          <p class="mt-0.5 text-sm text-amber-800 dark:text-amber-200/80">
+            Terminals with sales below ₦5,000 in the last 7 days are flagged for retrieval. Please ensure active sales on these devices.
+          </p>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            <li v-for="terminal in inoperativeTerminals" :key="terminal.terminalSerial" class="rounded-xl border border-amber-200 bg-white px-3 py-2 text-sm dark:border-amber-500/30 dark:bg-navy-800 shadow-sm">
+              <p class="font-bold text-navy-700 dark:text-white">Terminal #{{ terminal.terminalSerial }}</p>
+              <p class="text-xs text-navy-400">{{ terminal.cashierName || 'Unassigned' }} · {{ moneyExact(terminal.totalSales) }} turnover</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <!-- Headline figures: the totals of the rows below -->
     <FigureGrid :figures="figures" :loading="loading2 && !loadedOnce" />
 
@@ -182,9 +205,23 @@ const fetchTerminalStats = async() => {
     }
 }
 
+const inoperativeTerminals = ref([]);
+
+const fetchInoperativeTerminals = async () => {
+    try {
+        const shopId = authStore.user?.shopId || authStore.user?.shop;
+        if (!shopId) return;
+        const res = await axios.get(`report/terminals/inoperative-warning?shopId=${shopId}&days=7&threshold=5000`);
+        inoperativeTerminals.value = Array.isArray(res.data) ? res.data : [];
+    } catch (err) {
+        console.error('Error fetching inoperative terminals', err);
+    }
+};
+
 watchEffect(() => {
     fetchTerminalStats();
-})
+    fetchInoperativeTerminals();
+});
 
 </script>
 
