@@ -66,3 +66,8 @@ jobs:
           New-Item -ItemType Directory -Force -Path (Split-Path $target -Parent) | Out-Null
           Copy-Item -LiteralPath $_.FullName -Destination $target -Force
         }
+
+        # This app's web.config is not in the repository: the server's copy has rules of its own
+        # (the socket.io proxy, the SPA fallback). So instead of copying one over it, the caching
+        # rules that let a deploy show without a hard refresh are added to it in place.
+        & .\.github\scripts\patch-iis-cache.ps1 -SiteFolder $dest -ImmutableAssets
