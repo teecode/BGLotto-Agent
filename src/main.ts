@@ -10,6 +10,7 @@ import App from './App.vue';
 import router from './router';
 import { useAuthStore } from './stores/auth';
 import { clearSession, isTokenExpired } from './services/session';
+import { startAppUpdateWatcher } from './services/appUpdate';
 
 // SERVER BASE URL
 axios.defaults.baseURL = import.meta.env.VITE_APP_API_URL
@@ -48,3 +49,6 @@ app.use(createPinia());
 app.use(router);
 
 app.mount('#app');
+
+// New deploys: see services/appUpdate.ts.
+startAppUpdateWatcher({ accent: '#0185b6' });

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { reloadToLatest, shouldReloadOnNavigation } from '../services/appUpdate'
 import LoginView from '../views/LoginView.vue'
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue';
 import { clearSession, isSignedIn } from '@/services/session';
@@ -149,6 +150,15 @@ const router = createRouter({
       redirect: '/dashboard'
     }
   ]
+})
+
+// A new deploy is waiting (services/appUpdate.ts): load the next page fresh instead.
+router.beforeEach((to, from) => {
+  if (from.matched.length && shouldReloadOnNavigation()) {
+    void reloadToLatest(to.fullPath)
+    return false
+  }
+  return true
 })
 
 router.beforeEach((to) => {
