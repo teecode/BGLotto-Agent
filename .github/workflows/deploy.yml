@@ -70,4 +70,7 @@ jobs:
         # This app's web.config is not in the repository: the server's copy has rules of its own
         # (the socket.io proxy, the SPA fallback). So instead of copying one over it, the caching
         # rules that let a deploy show without a hard refresh are added to it in place.
-        & .\.github\scripts\patch-iis-cache.ps1 -SiteFolder $dest -ImmutableAssets
+        # On production the live site is asked for a page afterwards; if it answers with an
+        # error, the previous web.config is put back (see the script).
+        $checkUrl = if ('${{ env.DEPLOY_ENV }}' -eq 'prod') { 'https://agent.maxilotto.ng/' } else { '' }
+        & .\.github\scripts\patch-iis-cache.ps1 -SiteFolder $dest -ImmutableAssets -CheckUrl $checkUrl

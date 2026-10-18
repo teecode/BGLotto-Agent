@@ -11,16 +11,17 @@ patched, never replaced. Runs on every deploy; rules already there are left alon
     the file's address for hours;
   - with -ImmutableAssets, /assets (content-hashed build output) is cached for a year.
 
-If IIS cannot read the result, the previous web.config is put back and the step fails.
+With -CheckUrl, the live site is asked for a page after the change. A web.config IIS
+cannot read makes it answer every request with HTTP 500, so in that case the previous
+web.config is put back and the step fails. (An earlier version asked appcmd to read the
+configuration instead; on the build server that check failed the deploy by itself.)
 The same script is used by maxi-lotto-agent-web, maxi-lotto.onlineadmin-web and
 maxi-lotto-retailadmin-web; keep the copies in step.
 #>
 param(
   [Parameter(Mandatory = $true)] [string] $SiteFolder,
   [switch] $ImmutableAssets,
-  # For testing against IIS Express; on the server the defaults are right.
-  [string] $AppCmd = "$env:windir\System32\inetsrv\appcmd.exe",
-  [string] $AppHostConfig = ''
+  [string] $CheckUrl = ''
 )
 $ErrorActionPreference = 'Stop'
 
@@ -92,41 +93,34 @@ if ($changes.Count -eq 0) {
 $xml.Save($path)
 Write-Host "web.config updated: $($changes -join '; ')."
 
-# Ask IIS to read the site's configuration back. Any error in web.config would take the
-# whole site down (HTTP 500.19), so in that case put the previous file back and fail.
-if (-not (Test-Path -LiteralPath $AppCmd)) {
-  Write-Warning "appcmd not found at $AppCmd; the new web.config was not checked."
+if (-not $CheckUrl) {
+  Write-Host 'No -CheckUrl given, so the live site was not checked.'
   return
 }
-$extra = @()
-if ($AppHostConfig) { $extra += "/apphostconfig:$AppHostConfig" }
-$target = (Resolve-Path -LiteralPath $SiteFolder).Path.TrimEnd('\')
-try {
-  [xml]$vdirs = & $AppCmd list vdir /xml @extra
-} catch {
-  Write-Warning "Could not list the IIS sites ($($_.Exception.Message)); the new web.config was not checked."
-  return
-}
-$vdir = $vdirs.appcmd.VDIR | Where-Object {
-  [Environment]::ExpandEnvironmentVariables($_.physicalPath).TrimEnd('\') -ieq $target
-} | Select-Object -First 1
-if (-not $vdir) {
-  Write-Warning "No IIS site points at $target; the new web.config was not checked."
-  return
-}
-# IIS reads each section separately, so every section the file can touch is read back.
-$site = $vdir.'VDIR.NAME'
-$checks = @(
-  @($site, 'system.webServer/rewrite/rules'),
-  @($site, 'system.webServer/rewrite/outboundRules'),
-  @($site, 'system.webServer/staticContent'),
-  @("$($site.TrimEnd('/'))/assets", 'system.webServer/staticContent')
-)
-foreach ($c in $checks) {
-  $check = & $AppCmd list config $c[0] "/section:$($c[1])" @extra 2>&1
-  if ($LASTEXITCODE -ne 0 -or ($check -join "`n") -match 'ERROR \(') {
-    if ($existed) { [IO.File]::WriteAllText($path, $original) } else { Remove-Item -LiteralPath $path }
-    throw "IIS could not read the updated web.config ($($c[1])), so the previous one was restored: $(($check -join ' ').Trim())"
+
+# HTTP status of the live page; 0 when the site could not be reached at all.
+function Get-Status([string] $url) {
+  $separator = if ($url.Contains('?')) { '&' } else { '?' }
+  try {
+    return [int](Invoke-WebRequest -Uri "$url${separator}deploy-check=$([DateTime]::UtcNow.Ticks)" -UseBasicParsing -TimeoutSec 30).StatusCode
+  } catch {
+    $response = $_.Exception.Response
+    if ($response) { return [int]$response.StatusCode }
+    return 0
   }
 }
-Write-Host "IIS reads the updated configuration for $($vdir.'VDIR.NAME') without errors."
+
+$status = Get-Status $CheckUrl
+if ($status -ge 500) {
+  Start-Sleep -Seconds 3
+  $status = Get-Status $CheckUrl
+}
+if ($status -ge 500) {
+  if ($existed) { [IO.File]::WriteAllText($path, $original) } else { Remove-Item -LiteralPath $path }
+  throw "$CheckUrl answered HTTP $status after the web.config change, so the previous web.config was restored."
+}
+if ($status -eq 0) {
+  Write-Warning "Could not reach $CheckUrl to check the site; the updated web.config stays."
+} else {
+  Write-Host "$CheckUrl answers HTTP $status with the updated web.config."
+}
